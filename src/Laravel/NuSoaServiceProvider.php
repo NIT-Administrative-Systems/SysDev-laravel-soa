@@ -15,6 +15,6 @@ class NuSoaServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->publishes([self::CONFIG => config_path('nusoa.php')]);
+        $this->publishes([self::CONFIG => config_path('nusoa.php')], 'config');
     } // end boot
 } // end NuSoaServiceProvider
