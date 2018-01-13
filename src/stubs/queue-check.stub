@@ -6,7 +6,7 @@ use Northwestern\SysDev\SOA\Console\Commands\CheckQueue;
 
 class DummyClass extends CheckQueue
 {
-    protected $name = 'mq:check:DummyClass';
+    protected $signature = 'mq:check:DummyClass';
     protected $description = 'Reads messages from a queue';
 
     protected function getTopic()
