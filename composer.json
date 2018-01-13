@@ -1,0 +1,38 @@
+{
+    "name": "northwestern-sysdev/soa",
+    "description": "Laravel bindings for popular Northwestern SOA services.",
+    "type": "library",
+    "keywords": [
+        "northwestern",
+        "northwestern university",
+        "laravel"
+    ],
+    "authors": [
+        {
+            "name": "Nicholas Evans",
+            "email": "nicholas.evans@northwestern.edu"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Northwestern\\SysDev\\SOA\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "suggest": {
+        "northwestern-sysdev/laravel-websso": "Laravel package for Northwestern University's WebSSO & Duo MFA login."
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Northwestern\\SysDev\\SOA\\NuSoaServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.0"
+    }
+}
