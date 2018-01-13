@@ -2,15 +2,19 @@
 
 namespace Northwestern\SysDev\SOA\Laravel;
 
-class NuSoaServiceProvider
+use Illuminate\Support\ServiceProvider;
+
+class NuSoaServiceProvider extends ServiceProvider
 {
+    const CONFIG = __DIR__.'/../../config/nusoa.php';
+
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/config/nusoa.php', 'nusoa');
+        $this->mergeConfigFrom(self::CONFIG, 'nusoa');
     } // end register
 
     public function boot()
     {
-        $this->publishes([__DIR__.'/config/nusoa.php' => config_path('nusoa.php')]);
+        $this->publishes([self::CONFIG => config_path('nusoa.php')]);
     } // end boot
 } // end NuSoaServiceProvider
