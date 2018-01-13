@@ -113,7 +113,7 @@ class DirectorySearch
                 ],
                 'http_errors' => false, // don't throw exceptions, I want to check the status code
             ]);
-        } catch (GuzzleHttp\Exception\RequestException $e) {
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
             $this->lastError = vsprintf('Verify connectivity to %s from the server: %s', [$this->baseUrl, $e->getMessage()]);
             return false;
         }

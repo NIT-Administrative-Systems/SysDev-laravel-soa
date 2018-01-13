@@ -16,8 +16,11 @@ class Consumer
     protected $lastError;
     protected $lastRequestMessage;
 
-    public function __construct()
+    private $http_client;
+
+    public function __construct(GuzzleHttp\Client $client)
     {
+        $this->http_client = $client;
         $this->baseUrl = config('nusoa.messageQueue.baseUrl');
         $this->endpointPath = config('nusoa.messageQueue.consumePath');
         $this->username = config('nusoa.messageQueue.username');
@@ -46,6 +49,11 @@ class Consumer
         return $this->lastUrl;
     } // end getLastUrl
 
+    public function setHttpClient(GuzzleHttp\Client $client)
+    {
+        $this->http_client = $client;
+    } // end setHttpClient
+
     protected function getRequestMessage($event_type)
     {
         $this->lastRequestMessage = vsprintf('<MQConsumer> <Topic>%s</Topic> </MQConsumer>', [$event_type]);
@@ -55,19 +63,23 @@ class Consumer
 
     protected function checkForMessage($topic)
     {
-        $client = new GuzzleHttp\Client();
-        $request = $client->request('POST', $this->getApiUrl(), [
-            'auth' => [$this->username, $this->password],
-            'headers' => [
-                'apikey' => $this->apiKey,
-            ],
-            'http_errors' => false, // don't throw exceptions
-            'content-type' => 'application/xml',
-            'body' => $this->getRequestMessage($topic),
-        ]);
+        try {
+            $request = $this->http_client->request('POST', $this->getApiUrl(), [
+                'auth' => [$this->username, $this->password],
+                'headers' => [
+                    'apikey' => $this->apiKey,
+                ],
+                'http_errors' => false, // don't throw exceptions
+                'content-type' => 'application/xml',
+                'body' => $this->getRequestMessage($topic),
+            ]);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $this->lastError = vsprintf('Verify connectivity to %s from the server: %s', [$this->baseUrl, $e->getMessage()]);
+            return false;
+        }
 
         if ($request === null) {
-            $this->lastError('Request failed. Verify connectivity to ' . $this->baseUrl . ' from the server.');
+            $this->lastError = vsprintf('Request failed. Verify connectivity to %s from the server.', [$this->baseUrl]);
             return false;
         }
 
