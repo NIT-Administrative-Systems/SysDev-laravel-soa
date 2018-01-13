@@ -11,7 +11,6 @@ use GuzzleHttp;
  */
 class DirectorySearch
 {
-    protected $mock = false;
     protected $baseUrl;
     protected $apiKey;
 
@@ -35,7 +34,6 @@ class DirectorySearch
 
     public function __construct()
     {
-        $this->mock = config('nusoa.directorySearch.mock');
         $this->baseUrl = config('nusoa.directorySearch.baseUrl');
         $this->apiKey = config('nusoa.directorySearch.apiKey');
     } // end __constructg
@@ -57,10 +55,6 @@ class DirectorySearch
      */
     public function lookup($value, $searchBy, $level)
     {
-        if ($this->mock == true) {
-            return $this->fakeData();
-        }
-
         if (array_key_exists($searchBy, $this->lookupMethods) == false) {
             throw new \Exception("Invalid searchBy specified: '$searchBy'.");
         }
@@ -116,8 +110,7 @@ class DirectorySearch
                 // handle error based on returned format
                 if (!empty($error['errorMessage'])) {
                     $message = $error['errorMessage'];
-                }
-                else if (!empty($error['fault']['faultstring'])) {
+                } else if (!empty($error['fault']['faultstring'])) {
                     $message = $error['fault']['faultstring'];
                 }
             }
@@ -128,22 +121,5 @@ class DirectorySearch
 
         return $request->getBody();
     } // end doGet
-
-    protected function fakeData()
-    {
-        return [
-            'nuStudentLegalGivenName' => 'Test',
-            'givenName' => ['Test'],
-            'nuStudentLegalMiddleName' => 'T',
-            'nuMiddleName' => 'T',
-            'nuStudentLegalSn' => 'User',
-            'sn' => ['User'],
-            'nuStudentNumber' => '0000000',
-            'employeeNumber' => '0000000',
-            'nuStudentEmail' => 'example@northwestern.edu',
-            'mail' => 'example@northwestern.edu',
-            'jpegPhoto' => null,
-        ];
-    } // end fakeData
 
 } // end IdMapper
