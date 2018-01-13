@@ -15,8 +15,11 @@ class Publisher
     protected $lastUrl;
     protected $lastError;
 
-    public function __construct()
+    private $http_client;
+
+    public function __construct(GuzzleHttp\Client $client)
     {
+        $this->http_client = $client;
         $this->baseUrl = config('nusoa.messageQueue.baseUrl');
         $this->endpointPath = config('nusoa.messageQueue.publishPath');
         $this->username = config('nusoa.messageQueue.username');
@@ -29,8 +32,8 @@ class Publisher
         return $this->publishJson(json_encode($array), $topic);
     } // end queueRaw
 
-    public function queueJson($json, $topic) {
-        return $this->publishJson($json, $topic);
+    public function queueText($text, $topic) {
+        return $this->publishJson($text, $topic);
     } // end queueJson
 
     public function getLastError()
@@ -43,23 +46,32 @@ class Publisher
         return $this->lastUrl;
     } // end getLastUrl
 
+    public function setHttpClient(GuzzleHttp\Client $client)
+    {
+        $this->http_client = $client;
+    } // end setHttpClient
+
     protected function publishJson($message, $topic)
     {
         $url = $this->getPostUrl($topic);
 
-        $client = new GuzzleHttp\Client();
-        $request = $client->request('POST', $url, [
-            'auth' => [$this->username, $this->password],
-            'headers' => [
-                'apikey' => $this->apiKey,
-            ],
-            'http_errors' => false, // don't throw exceptions
-            'content-type' => 'text/plain',
-            'body' => $message,
-        ]);
+        try {
+            $request = $this->http_client->request('POST', $url, [
+                'auth' => [$this->username, $this->password],
+                'headers' => [
+                    'apikey' => $this->apiKey,
+                ],
+                'http_errors' => false, // don't throw exceptions
+                'content-type' => 'text/plain',
+                'body' => $message,
+            ]);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $this->lastError = vsprintf('Verify connectivity to %s from the server: %s', [$this->baseUrl, $e->getMessage()]);
+            return false;
+        }
 
         if ($request === null) {
-            $this->lastError('Request failed. Verify connectivity to ' . $this->baseUrl . ' from the server.');
+            $this->lastError = vsprintf('Request failed. Verify connectivity to %s from the server.', [$this->baseUrl]);
             return false;
         }
 
