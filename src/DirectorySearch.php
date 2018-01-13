@@ -32,8 +32,11 @@ class DirectorySearch
         'expanded' => '/exp/',
     ];
 
-    public function __construct()
+    private $http_client;
+
+    public function __construct(GuzzleHttp\Client $client)
     {
+        $this->http_client = $client;
         $this->baseUrl = config('nusoa.directorySearch.baseUrl');
         $this->apiKey = config('nusoa.directorySearch.apiKey');
     } // end __constructg
@@ -86,19 +89,38 @@ class DirectorySearch
         return $this->lastError;
     } // end getLastError
 
+    public function setBaseUrl($url)
+    {
+        $this->baseUrl = $url;
+    } // end setBaseUrl
+
+    public function setApiKey($key)
+    {
+        $this->apiKey = $key;
+    } // end setApiKey
+
+    public function setHttpClient(GuzzleHttp\Client $client)
+    {
+        $this->http_client = $client;
+    } // end setHttpClient
+
     protected function doGet($url)
     {
-        $client = new GuzzleHttp\Client();
-        $request = $client->request('GET', $url, [
-            'headers' => [
-                'apikey' => $this->apiKey,
-            ],
-            'http_errors' => false, // don't throw exceptions, I want to check the status code
-        ]);
+        try {
+            $request = $this->http_client->request('GET', $url, [
+                'headers' => [
+                    'apikey' => $this->apiKey,
+                ],
+                'http_errors' => false, // don't throw exceptions, I want to check the status code
+            ]);
+        } catch (GuzzleHttp\Exception\RequestException $e) {
+            $this->lastError = vsprintf('Verify connectivity to %s from the server: %s', [$this->baseUrl, $e->getMessage()]);
+            return false;
+        }
 
         // Bad netID, service unavailable
         if ($request === null) {
-            $this->lastError('Request failed. Verify connectivity to ' . $this->baseUrl . ' from the server.');
+            $this->lastError = vsprintf('Request failed. Verify connectivity to %s from the server.', [$this->baseUrl]);
             return false;
         }
 
