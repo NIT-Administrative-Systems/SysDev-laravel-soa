@@ -1,5 +1,5 @@
 {
-    "name": "northwestern-sysdev/soa",
+    "name": "northwestern-sysdev/laravel-soa",
     "description": "Laravel bindings for popular Northwestern SOA services.",
     "type": "library",
     "keywords": [
