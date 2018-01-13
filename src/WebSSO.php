@@ -11,9 +11,11 @@ class WebSSO
 {
     protected $sso_server;
     protected $api_path = '/amserver/identity/attributes';
+    protected $http_client;
 
-    public function __construct()
+    public function __construct(GuzzleHttp\Client $client)
     {
+        $this->http_client = $client;
         $this->sso_server = config('sso.openAmBaseUrl');
     } // end __construct
 
@@ -25,8 +27,7 @@ class WebSSO
      */
     public function getNetID($token)
     {
-        $client = new GuzzleHttp\Client();
-        $request = $client->request('POST', $this->getEndpointUrl(), [
+        $request = $this->http_client->request('POST', $this->getEndpointUrl(), [
             'http_errors' => false, // don't throw exceptions
             'form_params' => [
                 'subjectid' => $token,
@@ -35,7 +36,7 @@ class WebSSO
         ]);
 
         if ($request === null) {
-            throw new \Exception('Unable to reach webSSO service. Verify connectivity to ' . $this->getEndpointUrl());
+            throw new \Exception(vsprintf('Unable to reach webSSO service. Verify connectivity to %s', [$this->getEndpointUrl()]));
         }
 
         if ($request->getStatusCode() != 200) {
@@ -44,6 +45,11 @@ class WebSSO
 
         return $this->extractNetid($request->getBody());
     } // end getInfo
+
+    public function setHttpClient(GuzzleHttp\Client $client)
+    {
+        $this->http_client = $client;
+    } //end setHttpClient
 
     protected function extractNetid($payload)
     {
@@ -69,10 +75,11 @@ class WebSSO
      * @param  [type] $redirect_to [description]
      * @return [type]              [description]
      */
-    public function getLoginUrl($redirect_to = null)
+    public function getLoginUrl($redirect_path = null)
     {
-        if ($redirect_to == null) {
-            $redirect_to = vsprintf('%s/auth/sso/login', [config('app.url')]);
+        $redirect_to = config('app.url');
+        if ($redirect_path != null) {
+            $redirect_to = vsprintf('%s/%s', [$redirect_to, $redirect_path]);
         }
 
         $redirect_to = urlencode($redirect_to);
