@@ -15,4 +15,9 @@ class MakeCheckQueue extends GeneratorCommand
         return __DIR__.'/../../stubs/queue-check.stub';
     } // end getStub
 
+    protected function getDefaultNamespace($rootNamespace)
+    {
+        return $rootNamespace.'\Console\Commands';
+    } // end getDefaultNamespace
+
 } // MakeCheckQueue

@@ -1,8 +1,10 @@
 <?php
 
+namespace DummyNamespace;
+
 use Northwestern\SysDev\SOA\Console\Commands\CheckQueue;
 
-class {{class}} extends CheckQueue
+class DummyClass extends CheckQueue
 {
     protected function getTopic()
     {
@@ -13,5 +15,5 @@ class {{class}} extends CheckQueue
     {
         //
     }
-    
+
 }
