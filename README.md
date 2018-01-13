@@ -18,7 +18,7 @@ composer require northwestern-sysdev/laravel-soa
 Publish the config file:
 
 ```bash
-php artisan config:publish northwestern-sysdev/laravel-soa
+php artisan vendor:publish --provider="Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider"
 ```
 
 And finally, add the options to your `.env` file (and don't forget to update `.env.example` for the rest of your team!):

@@ -12,7 +12,7 @@ class MakeCheckQueue extends GeneratorCommand
 
     protected function getStub()
     {
-        return __DIR__.'/../../../stubs/queue-check.stub';
+        return __DIR__.'/../../stubs/queue-check.stub';
     } // end getStub
 
 } // MakeCheckQueue
