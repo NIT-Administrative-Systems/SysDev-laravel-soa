@@ -1,0 +1,17 @@
+<?php
+
+use Northwestern\SysDev\SOA\Console\Commands\CheckQueue;
+
+class {{class}} extends CheckQueue
+{
+    protected function getTopic()
+    {
+        return '';
+    }
+
+    protected function processMessage($msg)
+    {
+        //
+    }
+    
+}
