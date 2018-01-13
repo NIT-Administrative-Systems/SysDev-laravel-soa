@@ -7,13 +7,7 @@ use Northwestern\SysDev\SOA\DirectorySearch;
 
 class DirectoySearchTest extends TestCase
 {
-    protected $api;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->api = $this->app->make(DirectorySearch::class);
-    } // end setUp
+    protected $service = DirectorySearch::class;
 
     public function testGoodLookup()
     {

@@ -8,13 +8,7 @@ use Northwestern\SysDev\SOA\Tests\TestCase;
 
 class WebSsoTest extends TestCase
 {
-    protected $api;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->api = $this->app->make(WebSSO::class);
-    } // end setUp
+    protected $service = WebSSO::class;
 
     public function testValidSession()
     {

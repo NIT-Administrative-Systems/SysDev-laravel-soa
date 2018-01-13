@@ -13,6 +13,15 @@ use Northwestern\SysDev\SOA\Laravel\NuSoaServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
+    protected $service = null;
+    protected $api;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->api = $this->app->make($this->service);
+    } // end setUp
+
     protected function getPackageProviders($application)
     {
         return [NuSoaServiceProvider::class];
