@@ -9,7 +9,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Exception\RequestException;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Northwestern\SysDev\SOA\Laravel\NuSoaServiceProvider;
+use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {

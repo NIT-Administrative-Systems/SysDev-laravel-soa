@@ -36,7 +36,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Northwestern\\SysDev\\SOA\\NuSoaServiceProvider"
+                "Northwestern\\SysDev\\SOA\\Providers\\NuSoaServiceProvider"
             ]
         }
     }

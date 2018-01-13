@@ -1,8 +1,9 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Laravel;
+namespace Northwestern\SysDev\SOA\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Northwestern\SysDev\SOA\Console\Commands;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
@@ -16,5 +17,9 @@ class NuSoaServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([self::CONFIG => config_path('nusoa.php')], 'config');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([Commands\MakeCheckQueue::class]);
+        }
     } // end boot
 } // end NuSoaServiceProvider
