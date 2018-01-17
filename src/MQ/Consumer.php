@@ -98,7 +98,13 @@ class Consumer
             return false;
         }
 
-        return $request->getBody()->getContents();
+        // I&A fixed it to do no messages for a 200 too
+        $payload = $request->getBody()->getContents();
+        if (substr($payload, 0, 11) == 'no messages') {
+            return null;
+        }
+
+        return $payload;
     } // end publishJson
 
     private function getApiUrl()

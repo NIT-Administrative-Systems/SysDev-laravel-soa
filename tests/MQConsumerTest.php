@@ -17,12 +17,20 @@ class MQConsumerTest extends TestCase
         $this->assertEquals($message, $this->api->pullMessage('topic'));
     } // end testReceive
 
-    public function testEmptyQueue()
+    public function testEmptyQueue200()
+    {
+        $this->api->setHttpClient($this->mockedResponse(200, 'no messages'));
+
+        $this->assertNull($this->api->pullMessage('topic'));
+    } // end testEmptyQueue
+
+    public function testEmptyQueue500()
     {
         $this->api->setHttpClient($this->mockedResponse(500, 'no messages'));
 
         $this->assertNull($this->api->pullMessage('topic'));
     } // end testEmptyQueue
+
 
     public function testNoSuchQueue()
     {
