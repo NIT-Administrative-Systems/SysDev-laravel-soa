@@ -2,6 +2,7 @@
     "name": "northwestern-sysdev/laravel-soa",
     "description": "Laravel bindings for popular Northwestern SOA services.",
     "type": "library",
+    "license": "MIT",
     "keywords": [
         "northwestern",
         "northwestern university",
