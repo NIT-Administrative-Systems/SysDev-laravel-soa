@@ -98,9 +98,10 @@ class Consumer
             return false;
         }
 
-        // I&A fixed it to do no messages for a 200 too
+        // I&A fixed it to do no messages for a 200 too.
+        // Can be either 'no messages' or '<Result>no messages</Result>', depending on service acct config.
         $payload = $request->getBody()->getContents();
-        if (substr($payload, 0, 11) == 'no messages') {
+        if (substr($payload, 0, 11) == 'no messages' || substr($payload, 8, 11) == 'no messages') {
             return null;
         }
 

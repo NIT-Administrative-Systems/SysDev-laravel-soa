@@ -19,8 +19,12 @@ class MQConsumerTest extends TestCase
 
     public function testEmptyQueue200()
     {
+        // When configured as a plain-text service acct
         $this->api->setHttpClient($this->mockedResponse(200, 'no messages'));
+        $this->assertNull($this->api->pullMessage('topic'));
 
+        // When configured as an XML service acct
+        $this->api->setHttpClient($this->mockedResponse(200, '<Result>no messages</Result>'));
         $this->assertNull($this->api->pullMessage('topic'));
     } // end testEmptyQueue
 
