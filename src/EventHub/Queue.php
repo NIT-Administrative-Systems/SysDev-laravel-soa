@@ -10,12 +10,12 @@ class Queue extends EventHubBase
      * @param  int $duration Period to pull queue statistics for
      * @see https://apiserviceregistry.northwestern.edu/#/queue/getQueueList
      */
-    public function getAllQueueInfo(int $duration = null): array
+    public function listAll(int $duration = null): array
     {
         $params = ($duration === null ? [] : ['duration' => $duration]);
 
         return $this->call('get', '/v1/event-hub/queue', $params);
-    } // end getAllQueueInfo
+    } // end listAll
 
     /**
      * Retrieve information about a specific queue.
@@ -24,12 +24,12 @@ class Queue extends EventHubBase
      * @param  int    $duration   Period to pull queue statistics for
      * @see https://apiserviceregistry.northwestern.edu/#/queue/getQueueInfo
      */
-    public function getSpecificQueueInfo(string $topic_name, int $duration = null): array
+    public function getInfo(string $topic_name, int $duration = null): array
     {
         $params = ($duration === null ? [] : ['duration' => $duration]);
 
         return $this->call('get', vsprintf('/v1/event-hub/queue/%s', [$topic_name]), $params);
-    } // end getSpecificQueueInfo
+    } // end getInfo
 
     /**
      * Clear any messages in a queue.
@@ -37,10 +37,10 @@ class Queue extends EventHubBase
      * @param  string  $topic_name  The topic name
      * @see https://apiserviceregistry.northwestern.edu/#/queue/clearQueue
      */
-    public function clearQueue(string $topic_name): bool
+    public function clearAllMessages(string $topic_name): bool
     {
         return $this->call('delete', vsprintf('/v1/event-hub/queue/%s', [$topic_name]));
-    } // end clearQueue
+    } // end clearAllMessages
 
     /**
      * Update information about this queue.
@@ -49,12 +49,12 @@ class Queue extends EventHubBase
      * @param  array  $params     Set of parameters to send, e.g. ['autoAcknowledge' => true]
      * @see https://apiserviceregistry.northwestern.edu/#/queue/clearQueue
      */
-    public function configureQueue(string $topic_name, array $params): array
+    public function configure(string $topic_name, array $params): array
     {
         $params = sizeof($params) === 0 ? '{}' : json_encode($params);
 
         return $this->call('patch', vsprintf('/v1/event-hub/queue/%s', [$topic_name]), [], $params);
-    } // end configureQueue
+    } // end configure
 
     /**
      * Handy method for submitting a PHP assoc array as a JSON message
