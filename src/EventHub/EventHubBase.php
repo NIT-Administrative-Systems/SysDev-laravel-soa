@@ -93,6 +93,17 @@ abstract class EventHubBase
         throw new Exception\EventHubError($this->last_req_error, $this->last_req_response_code);
     } // end call
 
+    /**
+     * [stringifyBool description]
+     *
+     * @param  bool   $flag
+     * @return string The string "true" or "false", which is what the Event Hub seems to prefer in query parameters
+     */
+    protected function stringifyBool(bool $flag): string
+    {
+        return $flag === true ? "true" : "false";
+    } // end stringifyBool
+
     private function makeRequestUrl($url, $query_params)
     {
         $url = vsprintf('%s/%s', [$this->base_url, $url]);

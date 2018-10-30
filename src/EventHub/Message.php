@@ -26,7 +26,7 @@ class Message extends EventHubBase
      */
     public function readOldest(string $topic_name, bool $acknowledge = null): ?array
     {
-        $params = ($acknowledge === null ? [] : ['acknowledge' => $acknowledge]);
+        $params = ($acknowledge === null ? [] : ['acknowledge' => $this->stringifyBool($acknowledge)]);
 
         $message = $this->call('get', vsprintf('/v1/event-hub/queue/%s/message', [$topic_name]), $params);
 
@@ -72,7 +72,7 @@ class Message extends EventHubBase
      */
     public function acknowledge(string $topic_name, string $message_id, bool $fast_forward = null): bool
     {
-        $params = ($fast_forward === null ? [] : ['fast_forward' => $fast_forward]);
+        $params = ($fast_forward === null ? [] : ['fast_forward' => $this->stringifyBool($fast_forward)]);
 
         return $this->call('delete', vsprintf('/v1/event-hub/queue/%s/message/%s', [$topic_name, $message_id]), $params);
     } // end acknowledge
