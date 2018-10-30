@@ -10,6 +10,11 @@ return [
         'openAmBaseUrl' => env('WEBSSO_URL_BASE', 'https://websso.it.northwestern.edu'),
     ],
 
+    'eventHub' => [
+        'baseUrl' => env('EVENT_HUB_BASE_URL'),
+        'apiKey' => env('EVENT_HUB_API_KEY'),
+    ],
+
     'messageQueue' => [
         /*
         * For reference, the URLs are:
