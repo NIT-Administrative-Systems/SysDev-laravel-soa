@@ -2,29 +2,19 @@
 
 namespace Northwestern\SysDev\SOA\EventHub;
 
+use Northwestern\SysDev\SOA\EventHub\Model\DeliveredMessage;
+
 class Message extends EventHubBase
 {
-    /*
-    public function readOldestJson(string $topic_name, bool $acknowledge = null): array
-    {
-        return json_decode($this->readOldest($topic_name, $acknowledge), );
-    } // end readOldestJson
-
-    public function readJson(string $topic_name, string $message_id): array
-    {
-
-    } // end readJson
-    */
-
     /**
      * Reads a message from a queue you are authorized to access.
      *
      * @param  string $topic_name The topic name
      * @param  bool   $acknowledge Auto-ack (auto-delete), true or false
-     * @return null|array  Returns null if the queue is empty. Otherwise, returns the message wrapped up in an envelope w/ its ID `['x-message-id' => 'xxx', 'messages' => [. . .]]`.
+     * @return null|DeliveredMessage  Returns null if the queue is empty
      * @see https://apiserviceregistry.northwestern.edu/#/message/getMessages
      */
-    public function readOldest(string $topic_name, bool $acknowledge = null): ?array
+    public function readOldest(string $topic_name, bool $acknowledge = null): ?DeliveredMessage
     {
         $params = ($acknowledge === null ? [] : ['acknowledge' => $this->stringifyBool($acknowledge)]);
 
@@ -56,7 +46,7 @@ class Message extends EventHubBase
      * @param  string $message_id The message ID
      * @see https://apiserviceregistry.northwestern.edu/#/message/getSpecificMessage
      */
-    public function read(string $topic_name, string $message_id): array
+    public function read(string $topic_name, string $message_id): DeliveredMessage
     {
         // @TODO doesn't work, returns a NYI string instead of a msg
         return $this->call('get', vsprintf('/v1/event-hub/queue/%s/message/%s', [$topic_name, $message_id]));

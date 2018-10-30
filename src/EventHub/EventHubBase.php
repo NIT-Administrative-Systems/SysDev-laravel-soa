@@ -4,6 +4,7 @@ namespace Northwestern\SysDev\SOA\EventHub;
 
 use GuzzleHttp;
 use Northwestern\SysDev\SOA\EventHub\Exception;
+use Northwestern\SysDev\SOA\EventHub\Model\DeliveredMessage;
 
 abstract class EventHubBase
 {
@@ -68,16 +69,11 @@ abstract class EventHubBase
 
             // If there is a body, return that.
             if (strlen($response_content) > 0) {
-                $resp_decoded = json_decode($response_content, JSON_OBJECT_AS_ARRAY);
-
                 if ($message_id !== null) {
-                    return [
-                        'x-message-id' => $response->getHeader('X-message-id')[0],
-                        'message' => $resp_decoded,
-                    ];
+                    return new DeliveredMessage($response->getHeader('X-message-id')[0], $response_content);
                 }
 
-                return $resp_decoded;
+                return json_decode($response_content, JSON_OBJECT_AS_ARRAY);
             }
 
             // If there is no body, see if we have a message ID header.
