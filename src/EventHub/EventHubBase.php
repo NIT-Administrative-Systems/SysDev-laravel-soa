@@ -61,20 +61,23 @@ abstract class EventHubBase
 
         $this->last_req_response_code = $response->getStatusCode();
 
-        // Responses w/out any bodies, e.g. deleting a message, get a 204 No Content. We can kick back a success message in these cases.
-        if ($this->last_req_response_code === 204) {
-            // There may be no body, but if the req returned an Message ID, we'll want that returned.
-            if ($response->hasHeader('X-message-id') === true) {
-                return $response->getHeader('X-message-id');
-            }
-
-            // If the message ID header isn't present, give back a boolean instead -- there is truly no content.
-            return true;
-        }
-
         // Normal success code w/ body (but 204 is handled above)
         if ($this->last_req_response_code >= 200 && $this->last_req_response_code <= 299) {
-            return json_decode($response->getBody()->getContents(), JSON_OBJECT_AS_ARRAY);
+            $response_content = $response->getBody()->getContents();
+
+            // If there is a body, return that.
+            if (strlen($response_content) > 0) {
+                return json_decode($response_content, JSON_OBJECT_AS_ARRAY);
+            }
+
+            // If there is no body, see if we have a message ID header.
+            if ($response->hasHeader('X-message-id') === true) {
+                $msg_id_header = $response->getHeader('X-message-id');
+                return $msg_id_header[0];
+            }
+
+            // If we have no body & no header, just give us a true -- this is a 200-series code, after all.
+            return true;
         }
 
         $this->last_req_error = vsprintf('Failed to %s %s: %s', [$this->last_req_method, $this->last_req_url, $response->getBody()->getContents()]);

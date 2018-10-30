@@ -65,8 +65,7 @@ class Queue extends EventHubBase
      */
     public function sendTestJsonMessage(string $topic_name, array $message) : string
     {
-        // @TODO - Made Brent aware that it's returning a 200, should be a 204
-        $this->sendTestMessage($topic_name, json_encode($message), 'application/json');
+        return $this->sendTestMessage($topic_name, json_encode($message), 'application/json');
     } // end sendTestJsonMessage
 
     /**
