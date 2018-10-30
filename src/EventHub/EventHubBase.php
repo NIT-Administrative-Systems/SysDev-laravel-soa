@@ -64,16 +64,25 @@ abstract class EventHubBase
         // Normal success code w/ body (but 204 is handled above)
         if ($this->last_req_response_code >= 200 && $this->last_req_response_code <= 299) {
             $response_content = $response->getBody()->getContents();
+            $message_id = $this->extractMessageId($response);
 
             // If there is a body, return that.
             if (strlen($response_content) > 0) {
-                return json_decode($response_content, JSON_OBJECT_AS_ARRAY);
+                $resp_decoded = json_decode($response_content, JSON_OBJECT_AS_ARRAY);
+
+                if ($message_id !== null) {
+                    return [
+                        'x-message-id' => $response->getHeader('X-message-id')[0],
+                        'message' => $resp_decoded,
+                    ];
+                }
+
+                return $resp_decoded;
             }
 
             // If there is no body, see if we have a message ID header.
-            if ($response->hasHeader('X-message-id') === true) {
-                $msg_id_header = $response->getHeader('X-message-id');
-                return $msg_id_header[0];
+            if ($message_id !== null) {
+                return $message_id;
             }
 
             // If we have no body & no header, just give us a true -- this is a 200-series code, after all.
@@ -99,6 +108,19 @@ abstract class EventHubBase
 
         return $url;
     } // end makeRequestUrl
+
+    /**
+     * @internal
+     */
+    private function extractMessageId($response)
+    {
+        if ($response->hasHeader('X-message-id') === false) {
+            return null;
+        }
+
+        $msg_id_header = $response->getHeader('X-message-id');
+        return $msg_id_header[0];
+    } // end extractMessageId
 
     /**
      * Replaces the HTTP client. Useful for unit testing in combination w/ GuzzleHttp\Handler\MockHandler.

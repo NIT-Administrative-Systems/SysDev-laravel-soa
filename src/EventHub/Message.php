@@ -21,9 +21,10 @@ class Message extends EventHubBase
      *
      * @param  string $topic_name The topic name
      * @param  bool   $acknowledge Auto-ack (auto-delete), true or false
+     * @return null|array  Returns null if the queue is empty. Otherwise, returns the message wrapped up in an envelope w/ its ID `['x-message-id' => 'xxx', 'messages' => [. . .]]`.
      * @see https://apiserviceregistry.northwestern.edu/#/message/getMessages
      */
-    public function readOldest(string $topic_name, bool $acknowledge = null): ?string
+    public function readOldest(string $topic_name, bool $acknowledge = null): ?array
     {
         $params = ($acknowledge === null ? [] : ['acknowledge' => $acknowledge]);
 
@@ -55,8 +56,9 @@ class Message extends EventHubBase
      * @param  string $message_id The message ID
      * @see https://apiserviceregistry.northwestern.edu/#/message/getSpecificMessage
      */
-    public function read(string $topic_name, string $message_id): string
+    public function read(string $topic_name, string $message_id): array
     {
+        // @TODO doesn't work, returns a NYI string instead of a msg
         return $this->call('get', vsprintf('/v1/event-hub/queue/%s/message/%s', [$topic_name, $message_id]));
     } // end read
 
