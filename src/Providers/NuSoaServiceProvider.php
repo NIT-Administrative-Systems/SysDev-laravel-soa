@@ -33,6 +33,7 @@ class NuSoaServiceProvider extends ServiceProvider
             EventHub\Queue::class,
             EventHub\DeadLetterQueue::class,
             EventHub\Topic::class,
+            EventHub\Message::class,
         ];
 
         $args = [
