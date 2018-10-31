@@ -2,7 +2,6 @@
 
 namespace Northwestern\SysDev\SOA\Providers;
 
-use GuzzleHttp;
 use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Console\Commands;
@@ -40,9 +39,7 @@ class NuSoaServiceProvider extends ServiceProvider
         $args = [
             (string)config('nusoa.eventHub.baseUrl'),
             (string)config('nusoa.eventHub.apiKey'),
-
-            // @TODO - Add the retry middleware for network errors to this thing
-            app()->make(GuzzleHttp\Client::class),
+            EventHub\Guzzle\RetryClient::make(),
         ];
 
         foreach ($classes as $class) {
