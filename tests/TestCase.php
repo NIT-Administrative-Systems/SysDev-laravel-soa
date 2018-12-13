@@ -19,7 +19,7 @@ abstract class TestCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->api = $this->app->make($this->service);
+        $this->api = @$this->app->make($this->service);
     } // end setUp
 
     protected function getPackageProviders($application)

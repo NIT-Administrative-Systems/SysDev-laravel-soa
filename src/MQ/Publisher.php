@@ -19,6 +19,8 @@ class Publisher
 
     public function __construct(GuzzleHttp\Client $client)
     {
+        trigger_error('The Generic Publisher service is deprecated. Please upgrade to EventHub.', E_USER_DEPRECATED);
+
         $this->http_client = $client;
         $this->baseUrl = config('nusoa.messageQueue.baseUrl');
         $this->endpointPath = config('nusoa.messageQueue.publishPath');

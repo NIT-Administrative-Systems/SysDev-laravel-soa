@@ -5,8 +5,9 @@ This package provides simple classes for accessing popular SOA services from Lar
 | --- | --- |
 | WebSSO | None |
 | DirectorySearch | Data steward approval, Apigee API key |
-| Generic MQ Publisher | Service account, queues, and Apigee API key |
-| Generic MQ Consumer | Service account, queues, and Apigee API key |
+| Generic MQ Publisher [deprecated] | Service account, queues, and Apigee API key |
+| Generic MQ Consumer [deprecated] | Service account, queues, and Apigee API key |
+| EventHub | Queues, Apigee API Key |
 
 ## Installation
 You can install the package via composer:
