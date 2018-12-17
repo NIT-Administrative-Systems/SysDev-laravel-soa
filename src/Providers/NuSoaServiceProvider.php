@@ -5,6 +5,7 @@ namespace Northwestern\SysDev\SOA\Providers;
 use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Console\Commands;
+use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
@@ -46,6 +47,9 @@ class NuSoaServiceProvider extends ServiceProvider
             $api = new $class(...$args);
             $this->app->instance($class, $api);
         }
+
+        $router = $this->app['router'];
+        $router->aliasMiddleware('eventhub_hmac', VerifyEventHubHMAC::class);
     } // end bootEventHub
 
 } // end NuSoaServiceProvider

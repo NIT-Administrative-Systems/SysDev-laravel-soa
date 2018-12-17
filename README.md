@@ -202,3 +202,50 @@ class MyController extends Controllers
 ```
 
 Be aware that when you consume a message, it is immediately removed from the queue.
+
+## EventHub
+The EventHub SDK comes from [northwestern-sysdev/event-hub-php-sdk](https://github.com/NIT-Administrative-Systems/SysDev-EventHub-PHP-SDK). Please review its documentation for details on using it.
+
+This package takes care of setting the library up for you, based on the `EVENT_HUB_BASE_URL` and `EVENT_HUB_API_KEY` settings in your `.env`.
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Northwestern\SysDev\SOA\EventHub;
+
+class MyController extends Controllers
+{
+    public function login(Request $request, EventHub\Message $api)
+    {
+        $message = $api->readOldest('My.Topic.Name');
+        $body = $message->getMessage(); // decodes a JSON message
+
+        echo $body['some_field_from_the_message'];
+
+        $api->acknowledgeOldest('My.Topic.Name'); // removes the message from the queue
+    }
+}
+```
+
+There are also some Laravel-specific features added: an `eventhub_hmac` middleware that you can apply to a route/controller, [todo more].
+
+### `eventhub_hmac` Middleware
+To use the middleware, set `hmacVerificationSharedSecret` in your `.env`, and then apply it to a route or controller:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+class MyController extends Controllers
+{
+    public function __construct()
+    {
+        $this->middleware('eventhub_hmac');
+    }
+}
+```
+
+All incoming requests will require a header with a valid, message-specific signature calculated based on the message and the secret shared with EventHub. This signature should be good enough to serve as the sole authentication method, but you can apply an API key or HTTP basic auth middleware as well.
