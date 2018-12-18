@@ -21,7 +21,12 @@ class NuSoaServiceProvider extends ServiceProvider
         $this->publishes([self::CONFIG => config_path('nusoa.php')], 'config');
 
         if ($this->app->runningInConsole()) {
-            $this->commands([Commands\MakeCheckQueue::class]);
+            $this->commands([
+                Commands\MakeCheckQueue::class,
+                Commands\EventHubQueueOverview::class,
+                Commands\EventHubTopicOverview::class,
+                Commands\EventHubWebhookStatus::class,
+            ]);
         }
 
         $this->bootEventHub();
