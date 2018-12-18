@@ -46,7 +46,8 @@ class EventHubWebhookToggle extends Command
             try {
                 $this->webhook_api->$status($queue);
             } catch (EventHub\Exception\EventHubError $e) {
-                $this->error(vsprintf('Unable to change status of %s', [$queue]));
+                $this->error(vsprintf('Unable to change status of "%s".', [$queue]));
+                $this->line('');
                 continue;
             }
         }

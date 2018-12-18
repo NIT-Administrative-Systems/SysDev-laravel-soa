@@ -5,9 +5,9 @@ This package provides simple classes for accessing popular SOA services from Lar
 | --- | --- |
 | WebSSO | None |
 | DirectorySearch | Data steward approval, Apigee API key |
-| Generic MQ Publisher [deprecated] | Service account, queues, and Apigee API key |
-| Generic MQ Consumer [deprecated] | Service account, queues, and Apigee API key |
 | EventHub | Queues, Apigee API Key |
+| Generic MQ Publisher [*deprecated*] | Service account, queues, and Apigee API key |
+| Generic MQ Consumer [*deprecated*] | Service account, queues, and Apigee API key |
 
 ## Installation
 You can install the package via composer:
@@ -22,11 +22,16 @@ Publish the config file:
 php artisan vendor:publish --provider="Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider"
 ```
 
-And finally, add the options to your `.env` file (and don't forget to update `.env.example` for the rest of your team!):
+And finally, add the options to your `.env` file (and don't forget to update `.env.example` for the rest of your team!) for the services you want to use:
 
 ```bash
 # DirectorySearch
 DIRECTORY_SEARCH_API_KEY=
+
+# EventHub
+EVENT_HUB_BASE_URL=https://northwestern-dev.apigee.net
+EVENT_HUB_API_KEY=
+EVENT_HUB_EVENT_HUB_HMAC_VERIFICATION_SHARED_SECRET=
 
 # MQ Consumer & Publisher
 MQ_API_URL=
@@ -36,7 +41,7 @@ MQ_API_PASSWORD=
 ```
 
 ## Usage
-The API objects should be injected by the Laravel service container:
+The API objects should be injected by the Laravel service container. This ensures the configuration is injected into the objects for you:
 
 ```php
 <?php
@@ -135,7 +140,67 @@ class MyController extends Controllers
 
 Refer to the [Directory Search API docs](https://northwestern-apiportal.apigee.io/IDM-Services) for more information about what fields you will receive.
 
-### MQ\Publisher
+## EventHub
+The EventHub SDK comes from [northwestern-sysdev/event-hub-php-sdk](https://github.com/NIT-Administrative-Systems/SysDev-EventHub-PHP-SDK). Please review its documentation for details on using it.
+
+This package takes care of setting the library up for you, based on the `EVENT_HUB_BASE_URL` and `EVENT_HUB_API_KEY` settings in your `.env`.
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Northwestern\SysDev\SOA\EventHub;
+
+class MyController extends Controllers
+{
+    public function login(Request $request, EventHub\Message $api)
+    {
+        $message = $api->readOldest('My.Topic.Name');
+        $body = $message->getMessage(); // decodes a JSON message
+
+        echo $body['some_field_from_the_message'];
+
+        $api->acknowledgeOldest('My.Topic.Name'); // removes the message from the queue
+    }
+}
+```
+
+There are also some Laravel-specific features added: an `eventhub_hmac` middleware that you can apply to a route/controller, some useful artisan commands, and [todo more].
+
+### `eventhub_hmac` Middleware
+To use the middleware, set `hmacVerificationSharedSecret` in your `.env`, and then apply it to a route or controller:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+class MyController extends Controllers
+{
+    public function __construct()
+    {
+        $this->middleware('eventhub_hmac');
+    }
+}
+```
+
+All incoming requests will require a header with a valid, message-specific signature calculated based on the message and the secret shared with EventHub. This signature should be good enough to serve as the sole authentication method, but you can apply an API key or HTTP basic auth middleware as well.
+
+### EventHub Artisan Commands
+The following artisan commands will be available when you install this package.
+
+You can run these with `php artisan <command>`.
+
+| Command                         | Purpose                                                                                     |
+|---------------------------------|---------------------------------------------------------------------------------------------|
+| eventhub:queue:status           | Show all the queues you can read from & some statistics                                     |
+| eventhub:topic:status           | Show all the topics you can write to & who is subscribed                                    |
+| eventhub:webhook:status         | Show all your configured webhooks                                                           |
+| eventhub:webhook:toggle pause   | Pause all webhooks. Optionally, you can pass a list of queue names to pause just those.     |
+| eventhub:webhook:toggle unpause | Unpause all webhooks. Optionally, you can pass a list of queue names to unpause just those. |
+
+### :no_entry: MQ\Publisher [*Deprecated*]
 Using the publisher requires an Apigee API key, as well as a service account with write permission. You will also need to know your topic name.
 
 The `MQ_API_URL`, `MQ_API_KEY`, `MQ_API_USERNAME`, and `MQ_API_PASSWORD` should be set in your `.env` file.
@@ -163,7 +228,7 @@ class MyController extends Controllers
 }
 ```
 
-### MQ\Consumer
+### :no_entry: MQ\Consumer [*Deprecated*]
 Using the consumer requires an Apige API key, as well as a service account with read permission. You will also need to know your topic name.
 
 The `MQ_API_URL`, `MQ_API_KEY`, `MQ_API_USERNAME`, and `MQ_API_PASSWORD` should be set in your `.env` file.
@@ -202,50 +267,3 @@ class MyController extends Controllers
 ```
 
 Be aware that when you consume a message, it is immediately removed from the queue.
-
-## EventHub
-The EventHub SDK comes from [northwestern-sysdev/event-hub-php-sdk](https://github.com/NIT-Administrative-Systems/SysDev-EventHub-PHP-SDK). Please review its documentation for details on using it.
-
-This package takes care of setting the library up for you, based on the `EVENT_HUB_BASE_URL` and `EVENT_HUB_API_KEY` settings in your `.env`.
-
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-use Northwestern\SysDev\SOA\EventHub;
-
-class MyController extends Controllers
-{
-    public function login(Request $request, EventHub\Message $api)
-    {
-        $message = $api->readOldest('My.Topic.Name');
-        $body = $message->getMessage(); // decodes a JSON message
-
-        echo $body['some_field_from_the_message'];
-
-        $api->acknowledgeOldest('My.Topic.Name'); // removes the message from the queue
-    }
-}
-```
-
-There are also some Laravel-specific features added: an `eventhub_hmac` middleware that you can apply to a route/controller, [todo more].
-
-### `eventhub_hmac` Middleware
-To use the middleware, set `hmacVerificationSharedSecret` in your `.env`, and then apply it to a route or controller:
-
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-class MyController extends Controllers
-{
-    public function __construct()
-    {
-        $this->middleware('eventhub_hmac');
-    }
-}
-```
-
-All incoming requests will require a header with a valid, message-specific signature calculated based on the message and the secret shared with EventHub. This signature should be good enough to serve as the sole authentication method, but you can apply an API key or HTTP basic auth middleware as well.
