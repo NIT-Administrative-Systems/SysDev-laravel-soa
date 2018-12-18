@@ -26,6 +26,7 @@ class NuSoaServiceProvider extends ServiceProvider
                 Commands\EventHubQueueOverview::class,
                 Commands\EventHubTopicOverview::class,
                 Commands\EventHubWebhookStatus::class,
+                Commands\EventHubWebhookToggle::class,
             ]);
         }
 
