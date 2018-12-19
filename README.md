@@ -166,7 +166,36 @@ class MyController extends Controllers
 }
 ```
 
-There are also some Laravel-specific features added: an `eventhub_hmac` middleware that you can apply to a route/controller, some useful artisan commands, and [todo more].
+There are also some Laravel-specific features added: an `eventhub_hmac` middleware that you can apply to a route/controller, some useful artisan commands, and an easy way to deploy your desired webhook configuration.
+
+### Webhook Route Registration
+The most straightforward way to consume messages is by registering your routes as webhook endpoints.
+
+```php
+<?php
+
+// An example `routes/web.php`
+
+Route::get('/eventhub/get-an-event', function () {
+    return view('welcome');
+})->eventHubWebhook('etsysdev.some.queue.name');
+```
+
+When you make changes, run `php artisan eventhub:webhook:configure`. It will read through your routes and (re)configure all of your webhooks.
+
+If you are using the HMAC middleware & have the settings for it in your `.env` (see below), your secret will be sent to EventHub. If you prefer another authentication type, you can specify more options that'll be passed through to the webhook POST/PATCH call:
+
+```php
+<?php
+// See the EventHub webhook API docs to figure out what to pass for HTTP basic auth or API key auth!
+
+$route->eventHubWebhook('etsysdev.some.queue.name', [
+    'securityTypes' => ['NONE'],
+    'webhookSecurity' => [['securityType' => 'NONE']],
+]);
+```
+
+If you delete a registration, the `eventhub:webhook:configure` command will ask you if you'd like to delete the webhook config.
 
 ### `eventhub_hmac` Middleware
 To use the middleware, set `hmacVerificationSharedSecret` in your `.env`, and then apply it to a route or controller:
@@ -200,7 +229,34 @@ You can run these with `php artisan <command>`.
 | eventhub:webhook:toggle pause   | Pause all webhooks. Optionally, you can pass a list of queue names to pause just those.     |
 | eventhub:webhook:toggle unpause | Unpause all webhooks. Optionally, you can pass a list of queue names to unpause just those. |
 
-### :no_entry: MQ\Publisher [*Deprecated*]
+### Comprehensive Webhook Example
+Putting everything together:
+
+```php
+<?php
+// routes/api.php or whatever
+
+Route::middleware(['eventhub_hmac'])->prefix('eventhub')->group(function () {
+    Route::post('consume-queue-a', 'ConsumeController@a')->eventHubWebhook('sysdev.queue.a');
+    Route::post('consume-queue-b', 'ConsumeController@b')->eventHubWebhook('sysdev.queue.b');
+});
+```
+
+Then on your console:
+
+```sh
+$ php artisan eventhub:webhook:configure
++-----------------------------------+-----------------------------------------------+--------+
+| Queue                             | Endpoint                                      | Active |
++-----------------------------------+-----------------------------------------------+--------+
+| sysdev.queue.a                    | http://localhost/api/eventhub/consume-queue-a | Active |
+| sysdev.queue.b                    | http://localhost/api/eventhub/consume-queue-b | Active |
++-----------------------------------+-----------------------------------------------+--------+
+```
+
+You'll start receiving signed & authenticated messages immediately.
+
+## :no_entry: MQ\Publisher [*Deprecated*]
 Using the publisher requires an Apigee API key, as well as a service account with write permission. You will also need to know your topic name.
 
 The `MQ_API_URL`, `MQ_API_KEY`, `MQ_API_USERNAME`, and `MQ_API_PASSWORD` should be set in your `.env` file.
@@ -228,7 +284,7 @@ class MyController extends Controllers
 }
 ```
 
-### :no_entry: MQ\Consumer [*Deprecated*]
+## :no_entry: MQ\Consumer [*Deprecated*]
 Using the consumer requires an Apige API key, as well as a service account with read permission. You will also need to know your topic name.
 
 The `MQ_API_URL`, `MQ_API_KEY`, `MQ_API_USERNAME`, and `MQ_API_PASSWORD` should be set in your `.env` file.
