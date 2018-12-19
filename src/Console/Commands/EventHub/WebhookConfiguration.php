@@ -42,22 +42,7 @@ class WebhookConfiguration extends Command
             // Remove from unmanaged list
             $existing_hooks_updated = array_diff($existing_hooks_updated, [$hook['topicName']]);
 
-            try {
-                // If the hook exists on EventHub already, we don't need to touch the 'active' status.
-                // But, new ones will require it.
-                if (in_array($hook['topicName'], $registered_hooks) === false) {
-                    $hook['active'] = true;
-                    $this->webhook_api->create($hook['topicName'], $hook);
-                } else {
-                    $this->webhook_api->updateConfig($hook['topicName'], $hook);
-                }
-            } catch (EventHub\Exception\EventHubError $e) {
-                $this->line('');
-                $this->error(vsprintf('Failed to update %s: %s', [$hook['topicName'], $e->getMessage()]));
-                $this->line('');
-
-                continue;
-            }
+            $this->createOrUpdate($hook, $registered_hooks);
         }
 
         if (sizeof($existing_hooks_updated) > 0) {
@@ -70,15 +55,7 @@ class WebhookConfiguration extends Command
             $delete_unmanaged = $this->confirm('Would you like to delete these unmanaged webhooks?');
             if ($delete_unmanaged === true) {
                 foreach ($existing_hooks_updated as $hook_to_delete) {
-                    try {
-                        $this->webhook_api->delete($hook_to_delete);
-                    } catch (EventHub\Exception\EventHubError $e) {
-                        $this->line('');
-                        $this->error(vsprintf('Failed to delete %s: %s', [$hook_to_delete, $e->getMessage()]));
-                        $this->line('');
-
-                        continue;
-                    }
+                    $this->delete($hook_to_delete);
                 }
             }
         }
@@ -88,5 +65,34 @@ class WebhookConfiguration extends Command
 
         return 0;
     } // end handle
+
+    protected function createOrUpdate($hook, $registered_hooks)
+    {
+        try {
+            // If the hook exists on EventHub already, we don't need to touch the 'active' status.
+            // But, new ones will require it.
+            if (in_array($hook['topicName'], $registered_hooks) === false) {
+                $hook['active'] = true;
+                $this->webhook_api->create($hook['topicName'], $hook);
+            } else {
+                $this->webhook_api->updateConfig($hook['topicName'], $hook);
+            }
+        } catch (EventHub\Exception\EventHubError $e) {
+            $this->line('');
+            $this->error(vsprintf('Failed to update %s: %s', [$hook['topicName'], $e->getMessage()]));
+            $this->line('');
+        }
+    } // end createOrUpdate
+
+    protected function delete($queue_name)
+    {
+        try {
+            $this->webhook_api->delete($queue_name);
+        } catch (EventHub\Exception\EventHubError $e) {
+            $this->line('');
+            $this->error(vsprintf('Failed to delete %s: %s', [$queue_name, $e->getMessage()]));
+            $this->line('');
+        }
+    } // end delete
 
 } // end WebhookConfiguration
