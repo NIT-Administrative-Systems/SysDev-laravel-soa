@@ -21,4 +21,14 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $this->assertEquals(1, sizeof($registered_hooks));
     } // end test_route_registration
 
+    public function test_uses_hmac_when_configured()
+    {
+        $this->markTestIncomplete();
+    } // end test_uses_hmac_when_configured
+
+    public function test_custom_security_setup()
+    {
+        $this->markTestIncomplete();
+    } // end test_custom_security_setup
+
 } // end WebhookRouteRegistrationTest

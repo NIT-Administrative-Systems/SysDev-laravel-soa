@@ -1,12 +1,12 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Console\Commands;
+namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
 use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Console\ConfirmableTrait;
 
-class EventHubWebhookToggle extends Command
+class WebhookToggle extends Command
 {
     use ConfirmableTrait;
 
@@ -56,4 +56,4 @@ class EventHubWebhookToggle extends Command
         $this->call('eventhub:webhook:status');
     } // end handle
 
-} // end EventHubWebhookToggle
+} // end WebhookToggle

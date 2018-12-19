@@ -1,11 +1,11 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Console\Commands;
+namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
 use Northwestern\SysDev\SOA\EventHub;
 
-class EventHubWebhookStatus extends Command
+class WebhookStatus extends Command
 {
     protected $signature = 'eventhub:webhook:status';
     protected $description = 'Display information about webhook setup for any queues you can read from';
@@ -44,4 +44,4 @@ class EventHubWebhookStatus extends Command
         return 0;
     } // end handle
 
-} // end EventHubWebhookStatus
+} // end WebhookStatus

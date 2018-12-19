@@ -1,11 +1,11 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Console\Commands;
+namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
 use Northwestern\SysDev\SOA\EventHub;
 
-class EventHubTopicOverview extends Command
+class TopicOverview extends Command
 {
     protected $signature = 'eventhub:topic:status {duration?}';
     protected $description = 'Display statistics & information about any topics available for publishing';
@@ -57,4 +57,4 @@ class EventHubTopicOverview extends Command
         return 0;
     } // end handle
 
-} // end EventHubTopicOverview
+} // end TopicOverview

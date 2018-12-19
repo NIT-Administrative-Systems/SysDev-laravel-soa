@@ -1,11 +1,11 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Console\Commands;
+namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
 use Northwestern\SysDev\SOA\EventHub;
 
-class EventHubQueueOverview extends Command
+class QueueOverview extends Command
 {
     protected $signature = 'eventhub:queue:status {duration?}';
     protected $description = 'Display statistics & information about any queues available for reading';
@@ -61,4 +61,4 @@ class EventHubQueueOverview extends Command
         return 0;
     } // end handle
 
-} // end EventHubQueueOverview
+} // end QueueOverview

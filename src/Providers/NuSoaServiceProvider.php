@@ -25,10 +25,11 @@ class NuSoaServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Commands\MakeCheckQueue::class,
-                Commands\EventHubQueueOverview::class,
-                Commands\EventHubTopicOverview::class,
-                Commands\EventHubWebhookStatus::class,
-                Commands\EventHubWebhookToggle::class,
+                Commands\EventHub\QueueOverview::class,
+                Commands\EventHub\TopicOverview::class,
+                Commands\EventHub\WebhookStatus::class,
+                Commands\EventHub\WebhookToggle::class,
+                Commands\EventHub\WebhookConfiguration::class,
             ]);
         }
 
