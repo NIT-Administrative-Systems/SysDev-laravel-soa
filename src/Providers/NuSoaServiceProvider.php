@@ -2,10 +2,12 @@
 
 namespace Northwestern\SysDev\SOA\Providers;
 
+use Illuminate\Routing\Route;
 use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Console\Commands;
 use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
+use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
@@ -56,6 +58,20 @@ class NuSoaServiceProvider extends ServiceProvider
 
         $router = $this->app['router'];
         $router->aliasMiddleware('eventhub_hmac', VerifyEventHubHMAC::class);
+
+        // This singleton will hold all the routes registered as webhook endpoints
+        $this->app->singleton(EventHubWebhookRegistration::class, function ($app) {
+            return new EventHubWebhookRegistration;
+        });
+
+        Route::macro('eventHubWebhook', function ($queue, $additional_settings = []) {
+            $url = url($this->uri());
+
+            $registry = resolve(EventHubWebhookRegistration::class);
+            $registry->registerHookToRoute($queue, $url, $additional_settings);
+
+            return $this;
+        });
     } // end bootEventHub
 
 } // end NuSoaServiceProvider
