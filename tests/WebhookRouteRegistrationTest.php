@@ -23,12 +23,64 @@ class WebhookRouteRegistrationTest extends BaseTestCase
 
     public function test_uses_hmac_when_configured()
     {
-        $this->markTestIncomplete();
+        $secret = 'abcdefg';
+        $this->app['config']->set('nusoa.eventHub.hmacVerificationSharedSecret', $secret);
+
+        $route = app()->router->post('/webhook/foo')->eventHubWebhook('foo.my-queue');
+
+        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
+        $hook = $registered_hooks[0]->toArray();
+
+        $this->assertEquals(1, sizeof($hook['securityTypes']));
+        $this->assertEquals(1, sizeof($hook['webhookSecurity']));
+        $this->assertEquals('HMAC', $hook['securityTypes'][0]);
+        $this->assertEquals($secret, $hook['webhookSecurity'][0]['secretKey']);
     } // end test_uses_hmac_when_configured
 
     public function test_custom_security_setup()
     {
-        $this->markTestIncomplete();
+        $this->app['config']->set('nusoa.eventHub.hmacVerificationSharedSecret', null);
+
+        $secret = 'my-very-good-api-key';
+        $route = app()->router->post('/webhook/foo')->eventHubWebhook('foo.my-queue', $this->makeApiSecurityBlock($secret));
+
+        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
+        $hook = $registered_hooks[0]->toArray();
+
+        $this->assertEquals(1, sizeof($hook['securityTypes']));
+        $this->assertEquals(1, sizeof($hook['webhookSecurity']));
+        $this->assertEquals('APIKEY', $hook['securityTypes'][0]);
+        $this->assertEquals($secret, $hook['webhookSecurity'][0]['apiKey']);
     } // end test_custom_security_setup
+
+    public function test_multiple_security_modes()
+    {
+        $this->app['config']->set('nusoa.eventHub.hmacVerificationSharedSecret', 'hmac-key');
+
+        $secret = 'my-very-good-api-key';
+        $route = app()->router->post('/webhook/foo')->eventHubWebhook('foo.my-queue', $this->makeApiSecurityBlock('api-key'));
+
+        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
+        $hook = $registered_hooks[0]->toArray();
+
+        $this->assertEquals(2, sizeof($hook['securityTypes']));
+        $this->assertEquals(2, sizeof($hook['webhookSecurity']));
+    } // end test_multiple_security_modes
+
+    protected function makeApiSecurityBlock($secret)
+    {
+        return [
+            'securityTypes' => ['APIKEY'],
+            'webhookSecurity' => [
+                [
+                    'securityType' => 'APIKEY',
+                    'eventHubAccount' => 'dogge',
+                    'topicName' => 'foo.my-queue',
+                    'apiKey' => $secret,
+                    'headerName' => 'x-api-key',
+                ],
+            ],
+        ];
+    } // end makeApiSecurityBlock
 
 } // end WebhookRouteRegistrationTest
