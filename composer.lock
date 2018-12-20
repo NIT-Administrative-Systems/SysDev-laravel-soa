@@ -191,16 +191,16 @@
         },
         {
             "name": "northwestern-sysdev/event-hub-php-sdk",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NIT-Administrative-Systems/SysDev-EventHub-PHP-SDK.git",
-                "reference": "3b2bb8402176fa089c40e9623f3d833786725e20"
+                "reference": "d827a7aec6d12a2f47115db67c094bdf2d5abbf6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NIT-Administrative-Systems/SysDev-EventHub-PHP-SDK/zipball/3b2bb8402176fa089c40e9623f3d833786725e20",
-                "reference": "3b2bb8402176fa089c40e9623f3d833786725e20",
+                "url": "https://api.github.com/repos/NIT-Administrative-Systems/SysDev-EventHub-PHP-SDK/zipball/d827a7aec6d12a2f47115db67c094bdf2d5abbf6",
+                "reference": "d827a7aec6d12a2f47115db67c094bdf2d5abbf6",
                 "shasum": ""
             },
             "require": {
@@ -232,7 +232,7 @@
                 "northwestern",
                 "northwestern university"
             ],
-            "time": "2018-12-13T16:56:23+00:00"
+            "time": "2018-12-20T17:59:09+00:00"
         },
         {
             "name": "psr/http-message",
@@ -753,16 +753,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.7.17",
+            "version": "v5.7.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "a15898e2de5f5ae5548a09349c558ef0435d495a"
+                "reference": "5c1d1ec7e8563ea31826fd5eb3f6791acf01160c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/a15898e2de5f5ae5548a09349c558ef0435d495a",
-                "reference": "a15898e2de5f5ae5548a09349c558ef0435d495a",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/5c1d1ec7e8563ea31826fd5eb3f6791acf01160c",
+                "reference": "5c1d1ec7e8563ea31826fd5eb3f6791acf01160c",
                 "shasum": ""
             },
             "require": {
@@ -895,7 +895,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-12-12T14:38:09+00:00"
+            "time": "2018-12-18T14:00:38+00:00"
         },
         {
             "name": "laravel/nexmo-notification-channel",
@@ -1404,16 +1404,16 @@
         },
         {
             "name": "nexmo/client",
-            "version": "1.5.2",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nexmo/nexmo-php.git",
-                "reference": "f192c84ec3cc3e2657fc754e0da1a17e39ac5542"
+                "reference": "01809cc1e17a5af275913c49bb5d444eb6cc06d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Nexmo/nexmo-php/zipball/f192c84ec3cc3e2657fc754e0da1a17e39ac5542",
-                "reference": "f192c84ec3cc3e2657fc754e0da1a17e39ac5542",
+                "url": "https://api.github.com/repos/Nexmo/nexmo-php/zipball/01809cc1e17a5af275913c49bb5d444eb6cc06d4",
+                "reference": "01809cc1e17a5af275913c49bb5d444eb6cc06d4",
                 "shasum": ""
             },
             "require": {
@@ -1448,20 +1448,20 @@
                 }
             ],
             "description": "PHP Client for using Nexmo's API.",
-            "time": "2018-11-14T14:12:22+00:00"
+            "time": "2018-12-17T10:47:50+00:00"
         },
         {
             "name": "opis/closure",
-            "version": "3.1.1",
+            "version": "3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/closure.git",
-                "reference": "d3209e46ad6c69a969b705df0738fd0dbe26ef9e"
+                "reference": "de00c69a2328d3ee5baa71fc584dc643222a574c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/closure/zipball/d3209e46ad6c69a969b705df0738fd0dbe26ef9e",
-                "reference": "d3209e46ad6c69a969b705df0738fd0dbe26ef9e",
+                "url": "https://api.github.com/repos/opis/closure/zipball/de00c69a2328d3ee5baa71fc584dc643222a574c",
+                "reference": "de00c69a2328d3ee5baa71fc584dc643222a574c",
                 "shasum": ""
             },
             "require": {
@@ -1469,7 +1469,7 @@
             },
             "require-dev": {
                 "jeremeamia/superclosure": "^2.0",
-                "phpunit/phpunit": "^4.0"
+                "phpunit/phpunit": "^4.0|^5.0|^6.0|^7.0"
             },
             "type": "library",
             "extra": {
@@ -1509,7 +1509,7 @@
                 "serialization",
                 "serialize"
             ],
-            "time": "2018-10-02T13:36:53+00:00"
+            "time": "2018-12-16T21:48:23+00:00"
         },
         {
             "name": "orchestra/testbench",
