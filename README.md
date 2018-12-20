@@ -62,10 +62,10 @@ class MyController extends Controllers
 }
 ```
 
-If you are ever in a spot where injection is unavailable, you can always call `make` yourself. This is particularly handy in the tinker console:
+If you are ever in a spot where injection is unavailable, you can always call `resolve` yourself. This is particularly handy in the tinker console:
 
 ```php
-$pub = app()->make(Northwestern\SysDev\SOA\MQ\Publisher::class);
+$pub = resolve(Northwestern\SysDev\SOA\MQ\Publisher::class);
 ```
 
 For troubleshooting, each API has a `getLastError()` method. `dd()`ing the API object should give you everything you'll need, including the request body and URL.
@@ -164,14 +164,16 @@ use Northwestern\SysDev\SOA\EventHub;
 
 class MyController extends Controllers
 {
-    public function login(Request $request, EventHub\Message $api)
+    public function save(Request $request, EventHub\Topic $api)
     {
-        $message = $api->readOldest('My.Topic.Name');
-        $body = $message->getMessage(); // decodes a JSON message
+        // Save some kind of Very Important Business Object to the DB...
+        // . . .
+        $model->save();
 
-        echo $body['some_field_from_the_message'];
-
-        $api->acknowledgeOldest('My.Topic.Name'); // removes the message from the queue
+        // And tell everyone it has been updated!
+        $message_id = $api->writeJsonMessage('sysdev.a-topic-name', [
+            'application_id' => $model->id,
+        ]);
     }
 }
 ```
@@ -348,3 +350,10 @@ class MyController extends Controllers
 ```
 
 Be aware that when you consume a message, it is immediately removed from the queue.
+
+## Contributing
+If you'd like to contribute to the library, you are welcome to submit a pull request!
+
+My ideal architecture (going forward :cold_sweat:) is to write plain-old PHP bindings (so folks can use them in non-Laravel apps) and then have the `NuSoaServiceProvider` inject config & add any other Laravel-specific enhancements.
+
+If there is a service on the API Registry that you'd like SysDev to add support for, please go ahead and open an issue requesting it.
