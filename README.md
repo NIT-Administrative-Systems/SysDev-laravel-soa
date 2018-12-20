@@ -70,7 +70,7 @@ $pub = app()->make(Northwestern\SysDev\SOA\MQ\Publisher::class);
 
 For troubleshooting, each API has a `getLastError()` method. `dd()`ing the API object should give you everything you'll need, including the request body and URL.
 
-### WebSSO
+## WebSSO
 The webSSO API bindings will resolve the value of an `openAMssoToken` cookie into a NetID.
 
 This is merely an API binding; if you want a pre-made workflow for logging in, check out the `northwestern-sysdev/laravel-websso` package.
@@ -101,7 +101,7 @@ class MyController extends Controllers
 }
 ```
 
-### DirectorySearch
+## DirectorySearch
 The DirectorySearch endpoint requires an Apigee API key, as well as approval from relevant data stewards. For more information requesting access, check out the documents on the [API portal](https://northwestern-apiportal.apigee.io).
 
 Once you get your key, add it to the `.env` file as the `DIRECTORY_SEARCH_API_KEY` property. By default, the production service will be used, but you can define `DIRECTORY_SEARCH_URL` if you want to use dev or QA.
@@ -143,7 +143,17 @@ Refer to the [Directory Search API docs](https://northwestern-apiportal.apigee.i
 ## EventHub
 The EventHub SDK comes from [northwestern-sysdev/event-hub-php-sdk](https://github.com/NIT-Administrative-Systems/SysDev-EventHub-PHP-SDK). Please review its documentation for details on using it.
 
-This package takes care of setting the library up for you, based on the `EVENT_HUB_BASE_URL` and `EVENT_HUB_API_KEY` settings in your `.env`.
+This package takes care of setting the library up for you and Laravel-izing it.
+
+There are three key `.env` settings:
+
+| Setting                                     | Purpose                                                                                                                              |
+|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| `EVENT_HUB_BASE_URL`                        | The Apigee base URL, e.g. `https://northwestern-dev.apigee.net`                                                                      |
+| `EVENT_HUB_API_KEY`                         | Your Apigee API key                                                                                                                  |
+| `EVENT_HUB_HMAC_VERIFICATION_SHARED_SECRET` | Only applicable if using webhook delivery for incoming messages. Set this to a random string, e.g. `base64_encode(random_bytes(32))` |
+
+A number of other settings are available to control the HMAC security options, but they are set to reasonable defaults. See the `config/nusoa.php` file if you are interested in these.
 
 ```php
 <?php
@@ -183,22 +193,29 @@ Route::get('/eventhub/get-an-event', function () {
 
 When you make changes, run `php artisan eventhub:webhook:configure`. It will read through your routes and (re)configure all of your webhooks.
 
-If you are using the HMAC middleware & have the settings for it in your `.env` (see below), your secret will be sent to EventHub. If you prefer another authentication type, you can specify more options that'll be passed through to the webhook POST/PATCH call:
+If you are using the HMAC middleware & have the settings for it in your `.env` (see below), your secret will be sent to EventHub. If you prefer another authentication type (or additional -- you can use all three), you can specify more options that'll be passed through to the webhook POST/PATCH call:
 
 ```php
 <?php
 // See the EventHub webhook API docs to figure out what to pass for HTTP basic auth or API key auth!
 
 $route->eventHubWebhook('etsysdev.some.queue.name', [
-    'securityTypes' => ['NONE'],
-    'webhookSecurity' => [['securityType' => 'NONE']],
+    'securityTypes' => ['APIKEY'],
+    'webhookSecurity' => [
+        [
+            'securityType' => 'APIKEY',
+            'topicName' => 'etsysdev.some.queue.name',
+            'apiKey' => 'my top secret API key',
+            'headerName' => 'x-api-key',
+        ],
+    ],
 ]);
 ```
 
 If you delete a registration, the `eventhub:webhook:configure` command will ask you if you'd like to delete the webhook config.
 
 ### `eventhub_hmac` Middleware
-To use the middleware, set `hmacVerificationSharedSecret` in your `.env`, and then apply it to a route or controller:
+To use the middleware, set `EVENT_HUB_HMAC_VERIFICATION_SHARED_SECRET` in your `.env`, and then apply it to a route or controller:
 
 ```php
 <?php
@@ -228,6 +245,7 @@ You can run these with `php artisan <command>`.
 | eventhub:webhook:status         | Show all your configured webhooks                                                           |
 | eventhub:webhook:toggle pause   | Pause all webhooks. Optionally, you can pass a list of queue names to pause just those.     |
 | eventhub:webhook:toggle unpause | Unpause all webhooks. Optionally, you can pass a list of queue names to unpause just those. |
+| eventhub:webhook:configure      | Publishes the webhook delivery routes configured in your route files with EventHub          |
 
 ### Comprehensive Webhook Example
 Putting everything together:
@@ -254,7 +272,14 @@ $ php artisan eventhub:webhook:configure
 +-----------------------------------+-----------------------------------------------+--------+
 ```
 
-You'll start receiving signed & authenticated messages immediately.
+In the dev & test environments, you should have permission to write messages to the queues you're subscribed to via `POST /v1/event-hub/queue/your-queue-name`, so to verify your webhooks are running, open your `php artisan tinker` console:
+
+```php
+>>> $q_api->sendTestJsonMessage('sysdev.queue.a', ['application_id' => 123])
+=> "ID:052d83908c43-35873-1545317905819-1:1:3:1:1"
+```
+
+The test message should be delivered to your app almost immediately.
 
 ## :no_entry: MQ\Publisher [*Deprecated*]
 Using the publisher requires an Apigee API key, as well as a service account with write permission. You will also need to know your topic name.
