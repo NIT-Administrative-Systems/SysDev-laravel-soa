@@ -31,6 +31,8 @@ class Webhook
 
     public function toArray()
     {
+        $additional_settings = $this->additional_settings;
+
         // Default to securityType NONE, unless the user has specified a security type in the custom settings.
         $default_settings = $this->getNoSecurity();
         if (array_key_exists('securityTypes', $this->additional_settings) && sizeof($this->additional_settings) > 0) {
@@ -41,21 +43,35 @@ class Webhook
             $default_settings = $this->getHmacSecurity();
         }
 
-        $default_settings = array_merge([
+        $final_settings = array_merge([
             'topicName' => $this->queue,
             'endpoint' => $this->delivery_url,
             'contentType' => 'application/json',
+            'securityTypes' => [],
+            'webhookSecurities' => [],
             // 'active' => true,
         ], $default_settings);
 
-        return array_merge_recursive($default_settings, $this->additional_settings);
+        // Additive instead of replacing
+        if (array_key_exists('securityTypes', $additional_settings) === true) {
+            $final_settings['securityTypes'] = array_merge($final_settings['securityTypes'], $additional_settings['securityTypes']);
+            unset($additional_settings['securityTypes']);
+        }
+
+        // Additive instead of replacing
+        if (array_key_exists('webhookSecurities', $additional_settings) === true) {
+            $final_settings['webhookSecurities'] = array_merge($final_settings['webhookSecurities'], $additional_settings['webhookSecurities']);
+            unset($additional_settings['webhookSecurities']);
+        }
+
+        return array_merge($final_settings, $additional_settings);
     } // end toArray
 
     protected function getHmacSecurity()
     {
         return [
             'securityTypes' => ['HMAC'],
-            'webhookSecurity' => [
+            'webhookSecurities' => [
                 [
                     'securityType' => 'HMAC',
                     'topicName' => $this->queue,
@@ -71,7 +87,7 @@ class Webhook
     {
         return [
             'securityTypes' => ['NONE'],
-            'webhookSecurity' => [['securityType' => 'NONE']],
+            'webhookSecurities' => [['securityType' => 'NONE']],
         ];
     } // end getNoSecurity
 

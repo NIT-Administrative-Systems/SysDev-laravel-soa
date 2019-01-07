@@ -32,9 +32,9 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $hook = $registered_hooks[0]->toArray();
 
         $this->assertEquals(1, sizeof($hook['securityTypes']));
-        $this->assertEquals(1, sizeof($hook['webhookSecurity']));
+        $this->assertEquals(1, sizeof($hook['webhookSecurities']));
         $this->assertEquals('HMAC', $hook['securityTypes'][0]);
-        $this->assertEquals($secret, $hook['webhookSecurity'][0]['secretKey']);
+        $this->assertEquals($secret, $hook['webhookSecurities'][0]['secretKey']);
     } // end test_uses_hmac_when_configured
 
     public function test_custom_security_setup()
@@ -48,9 +48,9 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $hook = $registered_hooks[0]->toArray();
 
         $this->assertEquals(1, sizeof($hook['securityTypes']));
-        $this->assertEquals(1, sizeof($hook['webhookSecurity']));
+        $this->assertEquals(1, sizeof($hook['webhookSecurities']));
         $this->assertEquals('APIKEY', $hook['securityTypes'][0]);
-        $this->assertEquals($secret, $hook['webhookSecurity'][0]['apiKey']);
+        $this->assertEquals($secret, $hook['webhookSecurities'][0]['apiKey']);
     } // end test_custom_security_setup
 
     public function test_multiple_security_modes()
@@ -64,14 +64,26 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $hook = $registered_hooks[0]->toArray();
 
         $this->assertEquals(2, sizeof($hook['securityTypes']));
-        $this->assertEquals(2, sizeof($hook['webhookSecurity']));
+        $this->assertEquals(2, sizeof($hook['webhookSecurities']));
     } // end test_multiple_security_modes
+
+    public function test_change_content_type()
+    {
+        $content_type = 'application/xml';
+        $route = app()->router->post('/webhook/foo')->eventHubWebhook('foo.my-queue', ['contentType' => $content_type]);
+
+        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
+        $hook = $registered_hooks[0]->toArray();
+
+        $this->assertInternalType('string', $hook['contentType']);
+        $this->assertEquals($content_type, $hook['contentType']);
+    } // end test_change_content_type
 
     protected function makeApiSecurityBlock($secret)
     {
         return [
             'securityTypes' => ['APIKEY'],
-            'webhookSecurity' => [
+            'webhookSecurities' => [
                 [
                     'securityType' => 'APIKEY',
                     'eventHubAccount' => 'dogge',
