@@ -32,9 +32,9 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $hook = $registered_hooks[0]->toArray();
 
         $this->assertEquals(1, sizeof($hook['securityTypes']));
-        $this->assertEquals(1, sizeof($hook['webhookSecurities']));
+        $this->assertEquals(1, sizeof($hook['webhookSecurity']));
         $this->assertEquals('HMAC', $hook['securityTypes'][0]);
-        $this->assertEquals($secret, $hook['webhookSecurities'][0]['secretKey']);
+        $this->assertEquals($secret, $hook['webhookSecurity'][0]['secretKey']);
     } // end test_uses_hmac_when_configured
 
     public function test_custom_security_setup()
@@ -48,9 +48,9 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $hook = $registered_hooks[0]->toArray();
 
         $this->assertEquals(1, sizeof($hook['securityTypes']));
-        $this->assertEquals(1, sizeof($hook['webhookSecurities']));
+        $this->assertEquals(1, sizeof($hook['webhookSecurity']));
         $this->assertEquals('APIKEY', $hook['securityTypes'][0]);
-        $this->assertEquals($secret, $hook['webhookSecurities'][0]['apiKey']);
+        $this->assertEquals($secret, $hook['webhookSecurity'][0]['apiKey']);
     } // end test_custom_security_setup
 
     public function test_multiple_security_modes()
@@ -64,7 +64,7 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $hook = $registered_hooks[0]->toArray();
 
         $this->assertEquals(2, sizeof($hook['securityTypes']));
-        $this->assertEquals(2, sizeof($hook['webhookSecurities']));
+        $this->assertEquals(2, sizeof($hook['webhookSecurity']));
     } // end test_multiple_security_modes
 
     public function test_change_content_type()
@@ -83,9 +83,9 @@ class WebhookRouteRegistrationTest extends BaseTestCase
     {
         return [
             'securityTypes' => ['APIKEY'],
-            'webhookSecurities' => [
+            'webhookSecurity' => [
                 [
-                    'securityType' => 'APIKEY',
+                    'securityTypes' => 'APIKEY',
                     'eventHubAccount' => 'dogge',
                     'topicName' => 'foo.my-queue',
                     'apiKey' => $secret,

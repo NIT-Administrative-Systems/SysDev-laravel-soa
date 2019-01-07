@@ -48,7 +48,7 @@ class Webhook
             'endpoint' => $this->delivery_url,
             'contentType' => 'application/json',
             'securityTypes' => [],
-            'webhookSecurities' => [],
+            'webhookSecurity' => [],
             // 'active' => true,
         ], $default_settings);
 
@@ -59,9 +59,9 @@ class Webhook
         }
 
         // Additive instead of replacing
-        if (array_key_exists('webhookSecurities', $additional_settings) === true) {
-            $final_settings['webhookSecurities'] = array_merge($final_settings['webhookSecurities'], $additional_settings['webhookSecurities']);
-            unset($additional_settings['webhookSecurities']);
+        if (array_key_exists('webhookSecurity', $additional_settings) === true) {
+            $final_settings['webhookSecurity'] = array_merge($final_settings['webhookSecurity'], $additional_settings['webhookSecurity']);
+            unset($additional_settings['webhookSecurity']);
         }
 
         return array_merge($final_settings, $additional_settings);
@@ -71,9 +71,9 @@ class Webhook
     {
         return [
             'securityTypes' => ['HMAC'],
-            'webhookSecurities' => [
+            'webhookSecurity' => [
                 [
-                    'securityType' => 'HMAC',
+                    'securityTypes' => 'HMAC',
                     'topicName' => $this->queue,
                     'secretKey' => $this->hmac_secret,
                     'headerName' => $this->hmac_header_name,
@@ -87,7 +87,7 @@ class Webhook
     {
         return [
             'securityTypes' => ['NONE'],
-            'webhookSecurities' => [['securityType' => 'NONE']],
+            'webhookSecurity' => [['securityTypes' => 'NONE']],
         ];
     } // end getNoSecurity
 
