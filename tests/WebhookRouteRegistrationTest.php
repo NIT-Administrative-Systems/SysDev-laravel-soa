@@ -85,7 +85,7 @@ class WebhookRouteRegistrationTest extends BaseTestCase
             'securityTypes' => ['APIKEY'],
             'webhookSecurity' => [
                 [
-                    'securityTypes' => 'APIKEY',
+                    'securityType' => 'APIKEY',
                     'eventHubAccount' => 'dogge',
                     'topicName' => 'foo.my-queue',
                     'apiKey' => $secret,

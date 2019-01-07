@@ -73,7 +73,7 @@ class Webhook
             'securityTypes' => ['HMAC'],
             'webhookSecurity' => [
                 [
-                    'securityTypes' => 'HMAC',
+                    'securityType' => 'HMAC',
                     'topicName' => $this->queue,
                     'secretKey' => $this->hmac_secret,
                     'headerName' => $this->hmac_header_name,
@@ -86,8 +86,8 @@ class Webhook
     protected function getNoSecurity()
     {
         return [
-            'securityTypes' => ['NONE'],
-            'webhookSecurity' => [['securityTypes' => 'NONE']],
+            'securityType' => ['NONE'],
+            'webhookSecurity' => [['securityType' => 'NONE']],
         ];
     } // end getNoSecurity
 
