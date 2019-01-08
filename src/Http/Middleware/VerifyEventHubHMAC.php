@@ -28,7 +28,7 @@ class VerifyEventHubHMAC
             return response('Unauthorized - No HMAC Signature Sent', 401);
         }
 
-        $calculated_signature = @hash_hmac($this->hmac_algorithm, $request->getContent(), $this->shared_secret);
+        $calculated_signature = @hash_hmac($this->hmac_algorithm, $request->getContent(), $this->shared_secret, true);
         if ($calculated_signature === false) {
             throw new \Exception(vsprintf('Invalid hash algorithm "%s" detected. Valid values can be determined by running `hash_algos()`.', [$this->hmac_algorithm]));
         }
