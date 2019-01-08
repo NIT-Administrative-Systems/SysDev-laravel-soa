@@ -33,7 +33,7 @@ class VerifyEventHubHMAC
             throw new \Exception(vsprintf('Invalid hash algorithm "%s" detected. Valid values can be determined by running `hash_algos()`.', [$this->hmac_algorithm]));
         }
 
-        $match = hash_equals($calculated_signature, $proffered_signature);
+        $match = hash_equals(base64_encode($calculated_signature), $proffered_signature);
         if ($match === false) {
             return response('Unauthorized - HMAC Validation Failure', 401);
         }
