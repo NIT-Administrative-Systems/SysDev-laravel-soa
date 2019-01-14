@@ -20,7 +20,7 @@ class Consumer
 
     public function __construct(GuzzleHttp\Client $client)
     {
-        trigger_error('The Generic Consumer service is deprecated. Please upgrade to EventHub.', E_USER_DEPRECATED);
+        // trigger_error('The Generic Consumer service is deprecated. Please upgrade to EventHub.', E_USER_DEPRECATED);
 
         $this->http_client = $client;
         $this->baseUrl = config('nusoa.messageQueue.baseUrl');
