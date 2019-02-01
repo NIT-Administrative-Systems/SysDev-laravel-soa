@@ -1,4 +1,4 @@
-# Northwestern SOA Bindings for Laravel
+# Northwestern SOA Bindings for Laravel [![Build Status](https://travis-ci.org/NIT-Administrative-Systems/SysDev-laravel-soa.svg?branch=master)](https://travis-ci.org/NIT-Administrative-Systems/SysDev-laravel-soa) [![Latest Stable Version](https://poser.pugx.org/northwestern-sysdev/laravel-soa/v/stable)](https://packagist.org/packages/northwestern-sysdev/laravel-soa) [![Total Downloads](https://poser.pugx.org/northwestern-sysdev/laravel-soa/downloads)](https://packagist.org/packages/northwestern-sysdev/laravel-soa)
 This package provides simple classes for accessing popular SOA services from Laravel applications.
 
 | Service | Prerequisites |
