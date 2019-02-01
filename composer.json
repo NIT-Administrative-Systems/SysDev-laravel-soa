@@ -19,7 +19,8 @@
         "northwestern-sysdev/event-hub-php-sdk": "^1.0"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.0"
+        "orchestra/testbench": "~3.0",
+        "codacy/coverage": "^1.4"
     },
     "autoload": {
         "psr-4": {
