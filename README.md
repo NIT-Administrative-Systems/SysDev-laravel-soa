@@ -33,14 +33,14 @@ EVENT_HUB_BASE_URL=https://northwestern-dev.apigee.net
 EVENT_HUB_API_KEY=
 EVENT_HUB_EVENT_HUB_HMAC_VERIFICATION_SHARED_SECRET=
 
-# MQ Consumer & Publisher
+# MQ Consumer & Publisher [*Deprecated*]
 MQ_API_URL=
 MQ_API_KEY=
 MQ_API_USERNAME=
 MQ_API_PASSWORD=
 ```
 
-## Usage
+## :no_entry: MQ\Consumer & MQ\Publisher [*Deprecated*]
 The API objects should be injected by the Laravel service container. This ensures the configuration is injected into the objects for you:
 
 ```php
