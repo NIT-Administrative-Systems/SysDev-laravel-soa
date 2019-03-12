@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Console\Commands;
 use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
+use Northwestern\SysDev\SOA;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
