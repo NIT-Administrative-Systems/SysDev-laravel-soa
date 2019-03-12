@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Console\Commands;
 use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
+use Northwestern\SysDev\SOA\DirectorySearch;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
@@ -34,6 +35,10 @@ class NuSoaServiceProvider extends ServiceProvider
         }
 
         $this->bootEventHub();
+
+	$ds = new DirectorySearch(EventHub\Guzzle\RetryClient::make());
+	$this->app->instance(DirectorySearch::class, $ds);
+
     } // end boot
 
     private function bootEventHub()
