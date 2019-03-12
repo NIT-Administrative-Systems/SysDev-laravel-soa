@@ -34,6 +34,10 @@ class NuSoaServiceProvider extends ServiceProvider
         }
 
         $this->bootEventHub();
+
+	$ds = new DirectorySearch(EventHub\Guzzle\RetryClient::make());
+	$this->app->instance(DirectorySearch::class, $ds);
+
     } // end boot
 
     private function bootEventHub()
