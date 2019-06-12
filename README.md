@@ -6,8 +6,6 @@ This package provides simple classes for accessing popular SOA services from Lar
 | WebSSO | None |
 | DirectorySearch | Data steward approval, Apigee API key |
 | EventHub | Queues, Apigee API Key |
-| Generic MQ Publisher [*deprecated*] | Service account, queues, and Apigee API key |
-| Generic MQ Consumer [*deprecated*] | Service account, queues, and Apigee API key |
 
 ## Installation
 You can install the package via composer:
@@ -32,12 +30,6 @@ DIRECTORY_SEARCH_API_KEY=
 EVENT_HUB_BASE_URL=https://northwestern-dev.apigee.net
 EVENT_HUB_API_KEY=
 EVENT_HUB_EVENT_HUB_HMAC_VERIFICATION_SHARED_SECRET=
-
-# MQ Consumer & Publisher
-MQ_API_URL=
-MQ_API_KEY=
-MQ_API_USERNAME=
-MQ_API_PASSWORD=
 ```
 
 ## Usage
@@ -48,15 +40,15 @@ The API objects should be injected by the Laravel service container. This ensure
 
 namespace App\Http\Controllers;
 
-use Northwestern\SysDev\SOA\MQ\Publisher;
+use Northwestern\SysDev\SOA\WebSSO;
 
 class MyController extends Controllers
 {
-    protected $pub;
+    protected $sso;
 
-    public function __construct(MQ\Publisher $pub)
+    public function __construct(WebSSO $sso)
     {
-        $this->pub = $pub;
+        $this->sso = $sso;
     }
 
 }
@@ -65,7 +57,7 @@ class MyController extends Controllers
 If you are ever in a spot where injection is unavailable, you can always call `resolve` yourself. This is particularly handy in the tinker console:
 
 ```php
-$pub = resolve(Northwestern\SysDev\SOA\MQ\Publisher::class);
+$pub = resolve(Northwestern\SysDev\SOA\WebSSO::class);
 ```
 
 For troubleshooting, each API has a `getLastError()` method. `dd()`ing the API object should give you everything you'll need, including the request body and URL.
@@ -282,74 +274,6 @@ In the dev & test environments, you should have permission to write messages to 
 ```
 
 The test message should be delivered to your app almost immediately.
-
-## :no_entry: MQ\Publisher [*Deprecated*]
-Using the publisher requires an Apigee API key, as well as a service account with write permission. You will also need to know your topic name.
-
-The `MQ_API_URL`, `MQ_API_KEY`, `MQ_API_USERNAME`, and `MQ_API_PASSWORD` should be set in your `.env` file.
-
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-use Northwestern\SysDev\SOA\MQ;
-
-class MyController extends Controllers
-{
-    public function login(Request $request, MQ\Publisher $pub)
-    {
-        // Easy way to queue JSON
-        $result = $pub->queue(['key' => 'value', 'other_key' => 'value'], 'topic/name');
-        if ($result == false) {
-            dd($pub->getLastError());
-        }
-
-        // Queue arbitrary things (XML, plain text, etc)
-        $pub->queueText('<xml>Hello there, message queue!</xml>', 'topic/name');
-    }
-}
-```
-
-## :no_entry: MQ\Consumer [*Deprecated*]
-Using the consumer requires an Apige API key, as well as a service account with read permission. You will also need to know your topic name.
-
-The `MQ_API_URL`, `MQ_API_KEY`, `MQ_API_USERNAME`, and `MQ_API_PASSWORD` should be set in your `.env` file.
-
-Because PHP is generally not running as a persistent process, you will need to schedule your queue-consuming code to run. Laravel can manage cronjobs for you via [task scheduling](https://laravel.com/docs/5.5/scheduling).
-
-To facilitate that, we have a console command generator that will stub out a queue checking command for you:
-
-```bash
-php artisan make:command:checkQueue CheckMyTopic
-```
-
-You will need to fill in a topic name in the `getTopic()` method, and then do something with the message.
-
-If that is a bad fit for your needs, using the consumer directly is straightforward:
-
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-use Northwestern\SysDev\SOA\MQ;
-
-class MyController extends Controllers
-{
-    public function login(Request $request, MQ\Consumer $consumer)
-    {
-        $msg = $consumer->pullMessage('topic/name');
-        if ($msg == false) {
-            dd($consumer->getLastError());
-        }
-
-        $msg = json_decode($msg, JSON_OBJECT_AS_ARRAY);
-    }
-}
-```
-
-Be aware that when you consume a message, it is immediately removed from the queue.
 
 ## Contributing
 If you'd like to contribute to the library, you are welcome to submit a pull request!

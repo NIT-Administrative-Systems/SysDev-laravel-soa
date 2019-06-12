@@ -22,24 +22,4 @@ return [
          // Matching PHP algorithm type, passed to `hash_hmac()`. You can run `hash_algos()` to see what you have available.
         'hmacVerificationAlgorithmForPHPHashHmac' => env('EVENT_HUB_HMAC_VERIFICATION_ALGORITHM_TYPE_PHP', 'sha256'),
     ],
-
-    'messageQueue' => [
-        /*
-        * For reference, the URLs are:
-        *
-        *   - Dev: <https://northwestern-dev.apigee.net>
-        *   - QA: <https://northwestern-test.apigee.net>
-        *   - Prod: <https://northwestern-prod.apigee.net>
-        *
-        * But, change this in your `.env` file, NOT here.
-        */
-        'baseUrl' => env('MQ_API_URL', 'https://northwestern-dev.apigee.net'),
-        'apiKey' => env('MQ_API_KEY'),
-        'username' => env('MQ_API_USERNAME'),
-        'password' => env('MQ_API_PASSWORD'),
-
-        'publishPath' => env('MQ_API_PATH_PUB', 'mq-publisher'),
-        'consumePath' => env('MQ_API_PATH_SUB', 'mq-consumer'),
-        'maxConsumptionPerRun' => env('MQ_API_SUB_MAX_PER_RUN', 100),
-    ],
 ];
