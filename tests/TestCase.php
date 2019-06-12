@@ -16,7 +16,7 @@ abstract class TestCase extends BaseTestCase
     protected $service = null;
     protected $api;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->api = @$this->app->make($this->service);
@@ -46,5 +46,4 @@ abstract class TestCase extends BaseTestCase
 
         return new Client(['handler' => HandlerStack::create($mock)]);
     } // end mockedConnError
-
 } // end DirectoySearchTest

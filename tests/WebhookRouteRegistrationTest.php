@@ -75,7 +75,7 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
         $hook = $registered_hooks[0]->toArray();
 
-        $this->assertInternalType('string', $hook['contentType']);
+        $this->assertIsString('string', $hook['contentType']);
         $this->assertEquals($content_type, $hook['contentType']);
     } // end test_change_content_type
 
@@ -94,5 +94,4 @@ class WebhookRouteRegistrationTest extends BaseTestCase
             ],
         ];
     } // end makeApiSecurityBlock
-
 } // end WebhookRouteRegistrationTest
