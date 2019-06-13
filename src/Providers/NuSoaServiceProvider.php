@@ -25,7 +25,6 @@ class NuSoaServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Commands\MakeCheckQueue::class,
                 Commands\EventHub\QueueOverview::class,
                 Commands\EventHub\TopicOverview::class,
                 Commands\EventHub\WebhookStatus::class,
@@ -36,9 +35,8 @@ class NuSoaServiceProvider extends ServiceProvider
 
         $this->bootEventHub();
 
-	$ds = new DirectorySearch(EventHub\Guzzle\RetryClient::make());
-	$this->app->instance(DirectorySearch::class, $ds);
-
+        $ds = new DirectorySearch(EventHub\Guzzle\RetryClient::make());
+        $this->app->instance(DirectorySearch::class, $ds);
     } // end boot
 
     private function bootEventHub()
@@ -79,5 +77,4 @@ class NuSoaServiceProvider extends ServiceProvider
             return $this;
         });
     } // end bootEventHub
-
 } // end NuSoaServiceProvider
