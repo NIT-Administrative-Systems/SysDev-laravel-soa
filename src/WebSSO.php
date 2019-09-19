@@ -54,10 +54,8 @@ class WebSSO
     protected function extractNetid($payload)
     {
         $seek = 'userdetails.attribute.value=';
-        foreach (explode("\n", $payload) as $line)
-        {
-            if (substr($line, 0, strlen($seek)) == $seek)
-            {
+        foreach (explode("\n", $payload) as $line) {
+            if (substr($line, 0, strlen($seek)) == $seek) {
                 return trim(substr($line, strlen($seek)));
             }
         }
@@ -77,7 +75,8 @@ class WebSSO
      */
     public function getLoginUrl($redirect_path = null)
     {
-        $redirect_to = config('app.url');
+        $redirect_to = trim(config('app.url'), '/');
+
         if ($redirect_path != null) {
             $redirect_to = vsprintf('%s/%s', [$redirect_to, $redirect_path]);
         }
