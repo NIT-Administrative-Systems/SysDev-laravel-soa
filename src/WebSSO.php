@@ -75,10 +75,9 @@ class WebSSO
      */
     public function getLoginUrl($redirect_path = null)
     {
-        $redirect_to = trim(config('app.url'), '/');
-
+        $redirect_to = config('app.url');
         if ($redirect_path != null) {
-            $redirect_to = vsprintf('%s/%s', [$redirect_to, $redirect_path]);
+            $redirect_to = vsprintf('%s/%s', [trim($redirect_to, '/'), trim($redirect_path, '/')]);
         }
 
         $redirect_to = urlencode($redirect_to);
