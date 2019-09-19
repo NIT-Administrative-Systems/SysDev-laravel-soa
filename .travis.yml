@@ -8,6 +8,7 @@ cache:
 php:
   - 7.2
   - 7.3
+  - '7.4snapshot'
 
 before_install:
   - travis_retry composer self-update
@@ -17,9 +18,6 @@ install:
 
 script:
   - php vendor/bin/phpunit --coverage-clover build/coverage/xml
-
-after_script:
-  - travis_retry php vendor/bin/codacycoverage clover build/coverage/xml
 
 notifications:
   webhooks: https://outlook.office.com/webhook/e58555a4-17f9-414e-8eaf-94a34bb95c6b@7d76d361-8277-4708-a477-64e8366cd1bc/TravisCI/3d3ef45ccbd74c3c93769fbe0f5ba555/15e93fd1-b1be-48b6-8cfe-ab4e35fd33a2
