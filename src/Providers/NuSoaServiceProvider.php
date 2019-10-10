@@ -12,16 +12,25 @@ use Northwestern\SysDev\SOA\DirectorySearch;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
-    const CONFIG = __DIR__.'/../../config/nusoa.php';
-
     public function register()
     {
-        $this->mergeConfigFrom(self::CONFIG, 'nusoa');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/nusoa.php', 'nusoa');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/duo.php', 'duo');
     } // end register
 
     public function boot()
     {
-        $this->publishes([self::CONFIG => config_path('nusoa.php')], 'config');
+        /*
+        * ## @TODOs for SSO
+        * - Duo view needs publishing
+        * - Duo client JS asset needs publishing & docs
+        * - Figure out a good way to do routes
+        */
+
+        $this->publishes([
+            __DIR__ . '/../../config/nusoa.php' => config_path('nusoa.php'),
+            __DIR__ . '/../../config/duo.php' => config_path('duo.php'),
+        ], 'config');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -30,6 +39,9 @@ class NuSoaServiceProvider extends ServiceProvider
                 Commands\EventHub\WebhookStatus::class,
                 Commands\EventHub\WebhookToggle::class,
                 Commands\EventHub\WebhookConfiguration::class,
+
+                Commands\MakeWebSSO::class,
+                Commands\MakeDuo::class,
             ]);
         }
 
@@ -50,8 +62,8 @@ class NuSoaServiceProvider extends ServiceProvider
         ];
 
         $args = [
-            (string)config('nusoa.eventHub.baseUrl'),
-            (string)config('nusoa.eventHub.apiKey'),
+            (string) config('nusoa.eventHub.baseUrl'),
+            (string) config('nusoa.eventHub.apiKey'),
             EventHub\Guzzle\RetryClient::make(),
         ];
 

@@ -16,7 +16,8 @@
     ],
     "require": {
         "guzzlehttp/guzzle": "^6.3",
-        "northwestern-sysdev/event-hub-php-sdk": "^1.0"
+        "northwestern-sysdev/event-hub-php-sdk": "^1.0",
+        "duosecurity/duo_php": "dev-master"
     },
     "require-dev": {
         "orchestra/testbench": "~3.0 || ~4.0"
