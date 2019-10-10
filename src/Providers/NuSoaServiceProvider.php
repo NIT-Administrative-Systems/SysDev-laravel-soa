@@ -20,13 +20,6 @@ class NuSoaServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        /*
-        * ## @TODOs for SSO
-        * - Duo view needs publishing
-        * - Duo client JS asset needs publishing & docs
-        * - Figure out a good way to do routes
-        */
-
         $this->publishes([
             __DIR__ . '/../../config/nusoa.php' => config_path('nusoa.php'),
             __DIR__ . '/../../config/duo.php' => config_path('duo.php'),
