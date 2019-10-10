@@ -1,4 +1,5 @@
 module.exports = {
+    base: '/SysDev-laravel-soa',
     title: 'Northwestern Tools for Laravel',
     description: 'Enhance Laravel with easy access to popular Northwestern APIs & webSSO/Duo multi-factor authentication.',
     dest: '.build',
