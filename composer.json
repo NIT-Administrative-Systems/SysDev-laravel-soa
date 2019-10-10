@@ -8,12 +8,10 @@
         "northwestern university",
         "laravel"
     ],
-    "authors": [
-        {
-            "name": "Nicholas Evans",
-            "email": "nick.evans@northwestern.edu"
-        }
-    ],
+    "authors": [{
+        "name": "Nicholas Evans",
+        "email": "nick.evans@northwestern.edu"
+    }],
     "require": {
         "guzzlehttp/guzzle": "^6.3",
         "northwestern-sysdev/event-hub-php-sdk": "^1.0",
@@ -31,9 +29,6 @@
         "psr-4": {
             "Northwestern\\SysDev\\SOA\\Tests\\": "tests/"
         }
-    },
-    "suggest": {
-        "northwestern-sysdev/laravel-websso": "Laravel package for Northwestern University's WebSSO & Duo MFA login."
     },
     "extra": {
         "laravel": {
