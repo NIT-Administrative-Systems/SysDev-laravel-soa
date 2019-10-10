@@ -1,0 +1,28 @@
+@extends('layouts.app')
+
+@section('content')
+    {{-- Duo's iframe will pick up values from id=duo_form automagically -- so this will inject Laravel's CSRF token. --}}
+    <form method="post" id="duo_form">
+        @csrf
+    </form>
+
+    <iframe id="duo_iframe"
+        style="width: 100%; min-height: 600px; border: none;"
+        data-host="{{ $duo_url }}"
+        data-sig-request="{{ $signed_request }}"
+        data-post-action="{{ route('mfa.store') }}">
+    </iframe>
+
+    <script src="https://api.duosecurity.com/frame/hosted/Duo-Web-v2.min.js"></script>
+@endsection
+
+{{-- 
+-- If your layout has a stack for scripts at the bottom of the <body>, use @push instead!
+--
+-- But, this is written for a new Laravel install, and the default layout (w/ the auth UI)
+-- does not have that, so the package does not assume it!
+
+@push('scripts')
+    <script src="https://api.duosecurity.com/frame/hosted/Duo-Web-v2.min.js"></script>
+@endpush
+--}}
