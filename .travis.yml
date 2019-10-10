@@ -15,9 +15,22 @@ before_install:
 
 install:
   - travis_retry composer install --dev --no-interaction
+  - travis_retry yarn install
 
 script:
   - php vendor/bin/phpunit --coverage-clover build/coverage/xml
+
+after_success:
+  - yarn run docs:build
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: .build
+  target_branch: gh-pages
+  on:
+    branch: master
 
 notifications:
   webhooks: https://outlook.office.com/webhook/e58555a4-17f9-414e-8eaf-94a34bb95c6b@7d76d361-8277-4708-a477-64e8366cd1bc/TravisCI/3d3ef45ccbd74c3c93769fbe0f5ba555/15e93fd1-b1be-48b6-8cfe-ab4e35fd33a2
