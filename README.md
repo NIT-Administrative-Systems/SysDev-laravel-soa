@@ -1,22 +1,17 @@
 # Northwestern SOA Bindings for Laravel [![Build Status](https://travis-ci.org/NIT-Administrative-Systems/SysDev-laravel-soa.svg?branch=master)](https://travis-ci.org/NIT-Administrative-Systems/SysDev-laravel-soa) [![Latest Stable Version](https://poser.pugx.org/northwestern-sysdev/laravel-soa/v/stable)](https://packagist.org/packages/northwestern-sysdev/laravel-soa) [![Total Downloads](https://poser.pugx.org/northwestern-sysdev/laravel-soa/downloads)](https://packagist.org/packages/northwestern-sysdev/laravel-soa)
-This package provides simple classes for accessing popular SOA services from Laravel applications.
+This package enhanced Laravel with easy access to popular Northwestern APIs & webSSO/Duo multi-factor authentication.
 
-| Service | Prerequisites |
-| --- | --- |
-| WebSSO | None |
+| Service         | Prerequisites                         |
+| --------------- | ------------------------------------- |
+| WebSSO          | None                                  |
 | DirectorySearch | Data steward approval, Apigee API key |
-| EventHub | Queues, Apigee API Key |
+| EventHub        | Queues, Apigee API Key                |
 
 ## Installation
 You can install the package via composer:
 
 ```bash
 composer require northwestern-sysdev/laravel-soa
-```
-
-Publish the config file:
-
-```bash
 php artisan vendor:publish --provider="Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider"
 ```
 

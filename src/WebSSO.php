@@ -16,7 +16,7 @@ class WebSSO
     public function __construct(GuzzleHttp\Client $client)
     {
         $this->http_client = $client;
-        $this->sso_server = config('sso.openAmBaseUrl');
+        $this->sso_server = config('nusoa.sso.openAmBaseUrl');
     } // end __construct
 
     /**
