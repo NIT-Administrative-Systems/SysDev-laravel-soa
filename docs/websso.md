@@ -54,6 +54,13 @@ protected function findUserByNetID(string $netid): ?Authenticatable
 
 You may optionally implement the `authenticated` method. If you return a `redirect()`, it will be followed. Otherwise, the default Laravel behaviour will be used.
 
+Then add the ```auth``` middleware to whatever routes you want to be protected by SSO. For example:
+
+```php
+Route::get('/', 'NuOnlyController@private')->middleware('auth')  ;
+Route::get('/pub', 'PublicatController@public_route');
+```
+
 ## Enabling Duo MFA
 If you want to enable Duo MFA, you will need to submit a ticket to Identity Services team via [consultant@northwestern.edu](mailto:consultant@northwestern.edu):
 
@@ -117,7 +124,7 @@ namespace App\Http\Controllers;
 
 use Northwestern\SysDev\SOA\WebSSO;
 
-class MyController extends Controllers
+class MyController extends Controller
 {
     public function login(Request $request, WebSSO $sso)
     {
