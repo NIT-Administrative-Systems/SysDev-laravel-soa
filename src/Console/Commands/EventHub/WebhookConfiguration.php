@@ -11,7 +11,7 @@ class WebhookConfiguration extends Command
 {
     use ConfirmableTrait;
 
-    protected $signature = 'eventhub:webhook:configure';
+    protected $signature = 'eventhub:webhook:configure {--force}';
     protected $description = 'Configure webhook routes in EventHub';
 
     protected $webhook_api;
@@ -27,6 +27,8 @@ class WebhookConfiguration extends Command
 
     public function handle()
     {
+        $force_delete = $this->argument('force');
+
         $registered_hooks = collect($this->webhook_api->listAll()['webhooks']);
         $registered_hooks = $registered_hooks->map(function ($hook) {
             return $hook['topicName'];
@@ -52,7 +54,7 @@ class WebhookConfiguration extends Command
             $this->error(implode(', ', $existing_hooks_updated));
             $this->line('');
 
-            $delete_unmanaged = $this->confirm('Would you like to delete these unmanaged webhooks?');
+            $delete_unmanaged = $force_delete ?: $this->confirm('Would you like to delete these unmanaged webhooks?');
             if ($delete_unmanaged === true) {
                 foreach ($existing_hooks_updated as $hook_to_delete) {
                     $this->delete($hook_to_delete);
@@ -94,5 +96,4 @@ class WebhookConfiguration extends Command
             $this->line('');
         }
     } // end delete
-
 } // end WebhookConfiguration

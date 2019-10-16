@@ -80,7 +80,7 @@ php artisan eventhub:webhook:toggle pause
 
 # Running configure after deploying makes sure the settings
 # in EventHub still match your registered webhook routes.
-php artisan eventhub:webhook:configure
+php artisan eventhub:webhook:configure --force
 php artisan eventhub:webhook:toggle unpause
 ```
 
