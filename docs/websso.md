@@ -86,22 +86,22 @@ You may need to update the `resources/views/auth/mfa.blade.php` file to fit your
 Duo should now be enabled.
 
 ## Changing Routes
-The default route names `sso-login`, `sso-logout`, and `mfa.index` are used by the controller traits. 
+The default route names `login`, `logout`, and `mfa.index` are used by the controller traits.
 
-If you want to rename these, you will need to override these properties in both controllers.
+If you want to rename these routes, you will need to override these properties in both controllers.
 
 ```php
 class WebSSOController extends Controller
 {
-    protected $login_route_name = 'sso-login';
-    protected $logout_route_name = 'sso-logout';
+    protected $login_route_name = 'login';
+    protected $logout_route_name = 'logout';
     protected $mfa_route_name = 'mfa.index';
 
     // . . .
 }
 ```
 
-In most cases, changing these should not be necessary.
+If you are only using WebSSO to authenticate in your app, this should not be necessary. If you have multiple login methods, you will either need to rename the routes, or update your `App\Http\Middleware\Authenticate` to send unauthenticated users to page that lets them choose their login method.
 
 ## API
 The webSSO class will resolve the value of an `openAMssoToken` cookie into a NetID.

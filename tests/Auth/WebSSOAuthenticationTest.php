@@ -40,7 +40,7 @@ class WebSSOAuthenticationTest extends TestCase
             $this->api->setHttpClient($this->mockedResponse(200, "userdetails.token.id=test-token\nuserdetails.attribute.name=UserToken\nuserdetails.attribute.value=test-id"));
 
             return $this->mock_controller()->login($request, $this->api);
-        })->name('sso-login');
+        })->name('login');
 
         $response = $this->get(__METHOD__);
         $response->assertRedirect('/logged-in');
@@ -53,7 +53,7 @@ class WebSSOAuthenticationTest extends TestCase
             unset($_COOKIE['openAMssoToken']);
 
             return $this->mock_controller()->login($request, $this->api);
-        })->name('sso-login');
+        })->name('login');
 
         $response = $this->get(__METHOD__)->assertRedirect();
         $this->assertSsoRedirect($response);
@@ -67,7 +67,7 @@ class WebSSOAuthenticationTest extends TestCase
             $this->api->setHttpClient($this->mockedResponse(200, "userdetails.attribute.name=UserToken"));
 
             return $this->mock_controller()->login($request, $this->api);
-        })->name('sso-login');
+        })->name('login');
 
         $response = $this->get(__METHOD__)->assertRedirect();
         $this->assertSsoRedirect($response);
@@ -87,7 +87,7 @@ class WebSSOAuthenticationTest extends TestCase
             $this->api->setHttpClient($this->mockedResponse(200, "userdetails.token.id=test-token\nuserdetails.attribute.name=UserToken\nuserdetails.attribute.value=test-id"));
 
             return $this->mock_controller()->login($request, $this->api);
-        }])->name('sso-login');
+        }])->name('login');
 
         $response = $this->withSession([])->get(__METHOD__)
             ->assertRedirect($mfa_url)
