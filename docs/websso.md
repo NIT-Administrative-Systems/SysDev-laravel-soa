@@ -58,7 +58,7 @@ Then add the ```auth``` middleware to whatever routes you want to be protected b
 
 ```php
 Route::get('/', 'NuOnlyController@private')->middleware('auth')  ;
-Route::get('/pub', 'PublicatController@public_route');
+Route::get('/pub', 'PublicController@public_route');
 ```
 
 ## Enabling Duo MFA
