@@ -18,7 +18,7 @@
         "duosecurity/duo_php": "dev-master"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.0 || ~4.0"
+        "orchestra/testbench": "~4.0"
     },
     "autoload": {
         "psr-4": {
