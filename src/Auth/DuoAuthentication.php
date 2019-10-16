@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 trait DuoAuthentication
 {
+    use WebSSORoutes;
+
     public function index(Request $request)
     {
         $netid = $request->session()->get('mfa_netid');
@@ -27,6 +29,6 @@ trait DuoAuthentication
         abort_unless($verified, 401, 'MFA verification failed.');
 
         $request->session()->put('mfa_passed', true);
-        return redirect(route('login'));
+        return redirect(route($this->login_route_name));
     }
 }

@@ -11,11 +11,11 @@ use Illuminate\Foundation\Auth\RedirectsUsers;
 
 trait WebSSOAuthentication
 {
-    use RedirectsUsers;
+    use RedirectsUsers, WebSSORoutes;
 
     public function login(Request $request, WebSSO $sso)
     {
-        $login_url_w_redirect = $sso->getLoginUrl(route('login', [], false));
+        $login_url_w_redirect = $sso->getLoginUrl(route($this->login_route_name, [], false));
 
         // Laravel nulls out cookies that are not encrypted w/ its key.
         if (array_key_exists('openAMssoToken', $_COOKIE) === false) {
@@ -34,7 +34,7 @@ trait WebSSOAuthentication
             Auth::login($user);
         } else {
             $request->session()->put('mfa_netid', $netid);
-            return redirect(route('mfa.index'));
+            return redirect(route($this->mfa_route_name));
         }
 
         return $this->authenticated($request, $user) ?: redirect()->intended($this->redirectPath());
@@ -49,7 +49,7 @@ trait WebSSOAuthentication
 
     /**
      * Retrieve a user model for a given netID.
-     * 
+     *
      * This is an opportunity to create a user in your DB, if needed.
      *
      * If you do not have a user store, a plain-old PHP object implementing
@@ -59,12 +59,12 @@ trait WebSSOAuthentication
 
     /**
      * Post-authentication hook.
-     * 
+     *
      * You may return a response here, e.g. a redirect() somewhere,
      * and it will be respected.
      */
     protected function authenticated(Request $request, $user)
     {
-        // 
+        //
     }
 }
