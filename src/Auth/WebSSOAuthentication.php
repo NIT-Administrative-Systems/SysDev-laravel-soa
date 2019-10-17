@@ -28,7 +28,7 @@ trait WebSSOAuthentication
         }
 
         if (config('duo.enabled') !== true || $request->session()->get('mfa_passed') === true) {
-            $user = $this->findUserByNetId($netid);
+            $user = app()->call(\Closure::fromCallable('static::findUserByNetId'), [$netid]);
             throw_if($user === null, new AuthenticationException);
 
             Auth::login($user);

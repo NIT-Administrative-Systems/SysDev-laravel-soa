@@ -24,7 +24,7 @@ php artisan make:websso
 
 First, review your `routes/web.php`. You can adjust the paths, if desired.
 
-Then, open up `App\Http\Controllers\Auth\WebSSOController` and implement the `findUserByNetID` method. 
+Then, open up `App\Http\Controllers\Auth\WebSSOController` and implement the `findUserByNetID` method. You may inject any additional dependencies (e.g. `DirectorySearch`) you need in this method.
 
 It needs to return an object that implements the `Authenticatable` interface. The `App\User` model that Laravel comes with satisfies this requirement. 
 
@@ -33,7 +33,7 @@ If you return `null` from this method, the login will fail. This may be desired 
 ```php
 use App\User;
 
-protected function findUserByNetID(string $netid): ?Authenticatable
+protected function findUserByNetID(DirectorySearch $directory_api, string $netid): ?Authenticatable
 {
     // If the user exists, they can log in.
     $user = User::where('netid', $netid)->first();
@@ -42,7 +42,7 @@ protected function findUserByNetID(string $netid): ?Authenticatable
     }
 
     // If you have a Directory Search API key, you could grab info about them & create a user.
-    $directory = $this->directory_api->lookupNetId($netid, 'basic');
+    $directory = $directory_api->lookupNetId($netid, 'basic');
     $user = User::create([
         'name' => $netid,
         'email' => $directory['mail'],

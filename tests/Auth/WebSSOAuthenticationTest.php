@@ -104,8 +104,13 @@ class WebSSOAuthenticationTest extends TestCase
                 return '/logged-in';
             }
 
-            protected function findUserByNetID(string $netid): ?AuthenticatableContract
+            protected function findUserByNetID(Request $request, string $netid): ?AuthenticatableContract
             {
+                // Ensures the service container is resolsing requested dependencies (like Request)
+                if ($request === null) {
+                    throw \Exception('Injection failed');
+                }
+
                 $user = new class implements AuthenticatableContract {
                     use Authenticatable;
 
