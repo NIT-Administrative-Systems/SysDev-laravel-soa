@@ -35,6 +35,7 @@ class NuSoaServiceProvider extends ServiceProvider
 
                 Commands\MakeWebSSO::class,
                 Commands\MakeDuo::class,
+                Commands\MakeLog::class,
             ]);
         }
 
