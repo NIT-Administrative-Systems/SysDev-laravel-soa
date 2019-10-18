@@ -12,7 +12,12 @@ trait DuoAuthentication
     public function index(Request $request)
     {
         $netid = $request->session()->get('mfa_netid');
-        abort_unless($netid !== null, 404, 'User to send through MFA not specified.');
+
+        // I've seen browsers remember the MFA URL and auto-suggest it.
+        // Send the user somewhere useful if there's no in-flight login session instead of dead-ending w/ an error.
+        if ($netid === null) {
+            return redirect(route($this->login_route_name));
+        }
 
         $signed_request = Duo\Web::signRequest(config('duo.ikey'), config('duo.skey'), config('duo.akey'), $netid);
 
