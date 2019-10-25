@@ -3,17 +3,17 @@
 namespace Northwestern\SysDev\SOA\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Support\Facades\Artisan;
 
-class MakeLog extends GeneratorCommand
+class MakeSsoLogMigration extends GeneratorCommand
 {
-    protected $name = "make:log";
-    protected $signature = 'make:log';
+    protected $name = "make:log_migration";
+    protected $signature = 'make:log_migration';
     protected $description = 'Creates a database migration for an access log';
     protected $type = 'Migration';
 
     public function handle()
     {
+        print("Add SSO_LOG_ENABLED=true to your env variables to enable logging \n");
         parent::handle();
     }
 
@@ -32,5 +32,4 @@ class MakeLog extends GeneratorCommand
 
         return $rootNamespace.'\..\database\migrations';
     }
-
 }

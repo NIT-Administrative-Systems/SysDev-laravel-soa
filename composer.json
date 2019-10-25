@@ -1,5 +1,5 @@
 {
-    "name": "northwestern-sysdev/laravel-soa",
+    "name": "n8ta/laravel-soa",
     "description": "Laravel bindings for popular Northwestern SOA services.",
     "type": "library",
     "license": "MIT",

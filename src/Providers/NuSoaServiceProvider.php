@@ -3,12 +3,12 @@
 namespace Northwestern\SysDev\SOA\Providers;
 
 use Illuminate\Routing\Route;
-use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Console\Commands;
+use Northwestern\SysDev\SOA\DirectorySearch;
+use Northwestern\SysDev\SOA\EventHub;
 use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
-use Northwestern\SysDev\SOA\DirectorySearch;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
@@ -20,10 +20,16 @@ class NuSoaServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->app['router']->pushMiddlewareToGroup('web', \Northwestern\SysDev\SOA\Http\Middleware\SsoLogger::class);
+
         $this->publishes([
             __DIR__ . '/../../config/nusoa.php' => config_path('nusoa.php'),
             __DIR__ . '/../../config/duo.php' => config_path('duo.php'),
         ], 'config');
+
+        $this->publishes([
+            __DIR__ . '/../Models' => model_path(),
+        ], 'models');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -32,10 +38,9 @@ class NuSoaServiceProvider extends ServiceProvider
                 Commands\EventHub\WebhookStatus::class,
                 Commands\EventHub\WebhookToggle::class,
                 Commands\EventHub\WebhookConfiguration::class,
-
                 Commands\MakeWebSSO::class,
+                Commands\MakeSsoLogMigration::class,
                 Commands\MakeDuo::class,
-                Commands\MakeLog::class,
             ]);
         }
 
@@ -56,8 +61,8 @@ class NuSoaServiceProvider extends ServiceProvider
         ];
 
         $args = [
-            (string) config('nusoa.eventHub.baseUrl'),
-            (string) config('nusoa.eventHub.apiKey'),
+            (string)config('nusoa.eventHub.baseUrl'),
+            (string)config('nusoa.eventHub.apiKey'),
             EventHub\Guzzle\RetryClient::make(),
         ];
 

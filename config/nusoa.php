@@ -1,5 +1,6 @@
 <?php
 
+
 return [
     'directorySearch' => [
         'baseUrl' => env('DIRECTORY_SEARCH_URL', 'https://northwestern-prod.apigee.net/directory-search'),

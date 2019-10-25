@@ -18,6 +18,8 @@ class MakeWebSSO extends GeneratorCommand
         // GeneratorCommand only does one stub at a time, but I want both, so chaining these
         // is an expedient way of writing this cleanly!
         Artisan::call(MakeDuo::class);
+        Artisan::call(MakeSsoLogMigration::class);
+        Artisan::call(MakeSsoLogMiddleware::class);
 
         $this->ejectRoutes();
     }
