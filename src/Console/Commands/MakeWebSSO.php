@@ -19,7 +19,7 @@ class MakeWebSSO extends GeneratorCommand
         // is an expedient way of writing this cleanly!
         Artisan::call(MakeDuo::class);
         Artisan::call(MakeSsoLogMigration::class);
-        Artisan::call(MakeSsoLogMiddleware::class);
+        Artisan::call(MakeSsoLogModel::class);
 
         $this->ejectRoutes();
     }

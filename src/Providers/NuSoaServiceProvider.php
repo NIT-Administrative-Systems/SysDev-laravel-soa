@@ -27,9 +27,6 @@ class NuSoaServiceProvider extends ServiceProvider
             __DIR__ . '/../../config/duo.php' => config_path('duo.php'),
         ], 'config');
 
-        $this->publishes([
-            __DIR__ . '/../Models' => model_path(),
-        ], 'models');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -40,6 +37,7 @@ class NuSoaServiceProvider extends ServiceProvider
                 Commands\EventHub\WebhookConfiguration::class,
                 Commands\MakeWebSSO::class,
                 Commands\MakeSsoLogMigration::class,
+                Commands\MakeSsoLogModel::class,
                 Commands\MakeDuo::class,
             ]);
         }

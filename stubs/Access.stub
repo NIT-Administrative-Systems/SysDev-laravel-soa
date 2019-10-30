@@ -4,9 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class access extends Model
+class Access extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
-        'netid', 'id', 'agent', 'path', 'time'
+        'netid', 'agent', 'path', 'created_at'
     ];
+
 }

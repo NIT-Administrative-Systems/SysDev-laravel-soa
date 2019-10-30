@@ -31,15 +31,13 @@ class SsoLogger extends Middleware
     }
 
     private function log_request($anonymous, $request) {
-        if ($this->should_be_logged($request)) {
-
+        $path = $request->path();
+        $agent = $request->header('User-Agent');
+        $access = new \App\Access(['path'=>$path,'agent'=>$agent]);
+        if (!$anonymous) {
+            $access->netid = Auth::user()['netid'];
         }
+        $access->save();
         return;
-
     }
-
-    public function should_be_logged($request) {
-        return True;
-    }
-
 }
