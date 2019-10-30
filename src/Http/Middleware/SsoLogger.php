@@ -32,7 +32,13 @@ class SsoLogger extends Middleware
 
     private function log_request($anonymous, $request) {
         $path = $request->path();
-        $agent = $request->header('User-Agent');
+
+        try {
+            $agent = $request->header('User-Agent');
+        }  catch (Exception $x) {
+            $agent = null;
+        }
+
         $access = new \App\Access(['path'=>$path,'agent'=>$agent]);
         if (!$anonymous) {
             $access->netid = Auth::user()['netid'];
