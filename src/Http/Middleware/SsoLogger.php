@@ -16,7 +16,7 @@ class SsoLogger extends Middleware
 
     public function handle($request, Closure $next, ...$guards)
     {
-        if (env('SSO_LOG_ENABLED') != 'true') { return $next($request); }
+        if (env('SSO_LOG_ENABLED','true') != 'true') { return $next($request); }
 
         $controller = $request->route()->controller;
 
@@ -59,7 +59,7 @@ class SsoLogger extends Middleware
     private function remove_oldest_logs() {
         // Remove between 1000 and 5000 logs at a time. Scaled roughly by max logs set.
         // I don't want to remove more than 5000 and risk slowing down the request significantly.
-        $num_to_remove = max(min(5000,$this->max_logs/10),1000);
+        $num_to_remove = max(min(5,$this->max_logs/10),1);
         Access::orderBy('created_at','asc')->take($num_to_remove)->get()->each->delete();
         # ^ Probably a better way to do this than individual deletes
     }
