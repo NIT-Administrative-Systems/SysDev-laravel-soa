@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode as Middleware;
 use Auth;
 use App\Access;
 use Closure;
+use Illuminate\Support\Facades\Log;
 
 class SsoLogger extends Middleware
 {
@@ -16,8 +17,6 @@ class SsoLogger extends Middleware
 
     public function handle($request, Closure $next, ...$guards)
     {
-        if (env('SSO_LOG_ENABLED','true') != 'true') { return $next($request); }
-
         $controller = $request->route()->controller;
 
         if (class_basename($controller) == "WebSSOController") {
@@ -47,12 +46,18 @@ class SsoLogger extends Middleware
         }  catch (Exception $x) {
             $agent = null;
         }
-
         $access = new Access(['path'=>$path,'agent'=>$agent]);
+        $time = Time();
         if (!$anonymous) {
-            $access->netid = Auth::user()['netid'];
+            $netid = Auth::user()['netid'];
+            Log::info("Access netid=$netid agent=$agent path=$path time=$time");
+            $access->netid = $netid;
+        } else {
+            Log::info("Access netid=NULL agent=$agent path=$path time=$time");
         }
-        $access->save();
+        if (env('SSO_DB_LOG_ENABLED','true') == 'true') {
+            $access->save();
+        }
         return;
     }
 

@@ -13,7 +13,6 @@ class MakeSsoLogMigration extends GeneratorCommand
 
     public function handle()
     {
-        print("Add SSO_LOG_ENABLED=false to turn off request logging \n");
         parent::handle();
     }
 

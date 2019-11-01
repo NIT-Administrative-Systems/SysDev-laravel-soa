@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 class MakeWebSSO extends GeneratorCommand
 {
     protected $signature = 'make:websso';
-    protected $description = 'Create a new Northwestern WebSSO controller';
+    protected $description = 'Create a new Northwestern WebSSO controller and sets up an access log  migration/model';
     protected $type = 'Controller';
 
     public function handle()
@@ -18,9 +18,13 @@ class MakeWebSSO extends GeneratorCommand
         // GeneratorCommand only does one stub at a time, but I want both, so chaining these
         // is an expedient way of writing this cleanly!
         Artisan::call(MakeDuo::class);
-        Artisan::call(MakeSsoLogMigration::class);
-        Artisan::call(MakeSsoLogModel::class);
 
+        // Generate the migration unless they have it explicitly turned off in the .env, we default to DB logging + file logging.
+        print("Add SSO_DB_LOG_ENABLED=false to your .env turn off database request logging \n");
+        if (env('SSO_DB_LOG_ENABLED','true') != 'false') {
+            Artisan::call(MakeSsoLogMigration::class);
+            Artisan::call(MakeSsoLogModel::class);
+        }
         $this->ejectRoutes();
     }
 
