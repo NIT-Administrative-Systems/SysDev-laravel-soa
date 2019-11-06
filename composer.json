@@ -8,10 +8,14 @@
         "northwestern university",
         "laravel"
     ],
-    "authors": [{
+    "authors": [
+        {
         "name": "Nicholas Evans",
-        "email": "nick.evans@northwestern.edu"
-    }],
+        "email": "nick.evans@northwestern.edu" },
+        {
+            "name": "Nate Tracy-Amoroso",
+            "email": "n8@u.northwestern.edu"
+        }],
     "require": {
         "guzzlehttp/guzzle": "^6.3",
         "northwestern-sysdev/event-hub-php-sdk": "^1.0",
