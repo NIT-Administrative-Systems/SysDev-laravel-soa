@@ -21,9 +21,10 @@ class MakeWebSSO extends GeneratorCommand
 
         // Generate the migration unless they have it explicitly turned off in the .env, we default to DB logging + file logging.
         print("Add SSO_DB_LOG_ENABLED=false to your .env turn off database request logging \n");
-        if (env('SSO_DB_LOG_ENABLED','true') != 'false') {
+        if (env('SSO_DB_LOG_ENABLED',true) != false) {
             Artisan::call(MakeSsoLogMigration::class);
             Artisan::call(MakeSsoLogModel::class);
+        } else {
         }
         $this->ejectRoutes();
     }

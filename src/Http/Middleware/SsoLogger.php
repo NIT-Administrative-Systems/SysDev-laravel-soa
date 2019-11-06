@@ -20,7 +20,7 @@ class SsoLogger extends Middleware
         $controller = $request->route()->controller;
 
         if (class_basename($controller) == "WebSSOController") {
-            // They're doing auth right now so minimal log
+            // They're doing auth right now so we'll call it an anonymous request (no netid)
             $this->log_request(true, $request);
             return $next($request);
         } else {

@@ -2,6 +2,7 @@
 The package provides a command that will set up WebSSO, and optionally Duo multi-factor authentication (MFA). 
 
 - Create SSO & Duo controllers in `App\Http\Controllers\Auth`
+- Creates an optional (opt-out) migration/middleware/model to log all accesses to the app
 - Adds named routes to your `web/routes.php`
 - Ejects a `resources/views/auth/mfa.blade.php` template for rendering the Duo MFA widget
 
@@ -111,6 +112,7 @@ class WebSSOController extends Controller
 If you are only using WebSSO to authenticate in your app, this should not be necessary. If you have multiple login methods, you will either need to rename the routes, or update your `App\Http\Middleware\Authenticate` to send unauthenticated users to page that lets them choose their login method.
 
 ## API
+
 The webSSO class will resolve the value of an `openAMssoToken` cookie into a NetID.
 
 :::tip Unusual Use-cases Only
@@ -142,3 +144,20 @@ class MyController extends Controller
     }
 }
 ```
+
+## Access Logging
+
+All requests your app receives will by default be logged to the database and to the default laravel logger in a splunk compatible format. 
+
+To disable the database logger add the following to your .env
+
+```env
+SSO_DB_LOG_ENABLED=false
+```
+
+To increase or decrease the number of logs to store add SSO_LOG_MAX_ENTRIES  to your .env. The default value is 1,000,000 which takes up about 36MB (tested on mysql). 
+
+````
+SSO_LOG_MAX_ENTRIES=1000000
+````
+
