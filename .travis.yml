@@ -19,6 +19,10 @@ install:
 script:
   - php vendor/bin/phpunit --coverage-clover .build/clover.xml
 
+
+after_success:
+    - travis_retry php vendor/bin/php-coveralls
+
 jobs:
   include:
     - stage: deploy
