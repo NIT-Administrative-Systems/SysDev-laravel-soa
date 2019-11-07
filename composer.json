@@ -18,7 +18,8 @@
         "duosecurity/duo_php": "dev-master"
     },
     "require-dev": {
-        "orchestra/testbench": "~4.0"
+        "orchestra/testbench": "~4.0",
+        "php-coveralls/php-coveralls": "^2.1"
     },
     "autoload": {
         "psr-4": {

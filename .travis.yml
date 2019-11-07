@@ -17,7 +17,7 @@ install:
   - travis_retry composer install --dev --no-interaction
 
 script:
-  - php vendor/bin/phpunit --coverage-clover build/coverage/xml
+  - php vendor/bin/phpunit --coverage-clover .build/clover.xml
 
 jobs:
   include:
