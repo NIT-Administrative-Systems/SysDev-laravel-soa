@@ -2,7 +2,7 @@
 The package provides a command that will set up WebSSO, and optionally Duo multi-factor authentication (MFA). 
 
 - Create SSO & Duo controllers in `App\Http\Controllers\Auth`
-- Creates an optional (opt-out) migration/middleware/model to log all accesses to the app
+- Creates a migration/middleware/model to log all accesses to the app (your user model must implement the SSOLoggable trait to use this)
 - Adds named routes to your `web/routes.php`
 - Ejects a `resources/views/auth/mfa.blade.php` template for rendering the Duo MFA widget
 
@@ -62,7 +62,48 @@ Route::get('/', 'NuOnlyController@private')->middleware('auth')  ;
 Route::get('/pub', 'PublicController@public_route');
 ```
 
+
+
+## Setting up the user model for logging
+
+You will need to implement the SSOLoggable trait on your user model and a version of the identifier() function that produes a string of key=value pairs to be logged.
+
+```php
+class User extends Authenticatable
+{
+    use SSOLoggable 
+    public function identifiers() {
+        return 'key=value';
+
+        # If you have the netid attribute you might replace this method with:
+        # return 'netid='.$this->netid
+
+        # Or if you want to pass multiple identifiers:
+        # return 'netid='.$this->netid.' firstname='.$this->name.' lastname='.$this->lastname
+        # => "netid=jmm222 firstname=Jimmy lastname=McMillan"
+      
+    }
+}
+```
+
+By default the app logs primary id, agent, time, and path to the database with each request (as well as the default laravel logger). You can turn this off if you wish by adding the following to your env.
+
+All requests your app receives will by default be logged to the database and to the default laravel logger in a splunk compatible format. 
+
+```env
+sso_db_log_enabled=false
+```
+
+To increase or decrease the number of logs to stored in the database add SSO_LOG_MAX_ENTRIES  to your .env. The default value is 1,000,000 which takes up about 36MB (tested on mysql). 
+
+````
+sso_log_max_entries=1000000
+````
+
+
+
 ## Enabling Duo MFA
+
 If you want to enable Duo MFA, you will need to submit a ticket to Identity Services team via [consultant@northwestern.edu](mailto:consultant@northwestern.edu):
 
 > Hi Identity Services,
@@ -144,20 +185,4 @@ class MyController extends Controller
     }
 }
 ```
-
-## Access Logging
-
-All requests your app receives will by default be logged to the database and to the default laravel logger in a splunk compatible format. 
-
-To disable the database logger add the following to your .env
-
-```env
-SSO_DB_LOG_ENABLED=false
-```
-
-To increase or decrease the number of logs to store add SSO_LOG_MAX_ENTRIES  to your .env. The default value is 1,000,000 which takes up about 36MB (tested on mysql). 
-
-````
-SSO_LOG_MAX_ENTRIES=1000000
-````
 

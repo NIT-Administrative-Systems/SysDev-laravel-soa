@@ -1,6 +1,5 @@
 <?php
 
-
 return [
     'directorySearch' => [
         'baseUrl' => env('DIRECTORY_SEARCH_URL', 'https://northwestern-prod.apigee.net/directory-search'),
@@ -8,6 +7,8 @@ return [
     ],
 
     'sso' => [
+        'db_log_max_entries' => env('sso_log_max_entries','1000000'),
+        'db_log_enabled' => env('sso_db_log_enabled','true'),
         'openAmBaseUrl' => env('WEBSSO_URL_BASE', 'https://websso.it.northwestern.edu'),
     ],
 

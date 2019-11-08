@@ -16,7 +16,7 @@ class CreateAccessLog extends Migration
     {
         Schema::create('accesses', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('netid')->nullable()->default(null);
+            $table->string('primary_user_id')->nullable()->default(null);
             $table->string('path');
             $table->string('agent');
             $table->timestamp('created_at')->useCurrent();
