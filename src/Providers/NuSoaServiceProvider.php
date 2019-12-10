@@ -5,10 +5,16 @@ namespace Northwestern\SysDev\SOA\Providers;
 use Illuminate\Routing\Route;
 use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Support\ServiceProvider;
+use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM11;
+use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM6;
+use Northwestern\SysDev\SOA\Auth\Strategy\OpenAMAuth;
 use Northwestern\SysDev\SOA\Console\Commands;
 use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
 use Northwestern\SysDev\SOA\DirectorySearch;
+use Northwestern\SysDev\SOA\WebSSO;
+use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
+use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM6Api;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
@@ -39,10 +45,27 @@ class NuSoaServiceProvider extends ServiceProvider
         }
 
         $this->bootEventHub();
+        $this->bootWebSSO();
 
         $ds = new DirectorySearch(EventHub\Guzzle\RetryClient::make());
         $this->app->instance(DirectorySearch::class, $ds);
     } // end boot
+
+    private function bootWebSSO()
+    {
+        // Olde school WebSSO
+        $sso = new OpenAM6Api(EventHub\Guzzle\RetryClient::make(), config('app.url'), config('nusoa.sso.openAmBaseUrl'));
+        $auth_strategy = new OpenAM6($sso);
+
+        // Newe school Websso
+        if (config('nusoa.sso.enableOpenAm11') === true) {
+            $sso = new OpenAM11Api(EventHub\Guzzle\RetryClient::make(), config('app.url'), config('nusoa.sso'));
+            $auth_strategy = new OpenAM11($sso);
+        }
+        
+        $this->app->instance(WebSSO::class, $sso);
+        $this->app->instance(OpenAMAuth::class, $auth_strategy);
+    }
 
     private function bootEventHub()
     {
