@@ -8,43 +8,34 @@ use Illuminate\Http\Request;
 use Northwestern\SysDev\SOA\WebSSO;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
+use Northwestern\SysDev\SOA\Auth\Strategy\NoSsoSession;
+use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM6;
+use Northwestern\SysDev\SOA\Auth\Strategy\OpenAMAuth;
 
 trait WebSSOAuthentication
 {
     use RedirectsUsers, WebSSORoutes;
 
-    public function login(Request $request, WebSSO $sso)
+    public function login(Request $request, OpenAMAuth $sso_strategy)
     {
-        $login_url_w_redirect = $sso->getLoginUrl(route($this->login_route_name, [], false));
-
-        // Laravel nulls out cookies that are not encrypted w/ its key.
-        if (array_key_exists('openAMssoToken', $_COOKIE) === false) {
-            return redirect($login_url_w_redirect);
+        try {
+            $netid = $sso_strategy->login($request, $this->login_route_name, $this->mfa_route_name);
+        } catch (NoSsoSession $e) {
+            return redirect($e->getRedirectUrl());
         }
 
-        $netid = $sso->getNetId($_COOKIE['openAMssoToken']);
-        if ($netid == false) {
-            return redirect($login_url_w_redirect);
-        }
+        $user = app()->call(\Closure::fromCallable('static::findUserByNetId'), [$netid]);
+        throw_if($user === null, new AuthenticationException());
 
-        if (config('duo.enabled') !== true || $request->session()->get('mfa_passed') === true) {
-            $user = app()->call(\Closure::fromCallable('static::findUserByNetId'), [$netid]);
-            throw_if($user === null, new AuthenticationException);
-
-            Auth::login($user);
-        } else {
-            $request->session()->put('mfa_netid', $netid);
-            return redirect(route($this->mfa_route_name));
-        }
+        Auth::login($user);
 
         return $this->authenticated($request, $user) ?: redirect()->intended($this->redirectPath());
     }
 
-    public function logout(WebSSO $sso)
+    public function logout(OpenAMAuth $sso_strategy)
     {
         Auth::logout();
-
-        return redirect($sso->getLogoutUrl());
+        return $sso_strategy->logout();
     }
 
     /**
