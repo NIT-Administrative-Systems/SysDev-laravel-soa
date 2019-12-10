@@ -7,6 +7,15 @@ return [
     ],
 
     'sso' => [
+        'enableOpenAm11' => env('USE_NEW_WEBSSO_SERVER', false),
+        'realm' => env('WEBSSO_REALM', 'northwestern'),
+        'authTree' => env('WEBSSO_TREE', env('DUO_ENABLED', false) == true ? 'ldap-and-duo' : 'ldap-registry'),
+        'cookieName' => env('WEBSSO_COOKIE_NAME', 'nusso'),
+        'apiProperties' => [
+            'netid' => env('WEBSSO_API_NETID_PROPERTY', 'username'),
+            'mfa' => env('WEBSSO_API_MFA_PROPERTY', 'isDuoAuthenticated'),
+        ],
+
         'openAmBaseUrl' => env('WEBSSO_URL_BASE', 'https://websso.it.northwestern.edu'),
     ],
 
