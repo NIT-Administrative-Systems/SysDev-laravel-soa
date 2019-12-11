@@ -11,10 +11,18 @@ use Northwestern\SysDev\SOA\Auth\WebSSOAuthentication;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\Tests\TestCase;
+use Northwestern\SysDev\SOA\Auth\Strategy\OpenAMAuth;
 
-class WebSSOAuthenticationTest extends TestCase
+class OpenAM6AuthenticationTest extends TestCase
 {
     protected $service = WebSSO::class;
+    protected $strategy;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->strategy = resolve(OpenAMAuth::class);
+    }
 
     protected function getPackageProviders($application)
     {
@@ -25,6 +33,7 @@ class WebSSOAuthenticationTest extends TestCase
     {
         // Since the controller manipulates cookies, it needs a key set to work.
         $app['config']->set('app.key', 'base64:'.base64_encode(Encrypter::generateKey($app['config']['app.cipher'])));
+        $app['config']->set('nusoa.sso.enableForgerock', false);
         $app['config']->set('duo.enabled', false);
     } // end getEnvironmentSetUp
 
@@ -39,7 +48,7 @@ class WebSSOAuthenticationTest extends TestCase
             // Successful openAM token lookup
             $this->api->setHttpClient($this->mockedResponse(200, "userdetails.token.id=test-token\nuserdetails.attribute.name=UserToken\nuserdetails.attribute.value=test-id"));
 
-            return $this->mock_controller()->login($request, $this->api);
+            return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
         $response = $this->get(__METHOD__);
@@ -52,7 +61,7 @@ class WebSSOAuthenticationTest extends TestCase
         $this->app['router']->get(__METHOD__, function (Request $request) {
             unset($_COOKIE['openAMssoToken']);
 
-            return $this->mock_controller()->login($request, $this->api);
+            return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
         $response = $this->get(__METHOD__)->assertRedirect();
@@ -66,7 +75,7 @@ class WebSSOAuthenticationTest extends TestCase
 
             $this->api->setHttpClient($this->mockedResponse(200, "userdetails.attribute.name=UserToken"));
 
-            return $this->mock_controller()->login($request, $this->api);
+            return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
         $response = $this->get(__METHOD__)->assertRedirect();
@@ -86,7 +95,7 @@ class WebSSOAuthenticationTest extends TestCase
             $_COOKIE['openAMssoToken'] = 'dummy-token';
             $this->api->setHttpClient($this->mockedResponse(200, "userdetails.token.id=test-token\nuserdetails.attribute.name=UserToken\nuserdetails.attribute.value=test-id"));
 
-            return $this->mock_controller()->login($request, $this->api);
+            return $this->mock_controller()->login($request, $this->strategy);
         }])->name('login');
 
         $response = $this->withSession([])->get(__METHOD__)
