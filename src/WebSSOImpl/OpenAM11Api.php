@@ -91,4 +91,9 @@ class OpenAM11Api implements WebSSO
     {
         return sprintf('%s/nusso/json/realms/root/realms/%s/sessions?_action=getSessionInfo', $this->sso_server, $this->realm);
     }
+
+    public function setHttpClient(GuzzleHttp\Client $client)
+    {
+        $this->http_client = $client;
+    }
 }
