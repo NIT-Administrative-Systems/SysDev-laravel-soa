@@ -63,7 +63,7 @@ class OpenAM11Api implements WebSSO
         return null;
     }
 
-    public function getLoginUrl(string $redirect_path): string
+    public function getLoginUrl(string $redirect_path = null): string
     {
         $redirect_to = $this->app_url;
         if ($redirect_path != null) {
