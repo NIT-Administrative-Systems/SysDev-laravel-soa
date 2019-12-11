@@ -4,12 +4,14 @@ namespace Northwestern\SysDev\SOA\Tests\WebSSO;
 
 use GuzzleHttp\Client;
 use Northwestern\SysDev\SOA\WebSSO;
-use GuzzleHttp\Exception\RequestException;
 use Northwestern\SysDev\SOA\Tests\TestCase;
 use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
+use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
 
 class OpenAM11Test extends TestCase
 {
+    use TestsOpenAM11;
+
     protected $service = WebSSO::class;
 
     public function setUp(): void
@@ -30,7 +32,7 @@ class OpenAM11Test extends TestCase
     public function valid_session()
     {
         $netid = 'netid123';
-        $this->api->setHttpClient($this->mockedResponse(200, $this->ssoJson($netid)));
+        $this->api->setHttpClient($this->mockedResponse(200, $this->ssoResponseJson($netid)));
 
         $user = $this->api->getUser('test-token');
         $this->assertEquals($netid, $user->getNetid());
@@ -59,21 +61,5 @@ class OpenAM11Test extends TestCase
     {
         $this->assertNotEmpty($this->api->getLoginUrl());
         $this->assertNotEmpty($this->api->getLoginUrl('/foobar'));
-    }
-
-    private function ssoJson(string $netid = 'dog1234', bool $isDuoAuthed = false): string
-    {
-        return json_encode([
-            'username' => $netid,
-            'universalId' => sprintf('id=%s,ou=user,ou=am-config,dc=northwestern,dc=edu', $netid),
-            'realm' => '/',
-            'latestAccessTime' => '2019-11-18T14:17:03Z',
-            'maxIdleExpirationTime' => '2019-11-18T18:17:03Z',
-            'maxSessionExpirationTime' => '2019-11-19T02:17:02Z',
-            'properties' => [
-                'AMCtxId' => 'faa9b02e-df32-4c3b-9775-9c1e310d7265-91217',
-                'isDuoAuthenticated' => $isDuoAuthed,
-            ],
-        ]);
     }
 }
