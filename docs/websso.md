@@ -55,6 +55,10 @@ protected function findUserByNetID(DirectorySearch $directory_api, string $netid
 You may optionally implement the `authenticated` method. If you return a `redirect()`, it will be followed. Otherwise, the default Laravel behaviour will be used.
 
 ## Enabling Duo MFA
+:::tip New WebSSO
+If you have opted in to the new webSSO (`USE_NEW_WEBSSO_SERVER=true`), you only need to set `DUO_ENABLED=true`. The integration keys are no longer required.
+:::
+
 If you want to enable Duo MFA, you will need to submit a ticket to Identity Services team via [consultant@northwestern.edu](mailto:consultant@northwestern.edu):
 
 > Hi Identity Services,
@@ -125,13 +129,12 @@ class MyController extends Controllers
         // It requires that all cookies be set by Laravel & encrypted with the app's key.
         $token = $_COOKIE['openAMssoToken'];
 
-        $netid = $sso->getNetID($token);
-        if ($netid == false) {
-            // Error
-            dd($sso->getLastError());
+        $user = $sso->getUser($token);
+        if ($netid == null) {
+            redirect('sso login page url here');
         }
 
-        dd($netid); // netID as a string with no frills
+        dd($user->getNetid()); // netID as a string with no frills
     }
 }
 ```

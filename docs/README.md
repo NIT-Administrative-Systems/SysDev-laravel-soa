@@ -3,7 +3,8 @@ This package enhanced Laravel with easy access to popular Northwestern APIs & we
 
 | Service          | Prerequisites                         |
 | ---------------- | ------------------------------------- |
-| WebSSO           | None, optional Duo integration keys   |
+| Old WebSSO       | None, optional Duo integration keys   |
+| New WebSSO       | None                                  |
 | Directory Search | Data steward approval, Apigee API key |
 | EventHub         | Topics or queues, Apigee API key      |
 
@@ -35,15 +36,15 @@ The API objects should be injected by the Laravel service container. This ensure
 
 namespace App\Http\Controllers;
 
-use Northwestern\SysDev\SOA\WebSSO;
+use Northwestern\SysDev\SOA\DirectorySearch;
 
 class MyController extends Controllers
 {
-    protected $sso;
+    protected $ds_api;
 
-    public function __construct(WebSSO $sso)
+    public function __construct(DirectorySearch $ds_api)
     {
-        $this->sso = $sso;
+        $this->ds_api = $ds_api;
     }
 
 }
@@ -52,7 +53,7 @@ class MyController extends Controllers
 If you are ever in a spot where injection is unavailable, you can always call `resolve` yourself. This is particularly handy in the tinker console:
 
 ```php
-$pub = resolve(Northwestern\SysDev\SOA\WebSSO::class);
+$pub = resolve(Northwestern\SysDev\SOA\DirectorySearch::class);
 ```
 
 For troubleshooting, each API has a `getLastError()` method. `dd()`ing the API object should give you everything you'll need, including the request body and URL.
