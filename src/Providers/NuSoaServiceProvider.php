@@ -7,7 +7,7 @@ use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM11;
 use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM6;
-use Northwestern\SysDev\SOA\Auth\Strategy\OpenAMAuth;
+use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
 use Northwestern\SysDev\SOA\Console\Commands;
 use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
@@ -64,7 +64,7 @@ class NuSoaServiceProvider extends ServiceProvider
         }
         
         $this->app->instance(WebSSO::class, $sso);
-        $this->app->instance(OpenAMAuth::class, $auth_strategy);
+        $this->app->instance(WebSSOStrategy::class, $auth_strategy);
     }
 
     private function bootEventHub()

@@ -5,18 +5,16 @@ namespace Northwestern\SysDev\SOA\Auth;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
-use Northwestern\SysDev\SOA\WebSSO;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Northwestern\SysDev\SOA\Auth\Strategy\NoSsoSession;
-use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM6;
-use Northwestern\SysDev\SOA\Auth\Strategy\OpenAMAuth;
+use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
 
 trait WebSSOAuthentication
 {
     use RedirectsUsers, WebSSORoutes;
 
-    public function login(Request $request, OpenAMAuth $sso_strategy)
+    public function login(Request $request, WebSSOStrategy $sso_strategy)
     {
         try {
             $netid = $sso_strategy->login($request, $this->login_route_name, $this->mfa_route_name);
@@ -32,7 +30,7 @@ trait WebSSOAuthentication
         return $this->authenticated($request, $user) ?: redirect()->intended($this->redirectPath());
     }
 
-    public function logout(OpenAMAuth $sso_strategy)
+    public function logout(WebSSOStrategy $sso_strategy)
     {
         Auth::logout();
         return $sso_strategy->logout();

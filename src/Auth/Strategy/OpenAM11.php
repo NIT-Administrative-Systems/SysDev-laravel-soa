@@ -8,7 +8,7 @@ use Northwestern\SysDev\SOA\WebSSO;
 /**
  * OpenAM 11 ("new" webSSO) login strategy.
  */
-class OpenAM11 implements OpenAMAuth
+class OpenAM11 implements WebSSOStrategy
 {
     private $sso;
 

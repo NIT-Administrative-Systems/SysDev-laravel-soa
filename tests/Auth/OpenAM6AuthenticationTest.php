@@ -11,7 +11,7 @@ use Northwestern\SysDev\SOA\Auth\WebSSOAuthentication;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\Tests\TestCase;
-use Northwestern\SysDev\SOA\Auth\Strategy\OpenAMAuth;
+use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
 
 class OpenAM6AuthenticationTest extends TestCase
 {
@@ -21,7 +21,7 @@ class OpenAM6AuthenticationTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->strategy = resolve(OpenAMAuth::class);
+        $this->strategy = resolve(WebSSOStrategy::class);
     }
 
     protected function getPackageProviders($application)

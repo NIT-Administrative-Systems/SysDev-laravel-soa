@@ -8,7 +8,7 @@ use Northwestern\SysDev\SOA\WebSSO;
 /**
  * OpenAM 6 ("old" webSSO) login strategy.
  */
-class OpenAM6 implements OpenAMAuth
+class OpenAM6 implements WebSSOStrategy
 {
     protected $sso;
     
