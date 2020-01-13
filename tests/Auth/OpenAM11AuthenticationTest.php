@@ -13,8 +13,9 @@ use Northwestern\SysDev\SOA\Auth\WebSSOAuthentication;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\Tests\TestCase;
-use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
+use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
+use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
 
 class OpenAM11AuthenticationTest extends TestCase
 {
@@ -26,7 +27,7 @@ class OpenAM11AuthenticationTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->api = new OpenAM11Api(resolve(Client::class), config('app.url'), config('nusoa.sso'));
+        $this->api = new ApigeeAgentless(resolve(Client::class), config('app.url'), config('nusoa.sso'));
         $this->strategy = new OpenAM11($this->api);
     }
 
@@ -39,7 +40,7 @@ class OpenAM11AuthenticationTest extends TestCase
     {
         // Since the controller manipulates cookies, it needs a key set to work.
         $app['config']->set('app.key', 'base64:'.base64_encode(Encrypter::generateKey($app['config']['app.cipher'])));
-        $app['config']->set('nusoa.sso.enableForgerock', true);
+        $app['config']->set('nusoa.sso.strategy', 'apigee');
         $app['config']->set('duo.enabled', false);
     } // end getEnvironmentSetUp
 
@@ -93,7 +94,7 @@ class OpenAM11AuthenticationTest extends TestCase
         $this->app['config']->set('nusoa.sso.authTree', 'ldap-and-duo');
         $this->app['config']->set('duo.enabled', true);
 
-        $this->api = new OpenAM11Api(resolve(Client::class), config('app.url'), config('nusoa.sso'));
+        $this->api = new ApigeeAgentless(resolve(Client::class), config('app.url'), config('nusoa.sso'));
         $this->strategy = new OpenAM11($this->api);
 
         $this->app['router']->get(__METHOD__, ['middleware' => 'web', 'uses' => function (Request $request) {

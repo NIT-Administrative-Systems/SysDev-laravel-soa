@@ -5,8 +5,8 @@ namespace Northwestern\SysDev\SOA\Tests\WebSSO;
 use GuzzleHttp\Client;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\Tests\TestCase;
-use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
+use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 
 class OpenAM11Test extends TestCase
 {
@@ -19,12 +19,12 @@ class OpenAM11Test extends TestCase
         parent::setUp();
 
         // Test sets this up too early for the impls to swap, so make it explicitly.
-        $this->api = new OpenAM11Api(resolve(Client::class), config('app.url'), config('nusoa.sso'));
+        $this->api = new ApigeeAgentless(resolve(Client::class), config('app.url'), config('nusoa.sso'));
     }
 
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('nusoa.sso.enableForgerock', true);
+        $app['config']->set('nusoa.sso.strategy', 'apigee');
         $app['config']->set('duo.enabled', true);
     }
 

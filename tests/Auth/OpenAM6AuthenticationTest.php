@@ -33,7 +33,7 @@ class OpenAM6AuthenticationTest extends TestCase
     {
         // Since the controller manipulates cookies, it needs a key set to work.
         $app['config']->set('app.key', 'base64:'.base64_encode(Encrypter::generateKey($app['config']['app.cipher'])));
-        $app['config']->set('nusoa.sso.enableForgerock', false);
+        $app['config']->set('nusoa.sso.strategy', 'classic');
         $app['config']->set('duo.enabled', false);
     } // end getEnvironmentSetUp
 

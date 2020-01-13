@@ -12,7 +12,7 @@ class OpenAM6Test extends TestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('nusoa.sso.enableForgerock', false);
+        $app['config']->set('nusoa.sso.strategy', 'classic');
     }
 
     public function testValidSession()
