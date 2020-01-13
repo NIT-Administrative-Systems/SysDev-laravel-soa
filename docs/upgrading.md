@@ -10,7 +10,11 @@ If you are using the provided webSSO login workflow from `php artisan make:sso`,
 
 ```ini
 USE_NEW_WEBSSO_SERVER=true
+
+# If you're not using new SSO, you do not need to set these.
 WEBSSO_URL_BASE=https://uat-websso.it.northwestern.edu
+WEBSSO_API_URL_BASE=https://northwestern-test.apigee.net/agentless-websso
+WEBSSO_API_KEY=your-apikey-here
 ```
 
 This is the recommended upgrade path; it allows you to deploy support in advance and easily migrate back and forth as needed.
