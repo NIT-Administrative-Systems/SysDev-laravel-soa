@@ -7,20 +7,15 @@ return [
     ],
 
     'sso' => [
-        // 'enableOpenAm11' => env('USE_NEW_WEBSSO_SERVER', false),
-
         // Valid options are: classic, apigee, forgerock-direct
-        // You should just do USE_NEW_WEBSSO_SERVER=true or USE_NEW_WEBSSO_SERVER=false
+        // But, ou should just do USE_NEW_WEBSSO_SERVER=true or USE_NEW_WEBSSO_SERVER=false
+        // The forgerock-direct is for advance use-cases and contingencies.
         'strategy' => env('WEBSSO_STRATEGY', env('USE_NEW_WEBSSO_SERVER') == false ? 'classic' : 'apigee'),
-
-        // forgerock-direct
+        'openAmBaseUrl' => env('WEBSSO_URL_BASE', 'https://websso.it.northwestern.edu'),
+        
+        // forgerock-direct & apigee
         'realm' => env('WEBSSO_REALM', 'northwestern'),
         'authTree' => env('WEBSSO_TREE', env('DUO_ENABLED', false) == true ? 'ldap-and-duo' : 'ldap-registry'),
-
-        // forgerock-direct & classic
-        'openAmBaseUrl' => env('WEBSSO_URL_BASE', 'https://websso.it.northwestern.edu'),
-
-        // forgerock-direct & apigee
         'cookieName' => env('WEBSSO_COOKIE_NAME', 'nusso'),
 
         // apigee
