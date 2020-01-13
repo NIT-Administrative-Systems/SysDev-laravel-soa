@@ -27,18 +27,9 @@ class OpenAM11Api implements WebSSO
 
     public function getUser(string $token): ?User
     {
-        $response = $this->http_client->post($this->getEndpointUrl(), [
-            // No exceptions, we do our own error handling
-            'http_errors' => false,
-            'headers' => [
-                'Accept-API-Version' => 'resource=3',
-            ],
-            'json' => [
-                'tokenId' => $token,
-                'realm' => '/',
-            ],
-        ]);
-
+        $endpoint_url = $this->getEndpointUrl();
+        
+        $response = $this->getSessionInfo($endpoint_url, $token);
         if ($response === null) {
             throw new \Exception(vsprintf('Unable to reach webSSO service. Verify connectivity to %s', [$this->getEndpointUrl()]));
         }
@@ -75,7 +66,6 @@ class OpenAM11Api implements WebSSO
 
         return $login_url;
     }
-
     
     public function getLogoutUrl(): string
     {
@@ -87,7 +77,22 @@ class OpenAM11Api implements WebSSO
         return $this->cookie_name;
     }
 
-    private function getEndpointUrl(): string
+    protected function getSessionInfo(string $endpoint_url, string $token)
+    {
+        return $this->http_client->post($endpoint_url, [
+            // No exceptions, we do our own error handling
+            'http_errors' => false,
+            'headers' => [
+                'Accept-API-Version' => 'resource=3',
+            ],
+            'json' => [
+                'tokenId' => $token,
+                'realm' => '/',
+            ],
+        ]);
+    }
+
+    protected function getEndpointUrl(): string
     {
         return sprintf('%s/nusso/json/realms/root/realms/%s/sessions?_action=getSessionInfo', $this->sso_server, $this->realm);
     }

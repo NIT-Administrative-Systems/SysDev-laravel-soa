@@ -13,6 +13,7 @@ use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
 use Northwestern\SysDev\SOA\DirectorySearch;
 use Northwestern\SysDev\SOA\WebSSO;
+use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
 use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM6Api;
 
@@ -53,14 +54,25 @@ class NuSoaServiceProvider extends ServiceProvider
 
     private function bootWebSSO()
     {
-        // Olde school WebSSO
-        $sso = new OpenAM6Api(EventHub\Guzzle\RetryClient::make(), config('app.url'), config('nusoa.sso.openAmBaseUrl'));
-        $auth_strategy = new OpenAM6($sso);
+        $http = EventHub\Guzzle\RetryClient::make();
+        $url = (string) config('app.url');
+        $sso_config = (array) config('nusoa.sso');
 
-        // Newe school Websso
-        if (config('nusoa.sso.enableOpenAm11') === true) {
-            $sso = new OpenAM11Api(EventHub\Guzzle\RetryClient::make(), config('app.url'), config('nusoa.sso'));
-            $auth_strategy = new OpenAM11($sso);
+        switch (config('nusoa.sso.strategy')) {
+            case 'forgerock-direct':
+                $sso = new OpenAM11Api($http, $url, $sso_config);
+                $auth_strategy = new OpenAM11($sso);
+            break;
+
+            case 'apigee':
+                $sso = new ApigeeAgentless($http, $url, $sso_config);
+                $auth_strategy = new OpenAM11($sso);
+            break;
+
+            default:
+                $sso = new OpenAM6Api($http, $url, (string) config('nusoa.sso.openAmBaseUrl'));
+                $auth_strategy = new OpenAM6($sso);
+            break;
         }
         
         $this->app->instance(WebSSO::class, $sso);
