@@ -19,6 +19,12 @@ WEBSSO_API_KEY=your-apikey-here
 
 This is the recommended upgrade path; it allows you to deploy support in advance and easily migrate back and forth as needed.
 
+:::danger HTTPS Required
+The new webSSO sets the `secure` flag on its cookie. Your development site **must** be served over HTTPS in order to work.
+
+If you hit a redirect loop when logging in to your app after switching, verify that your site is being served via HTTPS.
+:::
+
 The multi-factor authentication step will be handled by the webSSO server. You do not need Duo integration keys after you have moved to the new webSSO. The `DUO_ENABLED` environment variable still controls whether or not you want multi-factor authentication.
 
 ### Breaking Changes
