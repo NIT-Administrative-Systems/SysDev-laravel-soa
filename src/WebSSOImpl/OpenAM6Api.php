@@ -65,7 +65,7 @@ class OpenAM6Api implements WebSSO
      * @param  string value of openAMssoToken cookie
      * @return string   the netID, or null for an invalid token.
      */
-    public function getNetID($token): ?string
+    public function getNetID(string $token): ?string
     {
         $user = $this->getUser($token);
 
