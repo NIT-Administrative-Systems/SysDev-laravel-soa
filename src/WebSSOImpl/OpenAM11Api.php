@@ -69,7 +69,7 @@ class OpenAM11Api implements WebSSO
     
     public function getLogoutUrl(): string
     {
-        return sprintf('%s/nusso/json/realms/root/realms/%s/sessions?_action=logout', $this->sso_server, $this->realm);
+        return sprintf('%s/nusso/XUI/?realm=/%s#logout', $this->sso_server, $this->realm);
     }
 
     public function getCookieName(): string
