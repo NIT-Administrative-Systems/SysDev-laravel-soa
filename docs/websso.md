@@ -97,9 +97,12 @@ If you want to rename these routes, you will need to override these properties i
 ```php
 class WebSSOController extends Controller
 {
-    protected $login_route_name = 'login';
-    protected $logout_route_name = 'logout';
-    protected $mfa_route_name = 'mfa.index';
+    public function __construct()
+    {
+        $this->login_route_name = 'login';
+        $this->logout_route_name = 'logout';
+        $this->mfa_route_name = 'mfa.index';
+    }
 
     // . . .
 }
