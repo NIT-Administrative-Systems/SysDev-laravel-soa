@@ -94,6 +94,8 @@ The default route names `login`, `logout`, and `mfa.index` are used by the contr
 
 If you want to rename these routes, you will need to override these properties in both controllers.
 
+There is a fourth property, `logout_return_to_route`, that controls where the New WebSSO logout page will send users. In an application that only uses WebSSO for logins, you can leave this `null`.
+
 ```php
 class WebSSOController extends Controller
 {
@@ -102,6 +104,8 @@ class WebSSOController extends Controller
         $this->login_route_name = 'login';
         $this->logout_route_name = 'logout';
         $this->mfa_route_name = 'mfa.index';
+
+        $this->logout_return_to_route = null;
     }
 
     // . . .
