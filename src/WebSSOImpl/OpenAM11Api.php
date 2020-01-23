@@ -56,20 +56,28 @@ class OpenAM11Api implements WebSSO
 
     public function getLoginUrl(string $redirect_path = null): string
     {
-        $redirect_to = $this->app_url;
-        if ($redirect_path != null) {
-            $redirect_to = vsprintf('%s/%s', [trim($redirect_to, '/'), trim($redirect_path, '/')]);
-        }
-        
-        $redirect_to = urlencode($redirect_to);
-        $login_url = sprintf('%s/nusso/XUI/?realm=%s#login&authIndexType=service&authIndexValue=%s&goto=%s', $this->sso_server, $this->realm, $this->tree, $redirect_to);
+        $redirect_to = $this->prepareRedirect($redirect_path);
 
-        return $login_url;
+        return sprintf('%s/nusso/XUI/?realm=%s#login&authIndexType=service&authIndexValue=%s&goto=%s', $this->sso_server, $this->realm, $this->tree, $redirect_to);
     }
     
-    public function getLogoutUrl(): string
+    public function getLogoutUrl(?string $redirect_path = null): string
     {
-        return sprintf('%s/nusso/XUI/?realm=/%s#logout', $this->sso_server, $this->realm);
+        /*
+        * If the redirect for logout is left blank, the default OpenAM XUI behaviour is used.
+        * It will display a logged out page with a "Return to Login" link, and the return to login will
+        * have looked up the original login goto for that session & send you there.
+        *
+        * OTOH, if it is set, the logout page will BRIEFLY display a logged out message, then auto-redirect
+        * to the specified route.
+        */
+
+        $redirect_fragment = '';
+        if ($redirect_path !== null) {
+            $redirect_fragment = sprintf('&goto=%s', $this->prepareRedirect($redirect_path));
+        }
+        
+        return sprintf('%s/nusso/XUI/?realm=/%s#logout%s', $this->sso_server, $this->realm, $redirect_fragment);
     }
 
     public function getCookieName(): string
@@ -95,6 +103,16 @@ class OpenAM11Api implements WebSSO
     protected function getEndpointUrl(): string
     {
         return sprintf('%s/nusso/json/realms/root/realms/%s/sessions?_action=getSessionInfo', $this->sso_server, $this->realm);
+    }
+
+    private function prepareRedirect(string $redirect_path = null): string
+    {
+        $redirect_to = $this->app_url;
+        if ($redirect_path != null) {
+            $redirect_to = vsprintf('%s/%s', [trim($redirect_to, '/'), trim($redirect_path, '/')]);
+        }
+        
+        return urlencode($redirect_to);
     }
 
     public function setHttpClient(GuzzleHttp\Client $client)

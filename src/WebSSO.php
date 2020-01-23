@@ -8,7 +8,7 @@ interface WebSSO
 {
     public function getUser(string $token): ?User;
     public function getLoginUrl(string $redirect_path): string;
-    public function getLogoutUrl(): string;
+    public function getLogoutUrl(?string $redirect_path = null): string;
     public function getCookieName(): string;
 
     /**

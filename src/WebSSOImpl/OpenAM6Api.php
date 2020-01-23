@@ -110,8 +110,9 @@ class OpenAM6Api implements WebSSO
         return $this->sso_server . "/amserver/UI/Login?goto=$redirect_to&ForceAuthn=false&IsPassive=false&Federate=false";
     }
 
-    public function getLogoutUrl(): string
+    public function getLogoutUrl(?string $redirect_path = null): string
     {
+        // The SSO server does not have a link back to the app, so this is unused.
         return $this->sso_server . "/amserver/UI/Logout.jsp";
     }
 
