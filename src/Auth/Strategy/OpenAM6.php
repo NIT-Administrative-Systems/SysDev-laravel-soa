@@ -39,8 +39,8 @@ class OpenAM6 implements WebSSOStrategy
         }
     }
 
-    public function logout()
+    public function logout(?string $logout_return_to_route)
     {
-        return redirect($this->sso->getLogoutUrl());
+        return redirect($this->sso->getLogoutUrl(null));
     }
 }

@@ -39,8 +39,14 @@ class OpenAM11 implements WebSSOStrategy
         return $user->getNetid();
     }
 
-    public function logout()
+    public function logout(?string $logout_return_to_route)
     {
-        return redirect($this->sso->getLogoutUrl());
+        $redirect_to = null;
+        if ($logout_return_to_route !== null) {
+            $redirect_to = route($logout_return_to_route, [], false);
+        }
+        
+
+        return redirect($this->sso->getLogoutUrl($redirect_to));
     }
 }

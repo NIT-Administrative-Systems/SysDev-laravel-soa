@@ -33,7 +33,7 @@ trait WebSSOAuthentication
     public function logout(WebSSOStrategy $sso_strategy)
     {
         Auth::logout();
-        return $sso_strategy->logout();
+        return $sso_strategy->logout($this->logout_return_to_route);
     }
 
     /**
