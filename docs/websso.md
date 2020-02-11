@@ -137,7 +137,7 @@ class MyController extends Controllers
         $token = $_COOKIE['openAMssoToken'];
 
         $user = $sso->getUser($token);
-        if ($netid == null) {
+        if ($user == null) {
             redirect('sso login page url here');
         }
 
