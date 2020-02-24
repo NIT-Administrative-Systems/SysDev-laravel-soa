@@ -27,7 +27,7 @@ class WebhookConfiguration extends Command
 
     public function handle()
     {
-        $force_delete = $this->argument('force');
+        $force_delete = $this->option('force');
 
         $registered_hooks = collect($this->webhook_api->listAll()['webhooks']);
         $registered_hooks = $registered_hooks->map(function ($hook) {
