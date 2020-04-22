@@ -18,9 +18,6 @@
         "duosecurity/duo_php": "dev-master",
         "laravel/ui": "^2.0"
     },
-    "conflict": {
-        "laravel/framework": "<7.0"
-    },
     "require-dev": {
         "orchestra/testbench": "~5.0",
         "php-coveralls/php-coveralls": "^2.1",
