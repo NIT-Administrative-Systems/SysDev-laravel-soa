@@ -16,6 +16,14 @@ composer require northwestern-sysdev/laravel-soa
 php artisan vendor:publish --provider="Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider"
 ```
 
+:::warn Laravel 6 & 5.x
+If you are on an older version of Laravel, the latest version of the package may not install. You can explicitly install v4, which is compatible:
+
+```bash
+composer require northwestern-sysdev/laravel-soa ^4
+```
+:::
+
 And finally, add the options to your `.env` file (and don't forget to update `.env.example` for the rest of your team!) for the services you want to use:
 
 ```bash
