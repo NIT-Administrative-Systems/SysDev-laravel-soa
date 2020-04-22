@@ -22,7 +22,7 @@ trait WebSSOAuthentication
             return redirect($e->getRedirectUrl());
         }
 
-        $user = app()->call(\Closure::fromCallable('static::findUserByNetId'), [$netid]);
+        $user = app()->call(\Closure::fromCallable('static::findUserByNetId'), ['netid' => $netid]);
         throw_if($user === null, new AuthenticationException());
 
         Auth::login($user);
