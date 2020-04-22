@@ -1,10 +1,5 @@
 # Upgrading
 
-## From v4 to v5
-v5 is a compatability release for Laravel 7, and drops support for older versions of Laravel. Users on Laravel 5.x & 6 may continue to use v4.
-
-If you do not already have the dependency, the `laravel/ui` package is now required.
-
 ## From v3 to v4
 This release adds opt-in support for the new webSSO on OpenAM 11. Code supporting the old webSSO system has been marked as deprecated and will be removed after the project is compelete.
 
