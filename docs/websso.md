@@ -3,7 +3,6 @@ The package provides a command that will set up WebSSO, and optionally Duo multi
 
 - Create SSO & Duo controllers in `App\Http\Controllers\Auth`
 - Adds named routes to your `web/routes.php`
-- Ejects a `resources/views/auth/mfa.blade.php` template for rendering the Duo MFA widget
 
 The approach taken is flexible. It is suited for both applications that only use WebSSO *and* applications with multiple login methods.
 
@@ -15,6 +14,11 @@ Authentication is achieved by logging users into Laravel; once the webSSO sessio
 The package does not implement a custom [auth provider](https://laravel.com/docs/5.8/authentication#adding-custom-user-providers) and relies on the default database provider for the `App\User` model.
 :::
 
+## Prerequisites
+You will need an Apigee key with access to the `IDM - Agentless WebSSO`. The key will include access to the SSO & MFA API. 
+
+This must be requested through the [API service registry](https://apiserviceregistry.northwestern.edu/).
+
 ## Setting up SSO
 Getting webSSO working should only take a few minutes.
 
@@ -22,7 +26,23 @@ Getting webSSO working should only take a few minutes.
 php artisan make:websso
 ```
 
-First, review your `routes/web.php`. You can adjust the paths, if desired.
+First, add the following to your `.env`:
+
+```ini
+WEBSSO_API_KEY=YOUR_APIGEE_API_KEY
+
+# Prod would be https://prd-nusso.it.northwestern.edu
+WEBSSO_URL_BASE=https://uat-nusso.it.northwestern.edu
+
+# Prod would be https://northwestern-prod.apigee.net/agentless-websso
+WEBSSO_API_URL_BASE=https://northwestern-test.apigee.net/agentless-websso
+
+# Controls whether or not MFA will be required
+# You should enable MFA, unless there's a good reason not to!
+DUO_ENABLED=true
+```
+
+Review your `routes/web.php`. You can adjust the paths, if desired.
 
 Then, open up `App\Http\Controllers\Auth\WebSSOController` and implement the `findUserByNetID` method. You may inject any additional dependencies (e.g. `DirectorySearch`) you need in this method.
 
@@ -54,43 +74,8 @@ protected function findUserByNetID(DirectorySearch $directory_api, string $netid
 
 You may optionally implement the `authenticated` method. If you return a `redirect()`, it will be followed. Otherwise, the default Laravel behaviour will be used.
 
-## Enabling Duo MFA
-:::tip New WebSSO
-If you have opted in to the new webSSO (`USE_NEW_WEBSSO_SERVER=true`), you only need to set `DUO_ENABLED=true`. The integration keys are no longer required.
-:::
-
-If you want to enable Duo MFA, you will need to submit a ticket to Identity Services team via [consultant@northwestern.edu](mailto:consultant@northwestern.edu):
-
-> Hi Identity Services,
->
->Can you create a new Web SDK application for us in Duo, called [application or project name]?
->
->We need the following info from you once it's created:
->
->- Integration key (IKEY)
->- Secret key (SKEY)
->- API URL
-> 
->Thank you very much!
-
-Once you have recieved this information, you must generated an application key (AKEY). Duo recommends a 40+ character string, which you can create by running `bin2hex(random_bytes(32))` in the tinker console.
-
-With these four config items in hand, update your `.env`:
-
-```
-DUO_ENABLED=true
-DUO_IKEY=
-DUO_SKEY=
-DUO_AKEY=
-DUO_URL=
-```
-
-You may need to update the `resources/views/auth/mfa.blade.php` file to fit your site layout; it assumes the default Laravel `layouts.app` template is being used.
-
-Duo should now be enabled.
-
 ## Changing Routes
-The default route names `login`, `logout`, and `mfa.index` are used by the controller traits.
+The default route names `login` & `logout` are used by the controller traits.
 
 If you want to rename these routes, you will need to override these properties in both controllers.
 
@@ -103,7 +88,6 @@ class WebSSOController extends Controller
     {
         $this->login_route_name = 'login';
         $this->logout_route_name = 'logout';
-        $this->mfa_route_name = 'mfa.index';
 
         $this->logout_return_to_route = null;
     }
@@ -115,7 +99,7 @@ class WebSSOController extends Controller
 If you are only using WebSSO to authenticate in your app, this should not be necessary. If you have multiple login methods, you will either need to rename the routes, or update your `App\Http\Middleware\Authenticate` to send unauthenticated users to page that lets them choose their login method.
 
 ## API
-The webSSO class will resolve the value of an `openAMssoToken` cookie into a NetID.
+The webSSO class will resolve the value of an `nusso` cookie into a NetID.
 
 :::tip Unusual Use-cases Only
 If you have set up the authentication controllers as detailed in [the previous section](#authentication-flow), you should not need to use the `WebSSO` class yourself.
@@ -134,7 +118,10 @@ class MyController extends Controllers
     {
         // Note that $request->cookie() won't work here.
         // It requires that all cookies be set by Laravel & encrypted with the app's key.
-        $token = $_COOKIE['openAMssoToken'];
+        //
+        // You can add cookie names to the EncryptCookies middleware's $except property to get around that,
+        // but for our example, $_COOKIE works just fine.
+        $token = $_COOKIE['nusso'];
 
         $user = $sso->getUser($token);
         if ($user == null) {

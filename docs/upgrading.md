@@ -1,5 +1,19 @@
 # Upgrading
 
+## From v5 to v6
+v6 changes the default webSSO strategy from the legacy webSSO system to the newer one. This is a breaking change that merits a major version bump, but if you have already switched (and most systems have) then this release can be treated as a minor upgrade.
+
+The `USE_NEW_WEBSSO_SERVER` environment variable has been removed. If you want to use the older webSSO system, you can configure your system like this:
+
+```ini
+WEBSSO_STRATEGY=classic
+WEBSSO_URL_BASE=https://websso.it.northwestern.edu
+```
+
+Using the new webSSO is unchanged. You should remove the `USE_NEW_WEBSSO_SERVER=true` environment variable to avoid confusion in the future, but it won't hurt anything.
+
+If your app has the ejected `resources/views/auth/mfa.blade.php` file, it can be removed. The new webSSO handles the MFA prompt during its login flow, so this view is no longer used.
+
 ## From v4 to v5
 v5 is a compatability release for Laravel 7, and drops support for older versions of Laravel. Users on Laravel 5.x & 6 may continue to use v4.
 

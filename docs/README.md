@@ -3,8 +3,7 @@ This package enhanced Laravel with easy access to popular Northwestern APIs & we
 
 | Service          | Prerequisites                         |
 | ---------------- | ------------------------------------- |
-| Old WebSSO       | None, optional Duo integration keys   |
-| New WebSSO       | Apigee API key                        |
+| WebSSO           | Apigee API key                        |
 | Directory Search | Data steward approval, Apigee API key |
 | EventHub         | Topics or queues, Apigee API key      |
 
