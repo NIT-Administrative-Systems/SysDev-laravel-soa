@@ -8,10 +8,9 @@ return [
 
     'sso' => [
         // Valid options are: classic, apigee, forgerock-direct
-        // But, ou should just do USE_NEW_WEBSSO_SERVER=true or USE_NEW_WEBSSO_SERVER=false
         // The forgerock-direct is for advance use-cases and contingencies.
-        'strategy' => env('WEBSSO_STRATEGY', env('USE_NEW_WEBSSO_SERVER') == false ? 'classic' : 'apigee'),
-        'openAmBaseUrl' => env('WEBSSO_URL_BASE', 'https://websso.it.northwestern.edu'),
+        'strategy' => env('WEBSSO_STRATEGY', 'apigee'),
+        'openAmBaseUrl' => env('WEBSSO_URL_BASE', 'https://uat-nusso.it.northwestern.edu'),
         
         // forgerock-direct & apigee
         'realm' => env('WEBSSO_REALM', 'northwestern'),
