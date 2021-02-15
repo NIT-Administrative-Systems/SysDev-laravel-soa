@@ -15,7 +15,7 @@
     "require": {
         "guzzlehttp/guzzle": "^7.0",
         "northwestern-sysdev/event-hub-php-sdk": "^2.0",
-        "laravel/ui": "^3.0"
+        "laravel/ui": "^3.0|^2.0"
     },
     "require-dev": {
         "orchestra/testbench": "~6.0",
