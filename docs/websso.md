@@ -79,7 +79,7 @@ The default route names `login` & `logout` are used by the controller traits.
 
 If you want to rename these routes, you will need to override these properties in both controllers.
 
-There is a fourth property, `logout_return_to_route`, that controls where the New WebSSO logout page will send users. In an application that only uses WebSSO for logins, you can leave this `null`.
+There is a fourth property, `logout_return_to_route`, that controls where the WebSSO logout page will send users. In an application that only uses WebSSO for logins, you can leave this `null`.
 
 ```php
 class WebSSOController extends Controller

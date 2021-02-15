@@ -1,5 +1,21 @@
 # Upgrading
 
+## From v6 to v7
+Support for older versions of PHP has been discontinued. v7 requires PHP 7.4 or higher. You can continue to use an older version of the package if you are using an older version of PHP.
+
+The `WEBSSO_STRATEGY=classic` option has been removed entirely. 
+
+The dependency on Duo's PHP SDK, along with supporting code for doing Duo authentication in your own app, has been removed. The newer webSSO login flow includes the Duo prompt; your application no longer has to present the widget.
+
+- If you have ejected the `config/duo.php` file, you can remove the file. 
+- If you have the `mfa_route_name` route overwritten per [the webSSO Changing Routes guide](websso.md#changing-routes), you can remove the line of code. 
+- If you have `Route::resource('auth/mfa', 'Auth\DuoController')->only(['index', 'store']);` in your `routes/web.php` file, you can remove the line of code.
+- If you have an `Http\Controllers\Auth\DuoController` controller, you can remove the file.
+
+There is one breaking change in this version: if you have implemented a custom `Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy` (**you probably have not**), the login method no longer takes the `string $mfa_route_name` parameter. The new method signature is as follows:
+
+`public function login(Request $request, string $login_route_name);`
+
 ## From v5 to v6
 v6 changes the default webSSO strategy from the legacy webSSO system to the newer one. This is a breaking change that merits a major version bump, but if you have already switched (and most systems have) then this release can be treated as a minor upgrade.
 
