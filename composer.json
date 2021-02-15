@@ -15,7 +15,6 @@
     "require": {
         "guzzlehttp/guzzle": "^6.3",
         "northwestern-sysdev/event-hub-php-sdk": "^1.0",
-        "duosecurity/duo_php": "dev-master",
         "laravel/ui": "^2.0"
     },
     "require-dev": {
