@@ -17,7 +17,7 @@ trait WebSSOAuthentication
     public function login(Request $request, WebSSOStrategy $sso_strategy)
     {
         try {
-            $netid = $sso_strategy->login($request, $this->login_route_name, $this->mfa_route_name);
+            $netid = $sso_strategy->login($request, $this->login_route_name);
         } catch (NoSsoSession $e) {
             return redirect($e->getRedirectUrl());
         }

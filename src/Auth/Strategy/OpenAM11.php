@@ -17,7 +17,7 @@ class OpenAM11 implements WebSSOStrategy
         $this->sso = $sso_api;
     }
 
-    public function login(Request $request, string $login_route_name, string $mfa_route_name)
+    public function login(Request $request, string $login_route_name)
     {
         $login_url_w_redirect = $this->sso->getLoginUrl(route($login_route_name, [], false));
 

@@ -2,4 +2,3 @@
 Route::get('auth/login', 'Auth\WebSSOController@login')->name('login');
 Route::get('auth/logout', 'Auth\WebSSOController@logout')->name('logout');
 
-Route::resource('auth/mfa', 'Auth\DuoController')->only(['index', 'store']);

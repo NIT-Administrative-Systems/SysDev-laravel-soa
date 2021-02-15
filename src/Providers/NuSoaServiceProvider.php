@@ -6,7 +6,6 @@ use Illuminate\Routing\Route;
 use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM11;
-use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM6;
 use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
 use Northwestern\SysDev\SOA\Console\Commands;
 use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
@@ -15,21 +14,18 @@ use Northwestern\SysDev\SOA\DirectorySearch;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
-use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM6Api;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../../config/nusoa.php', 'nusoa');
-        $this->mergeConfigFrom(__DIR__ . '/../../config/duo.php', 'duo');
     } // end register
 
     public function boot()
     {
         $this->publishes([
             __DIR__ . '/../../config/nusoa.php' => config_path('nusoa.php'),
-            __DIR__ . '/../../config/duo.php' => config_path('duo.php'),
         ], 'config');
 
         if ($this->app->runningInConsole()) {
@@ -41,7 +37,6 @@ class NuSoaServiceProvider extends ServiceProvider
                 Commands\EventHub\WebhookConfiguration::class,
 
                 Commands\MakeWebSSO::class,
-                Commands\MakeDuo::class,
             ]);
         }
 
@@ -64,14 +59,10 @@ class NuSoaServiceProvider extends ServiceProvider
                 $auth_strategy = new OpenAM11($sso);
             break;
 
+            default:
             case 'apigee':
                 $sso = new ApigeeAgentless($http, $url, $sso_config);
                 $auth_strategy = new OpenAM11($sso);
-            break;
-
-            default:
-                $sso = new OpenAM6Api($http, $url, (string) config('nusoa.sso.openAmBaseUrl'));
-                $auth_strategy = new OpenAM6($sso);
             break;
         }
         

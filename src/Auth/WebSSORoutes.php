@@ -12,7 +12,4 @@ trait WebSSORoutes
 
     /** Optional name for where you want webSSO to return you to when you've logged out. */
     protected $logout_return_to_route = null;
-
-    /** Route name for the MFA widget */
-    protected $mfa_route_name = 'mfa.index';
 }

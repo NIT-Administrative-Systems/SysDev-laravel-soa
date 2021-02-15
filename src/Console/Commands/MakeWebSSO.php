@@ -15,10 +15,6 @@ class MakeWebSSO extends GeneratorCommand
     {
         parent::handle();
 
-        // GeneratorCommand only does one stub at a time, but I want both, so chaining these
-        // is an expedient way of writing this cleanly!
-        Artisan::call(MakeDuo::class);
-
         $this->ejectRoutes();
     }
 
