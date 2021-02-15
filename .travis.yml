@@ -6,9 +6,8 @@ cache:
     - vendor
 
 php:
-  - 7.2
-  - 7.3
   - 7.4
+  - 8.0
 
 before_install:
   - travis_retry composer self-update
@@ -37,10 +36,7 @@ jobs:
         target_branch: gh-pages
         on:
           branch: master
-
-notifications:
-  webhooks: https://outlook.office.com/webhook/e58555a4-17f9-414e-8eaf-94a34bb95c6b@7d76d361-8277-4708-a477-64e8366cd1bc/TravisCI/3d3ef45ccbd74c3c93769fbe0f5ba555/15e93fd1-b1be-48b6-8cfe-ab4e35fd33a2
-
+          
 env:
   global:
     - secure: "O3xXEXYYyc5LJz8ThRRis4IoTVuMqBAgAvoLi1CDqRDk1D4RwtDeDgFyA04EuqJOGwFxY2OvD3tF/vFGvBbk7MKCbJ2NxnqxzWOoVtA/rBLXla81N2jVpVDTfCuGgSriOuC0QZbfH1vexfGHs0wigaDoZhuDKa30If7BjF+L7nx5DPtaBGzGNnuJJwiXSuWFT8AelbtgZYmvE9rXSzZF6OUKI4fJAvPFHyIW380H6uf1MAhM3oAg10xlkBbHb8hresOSQsa8ZTpyaK59j6UjGy20lAYpXLpyQUu3emCGiy3NuHt0X7hTTn3Ik6IfSZHrLWznqaHUj+iDgvnLeVjV/f8vffuK8CKAkQvvhNRI5qKyALSG+X21xaNf2hD3fbw8pvsD4OEnjQybyW197O2rE/2P2rPtM1A87w8GKN31XPFusnSngk0aFHtin2Vi4Mb2R7OCYpgXpLdZq7nZmM48/VUsb1LjUePmOqsWEhEnmmFBKQUCjjM+BC1Aras41Fa+mHGVbJOZzh1nlNnyvPRQTNj/6EqqVoFC2jutxGwvP2eK2JTSWeJaLe8+691fS0KKDVn/OwWPxD/z0HlqFwbUznfIEQDH/IJKM6nHVjtEN6m0XxwoNi6UKp0BAT2nl5fVOluCTilXDWQKP01OIhWoYmg9ybvWgfob5E3Q8u0xUOk="

@@ -13,14 +13,14 @@
         "email": "nick.evans@northwestern.edu"
     }],
     "require": {
-        "guzzlehttp/guzzle": "^6.3",
-        "northwestern-sysdev/event-hub-php-sdk": "^1.0",
-        "laravel/ui": "^2.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "northwestern-sysdev/event-hub-php-sdk": "^2.0",
+        "laravel/ui": "^3.0"
     },
     "require-dev": {
-        "orchestra/testbench": "~5.0",
-        "php-coveralls/php-coveralls": "^2.1",
-        "phpunit/phpunit": "^8.0"
+        "orchestra/testbench": "~6.0",
+        "php-coveralls/php-coveralls": "^2.4",
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
