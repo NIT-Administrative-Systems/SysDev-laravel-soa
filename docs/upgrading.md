@@ -12,9 +12,16 @@ The dependency on Duo's PHP SDK, along with supporting code for doing Duo authen
 - If you have `Route::resource('auth/mfa', 'Auth\DuoController')->only(['index', 'store']);` in your `routes/web.php` file, you can remove the line of code.
 - If you have an `Http\Controllers\Auth\DuoController` controller, you can remove the file.
 
-There is one breaking change in this version: if you have implemented a custom `Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy` (**you probably have not**), the login method no longer takes the `string $mfa_route_name` parameter. The new method signature is as follows:
+### Breaking Changes
+- The `Northwestern\SysDev\SOA\Auth\WebSSOAuthentication` trait's `findUserByNetID` method was previously abstract. It is now defined in the trait, but throws an exception if it is not re-defined in your application.
 
-`public function login(Request $request, string $login_route_name);`
+  This change should not have any practical impact to your application. 
+  
+  It is necessary for PHP 8 compatability; asking the service container for additional variables beyond the `string $netid` parameter defined in the method signature would cause the runtime to error out, since [PHP 8 now raises a fatal error instead of a warning](https://php.watch/versions/8.0/lsp-errors#lsp) when an abstract method's parameters differ.
+
+- If you have implemented a custom `Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy`, the login method no longer takes the `string $mfa_route_name` parameter. The new method signature is as follows:
+
+  `public function login(Request $request, string $login_route_name);`
 
 ## From v5 to v6
 v6 changes the default webSSO strategy from the legacy webSSO system to the newer one. This is a breaking change that merits a major version bump, but if you have already switched (and most systems have) then this release can be treated as a minor upgrade.

@@ -122,7 +122,7 @@ class OpenAM11AuthenticationTest extends TestCase
 
             protected function findUserByNetID(Request $request, string $netid): ?AuthenticatableContract
             {
-                // Ensures the service container is resolsing requested dependencies (like Request)
+                // Ensures the service container is resolving requested dependencies (like Request)
                 if ($request === null) {
                     throw \Exception('Injection failed');
                 }

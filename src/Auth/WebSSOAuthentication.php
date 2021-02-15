@@ -44,7 +44,10 @@ trait WebSSOAuthentication
      * If you do not have a user store, a plain-old PHP object implementing
      * the Illuminate\Contracts\Auth\Authenticatable interface is sufficient.
      */
-    abstract protected function findUserByNetID(string $netid): ?Authenticatable;
+    protected function findUserByNetID(string $netid): ?Authenticatable
+    {
+        throw new \Exception('findUserByNetID is not implemented, but must be implemented.');
+    }
 
     /**
      * Post-authentication hook.
