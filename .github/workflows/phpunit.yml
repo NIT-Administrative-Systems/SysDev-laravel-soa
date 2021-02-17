@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: ['7.3', '7.4', '8.0']
+        php-versions: ['7.4', '8.0']
 
     steps:
     - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
         key: php-${{ matrix.php-versions }}-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           php-${{ matrix.php-versions }}-
-          
+
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
@@ -44,4 +44,6 @@ jobs:
       run: php vendor/bin/phpunit --coverage-clover .build/clover.xml
 
     - name: Record Coverage
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: php vendor/bin/php-coveralls
