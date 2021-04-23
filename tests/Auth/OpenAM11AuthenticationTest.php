@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM11;
 use Northwestern\SysDev\SOA\Auth\WebSSOAuthentication;
+use Northwestern\SysDev\SOA\Exceptions\InsecureSsoError;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\Tests\TestCase;
@@ -21,12 +22,15 @@ class OpenAM11AuthenticationTest extends TestCase
 {
     use TestsOpenAM11;
 
+    protected $useSecure;
     protected $service = WebSSO::class;
     protected $strategy;
 
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->useSecure = true; // resets to true for every test, since that's mostly what we're testing
         $this->api = new ApigeeAgentless(resolve(Client::class), config('app.url'), config('nusoa.sso'));
         $this->strategy = new OpenAM11($this->api);
     }
@@ -80,13 +84,26 @@ class OpenAM11AuthenticationTest extends TestCase
         $this->app['router']->get(__METHOD__, function (Request $request) {
             $_COOKIE['nusso'] = 'dummy-token';
 
-            $this->api->setHttpClient($this->mockedResponse(401, ''));
+            $this->api->setHttpClient($this->mockedResponse(407, ''));
 
             return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
         $response = $this->get(__METHOD__)->assertRedirect();
         $this->assertSsoRedirect($response);
+    }
+
+    public function test_exception_when_apigee_key_is_invalid()
+    {
+        $this->app['router']->get(__METHOD__, function (Request $request) {
+            $_COOKIE['nusso'] = 'dummy-token';
+
+            $this->api->setHttpClient($this->mockedResponse(401, ''));
+
+            return $this->mock_controller()->login($request, $this->strategy);
+        })->name('login');
+
+        $this->get(__METHOD__)->assertStatus(500);
     }
 
     public function test_sends_to_mfa()
@@ -108,6 +125,23 @@ class OpenAM11AuthenticationTest extends TestCase
 
         $error = sprintf('SSO redirect URL %s should contain ldap-and-duo', $response->getTargetUrl());
         $this->assertGreaterThan(-1, strpos($response->getTargetUrl(), 'authIndexValue=ldap-and-duo'), $error);
+    }
+
+    public function tests_exception_when_insecure_connection_used()
+    {
+        // Disable the "force HTTPS" thing in ::prepareUrlForRequest
+        $this->useSecure = false;
+
+        $this->app['router']->get(__METHOD__, function (Request $request) {
+            $_COOKIE['nusso'] = 'dummy-token';
+
+            $this->api->setHttpClient($this->mockedResponse(407, ''));
+
+            return $this->mock_controller()->login($request, $this->strategy);
+        })->name('login');
+
+        $response = $this->get(__METHOD__)->assertStatus(500);
+        $this->assertInstanceOf(InsecureSsoError::class, $response->exception);
     }
 
     private function mock_controller()
@@ -146,5 +180,24 @@ class OpenAM11AuthenticationTest extends TestCase
     private function assertSsoRedirect($response)
     {
         $this->assertTrue(Str::contains($response->headers->get('Location'), config('nusoa.sso.openAmBaseUrl')));
+    }
+
+    /**
+     * Forces URLs invoked in this test to be <https://> so the request will claim to be secure.
+     *
+     * The Symfony\Component\HttpFoundation\Request that underlies Laravel's own Request class
+     * will check the URL to determine if it's a secure request when it's instantiated with ::create(),
+     * which is what the MakesHttpRequests trait is doing to mock up the request for PHPUnit.
+     *
+     * The $_SERVER var HTTPS is ignored in favour of the protocol field in the URL, so replacing this method
+     * with one that forces https is the only way to make this test pass.
+     */
+    protected function prepareUrlForRequest($uri)
+    {
+        if (Str::startsWith($uri, '/')) {
+            $uri = substr($uri, 1);
+        }
+
+        return trim(url($uri, [], $this->useSecure), '/');
     }
 }

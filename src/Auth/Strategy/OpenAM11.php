@@ -3,6 +3,7 @@
 namespace Northwestern\SysDev\SOA\Auth\Strategy;
 
 use Illuminate\Http\Request;
+use Northwestern\SysDev\SOA\Exceptions\InsecureSsoError;
 use Northwestern\SysDev\SOA\WebSSO;
 
 /**
@@ -19,6 +20,10 @@ class OpenAM11 implements WebSSOStrategy
 
     public function login(Request $request, string $login_route_name)
     {
+        if (! $request->isSecure()) {
+            throw new InsecureSsoError;
+        }
+
         $login_url_w_redirect = $this->sso->getLoginUrl(route($login_route_name, [], false));
 
         // Laravel nulls out cookies that are not encrypted w/ its key.
