@@ -15,9 +15,9 @@ The package does not implement a custom [auth provider](https://laravel.com/docs
 :::
 
 ## Prerequisites
-You will need an Apigee key with access to the `IDM - Agentless WebSSO`. The key will include access to the SSO & MFA API. 
+You will need an Apigee key with access to the `IDM - Agentless WebSSO`. The key will include access to the SSO & MFA API. This must be requested through the [API service registry](https://apiserviceregistry.northwestern.edu/). 
 
-This must be requested through the [API service registry](https://apiserviceregistry.northwestern.edu/).
+Your application must be served over HTTPS on a `northwestern.edu` domain. The SSO cookie (`nusso`) is flagged as Secure=true; there is no way for Laravel to access the cookie when served over an insecure http connection.
 
 ## Setting up SSO
 Getting webSSO working should only take a few minutes.
