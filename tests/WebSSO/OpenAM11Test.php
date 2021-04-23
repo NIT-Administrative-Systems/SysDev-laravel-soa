@@ -3,6 +3,7 @@
 namespace Northwestern\SysDev\SOA\Tests\WebSSO;
 
 use GuzzleHttp\Client;
+use Northwestern\SysDev\SOA\Exceptions\ApigeeAuthenticationError;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\Tests\TestCase;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
@@ -41,10 +42,20 @@ class OpenAM11Test extends TestCase
     /** @test */
     public function invalid_session()
     {
-        $this->api->setHttpClient($this->mockedResponse(401, ''));
+        $this->api->setHttpClient($this->mockedResponse(407, ''));
 
         $user = $this->api->getUser('test-token');
         $this->assertNull($user);
+    }
+
+    /** @test */
+    public function invalid_apigee_key()
+    {
+        $this->expectException(ApigeeAuthenticationError::class);
+
+        $this->api->setHttpClient($this->mockedResponse(401, ''));
+
+        $this->api->getUser('test-token');
     }
 
     /** @test */
