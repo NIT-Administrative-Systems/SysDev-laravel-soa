@@ -45,7 +45,8 @@ class NuSoaServiceProvider extends ServiceProvider
 
         $this->bootEventHub();
         $this->bootWebSSO();
-        $this->bootAzureAdSSO();
+
+        Event::listen(SocialiteWasCalled::class, AzureExtendSocialite::class);
 
         $ds = new DirectorySearch(EventHub\Guzzle\RetryClient::make());
         $this->app->instance(DirectorySearch::class, $ds);
@@ -72,19 +73,6 @@ class NuSoaServiceProvider extends ServiceProvider
         
         $this->app->instance(WebSSO::class, $sso);
         $this->app->instance(WebSSOStrategy::class, $auth_strategy);
-    }
-
-    private function bootAzureAdSSO()
-    {
-        Event::listen(SocialiteWasCalled::class, AzureExtendSocialite::class);
-
-        // If someone has set it manually, respect that.
-        if (config('services.azure.redirect')) {
-            return;
-        }
-
-        //dd(route('login-oauth-callback'));
-        //config(['services.azure.redirect' => 'foozball']);
     }
 
     private function bootEventHub()
