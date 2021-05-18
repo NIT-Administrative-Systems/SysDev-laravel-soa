@@ -23,6 +23,19 @@ class WebSSOController extends Controller
     }
 
     /*
+    protected function findUserByOAuthUser(OAuthUser $oauthUser): ?Authenticatable
+    {
+        // Called when using Azure AD OAuth login.
+        // This method has access to the whole user returned by Azure AD.
+
+        // You can use this instead of ::findUserByNetID, which only has access to a netID.
+
+        // If you don't implement this method, it'll be bypassed and the netID from the
+        // OAuth user is given to ::findUserByNetID.
+    }
+    */
+
+    /*
     protected function authenticated(Request $request, $user)
     {
         // Post-authentication hook. You are not required to implement anything here.

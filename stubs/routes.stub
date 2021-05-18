@@ -1,4 +1,8 @@
 
-Route::get('auth/login', 'Auth\WebSSOController@login')->name('login');
-Route::get('auth/logout', 'Auth\WebSSOController@logout')->name('logout');
+Route::get('auth/login', [\App\Controllers\Auth\WebSSOController::class, 'login'])->name('login');
+Route::get('auth/logout', [\App\Controllers\Auth\WebSSOController::class, 'logout'])->name('logout');
 
+Route::group(['prefix' => 'auth/azure-ad'], function () {
+    Route::get('redirect', [\App\Controllers\Auth\WebSSOController::class, 'oauthRedirect'])->name('login-oauth-redirect');
+    Route::get('callback', [\App\Controllers\Auth\WebSSOController::class, 'oauthCallback'])->name('login-oauth-callback');
+});
