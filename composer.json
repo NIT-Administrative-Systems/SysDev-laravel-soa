@@ -13,6 +13,7 @@
         "email": "nick.evans@northwestern.edu"
     }],
     "require": {
+        "php": "^7.4|^8",
         "guzzlehttp/guzzle": "^7.0",
         "northwestern-sysdev/event-hub-php-sdk": "^2.0",
         "laravel/ui": "^3.0|^2.0",
