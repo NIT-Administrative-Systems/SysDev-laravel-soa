@@ -56,6 +56,9 @@ trait WebSSOAuthentication
         return $this->oauthDriver()->redirect();
     }
 
+    /**
+     * OAuth callback URL, where users are sent when they're
+     */
     public function oauthCallback(Request $request)
     {
         try {
