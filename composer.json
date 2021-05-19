@@ -13,9 +13,11 @@
         "email": "nick.evans@northwestern.edu"
     }],
     "require": {
-        "guzzlehttp/guzzle": "^7.0",
-        "northwestern-sysdev/event-hub-php-sdk": "^2.0",
-        "laravel/ui": "^3.0|^2.0"
+        "php": "^7.3|^8",
+        "guzzlehttp/guzzle": "^7.0|^6.0",
+        "northwestern-sysdev/event-hub-php-sdk": "^1.0|^2.0",
+        "laravel/ui": "^3.0|^2.0",
+        "socialiteproviders/microsoft-azure": "^4.2"
     },
     "require-dev": {
         "orchestra/testbench": "~6.0",

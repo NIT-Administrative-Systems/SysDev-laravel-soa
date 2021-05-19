@@ -3,7 +3,8 @@ This package enhanced Laravel with easy access to popular Northwestern APIs & we
 
 | Service          | Prerequisites                         |
 | ---------------- | ------------------------------------- |
-| WebSSO           | Apigee API key                        |
+| Agentless WebSSO | Apigee API key                        |
+| Azure AD SSO     | Registered Azure AD application       |
 | Directory Search | Data steward approval, Apigee API key |
 | EventHub         | Topics or queues, Apigee API key      |
 
