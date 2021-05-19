@@ -40,6 +40,7 @@ class NuSoaServiceProvider extends ServiceProvider
                 Commands\EventHub\WebhookConfiguration::class,
 
                 Commands\MakeWebSSO::class,
+                Commands\ShowOAuthCallbackUrl::class,
             ]);
         }
 
