@@ -1,5 +1,13 @@
 # Upgrading
 
+## From v7 to v8
+Support for Azure AD SSO was added. This is compatible with the OpenAM/ForgeRock Online Passport SSO, and can be used in tandem.
+
+For information on setting up an Azure AD integration, review the updated [webSSO page](./websso.md).
+
+### Breaking Changes
+- The `WebSSOController::findUserByNetID()` method will now always receive the `$netid` parameter in lower case. Previously, it was whatever case the API returned.
+
 ## From v6 to v7
 Support for older versions of PHP has been discontinued. v7 requires PHP 7.4 or higher. You can continue to use an older version of the package if you are using an older version of PHP.
 
