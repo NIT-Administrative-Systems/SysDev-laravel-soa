@@ -145,6 +145,14 @@ trait WebSSOAuthentication
     {
         $driver = Socialite::driver('azure');
 
+        /**
+         * If you don't set any scopes, the conditional access policy that Collab has set up
+         * for multi-factor auth won't trigger.
+         *
+         * This is a generic Azure scope for users, so it'll be available for any app.
+         */
+        $driver->setScopes(['openid']);
+
         if (! config('services.azure.redirect')) {
             $driver = $driver->redirectUrl(route($this->oauth_callback_route_name, [], true));
         }
