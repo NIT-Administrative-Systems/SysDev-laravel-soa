@@ -29,7 +29,9 @@ You will need to register an application in the [Azure control panel](https://po
 
 Callback URLs must be served over HTTPS. It does not need to be on any specific domain. Please see [the Azure documentation](https://docs.microsoft.com/en-us/azure/active-directory/develop/reply-url) for more information about acceptable callback URLs. 
 
-If you wish to use MFA with Azure AD, you must send a ticket to Collab Services asking them to enable it for your application.
+If you wish to use MFA with Azure AD, you must send a ticket to Collab Services asking them to enable it for your application. You do not need to make any configuration or code changes to enable it.
+
+The default Laravel cache driver will be used to store Microsoft's JWT signing keys. These are loaded on demand and stored for a few minutes.
 
 ## Setting up SSO
 Getting webSSO working should only take a few minutes. For both Online Passport and Azure AD, start by running:
@@ -59,7 +61,7 @@ DUO_ENABLED=true
 To configure Azure AD, add the following to your `config/services.php`:
 
 ```php
-'azure' => [
+'northwestern-azure' => [
     'client_id' => env('AZURE_CLIENT_ID'),
     'client_secret' => env('AZURE_CLIENT_SECRET'),
     'redirect' => env('AZURE_REDIRECT_URI') // will be determined at runtime
