@@ -17,7 +17,9 @@
         "guzzlehttp/guzzle": "^7.0|^6.0",
         "northwestern-sysdev/event-hub-php-sdk": "^1.0|^2.0",
         "laravel/ui": "^3.0|^2.0",
-        "socialiteproviders/microsoft-azure": "^4.2"
+        "lcobucci/jwt": "^4.0",
+        "socialiteproviders/manager": "~4.0",
+        "firebase/php-jwt": "^5.3"
     },
     "require-dev": {
         "orchestra/testbench": "~6.0",
