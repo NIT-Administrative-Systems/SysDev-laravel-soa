@@ -16,7 +16,6 @@ use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
 use Illuminate\Support\Facades\Event;
-use SocialiteProviders\Azure\AzureExtendSocialite;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class NuSoaServiceProvider extends ServiceProvider
@@ -48,7 +47,6 @@ class NuSoaServiceProvider extends ServiceProvider
         $this->bootEventHub();
         $this->bootWebSSO();
 
-        //Event::listen(SocialiteWasCalled::class, AzureExtendSocialite::class);
         Event::listen(SocialiteWasCalled::class, NorthwesternAzureExtendSocialite::class);
 
         $ds = new DirectorySearch(EventHub\Guzzle\RetryClient::make());
