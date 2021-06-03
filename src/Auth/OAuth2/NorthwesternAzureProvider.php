@@ -3,14 +3,17 @@
 namespace Northwestern\SysDev\SOA\Auth\OAuth2;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use SocialiteProviders\Manager\OAuth2\User;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;
+
 
 class NorthwesternAzureProvider extends AbstractProvider
 {
     public const IDENTIFIER = 'NU_AZURE';
     public const NU_TENANT_ID = 'northwestern.edu';
+    public const STATE_PART_SEPARATOR = '|';
 
     protected $encodingType = PHP_QUERY_RFC3986;
 
@@ -23,6 +26,26 @@ class NorthwesternAzureProvider extends AbstractProvider
 
     /** @var string Scopes to request */
     protected $scopes = ['openid'];
+
+    /**
+     * {@inheritDoc}
+     *
+     * Includes the intended URL in the state, since this will be lost when Azure POSTs the user back.
+     *
+     * The POST does not originate from the app, so the app's session cookie will not be part of the
+     * request, losing all previously-saved session variables.
+     *
+     * This is a recommended use for the state per Microsoft's OpenID Connect docs.
+     */
+    protected function getState()
+    {
+        $state = implode(self::STATE_PART_SEPARATOR, [
+            Str::random(40),
+            $this->request->session()->pull('url.intended', null),
+        ]);
+
+        return Crypt::encryptString($state);
+    }
 
     /**
      * {@inheritdoc}
@@ -43,11 +66,15 @@ class NorthwesternAzureProvider extends AbstractProvider
             $state = explode('.', $idToken->claims()->get('nonce'))[1];
             if ($state === $this->request->input('state')) {
                 $this->request->session()->put('state', $state);
-                $this->request->session()->put('state_verify', $state);
             }
 
             if ($this->hasInvalidState()) {
                 throw new InvalidStateException();
+            }
+
+            $intendedUrl = $this->unpackState($state);
+            if ($intendedUrl) {
+                $this->request->session()->put('url.intended', $intendedUrl);
             }
         }
 
@@ -178,6 +205,16 @@ class NorthwesternAzureProvider extends AbstractProvider
         ]);
 
         return json_decode($response->getBody(), true);
+    }
+
+    /**
+     * @return string|null URL that the user should be redirected to, if any.
+     */
+    protected function unpackState(string $state)
+    {
+        $parts = explode(self::STATE_PART_SEPARATOR, Crypt::decryptString($state));
+
+        return $parts[1] ?? null;
     }
 
     /**
