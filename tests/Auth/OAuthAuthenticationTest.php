@@ -12,10 +12,10 @@ use Laravel\Socialite\Two\User;
 use Northwestern\SysDev\SOA\Auth\Entity\OAuthUser;
 use Northwestern\SysDev\SOA\Auth\WebSSOAuthentication;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
+use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureProvider as AzureDriver;
 use Orchestra\Testbench\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use SocialiteProviders\Azure\Provider as AzureDriver;
 
 class OAuthAuthenticationTest extends TestCase
 {
