@@ -3,6 +3,7 @@
 namespace Northwestern\SysDev\SOA\Providers;
 
 use Illuminate\Routing\Route;
+use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureExtendSocialite;
 use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Support\ServiceProvider;
 use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM11;
@@ -47,7 +48,8 @@ class NuSoaServiceProvider extends ServiceProvider
         $this->bootEventHub();
         $this->bootWebSSO();
 
-        Event::listen(SocialiteWasCalled::class, AzureExtendSocialite::class);
+        //Event::listen(SocialiteWasCalled::class, AzureExtendSocialite::class);
+        Event::listen(SocialiteWasCalled::class, NorthwesternAzureExtendSocialite::class);
 
         $ds = new DirectorySearch(EventHub\Guzzle\RetryClient::make());
         $this->app->instance(DirectorySearch::class, $ds);

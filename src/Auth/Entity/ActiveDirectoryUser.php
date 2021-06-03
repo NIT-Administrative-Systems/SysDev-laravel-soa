@@ -31,7 +31,7 @@ class ActiveDirectoryUser implements OAuthUser
     {
         $this->rawData = $rawData;
 
-        $this->netid = strtolower(Arr::get($this->rawData, 'mailNickname'));
+        $this->netid = strtolower(explode('@', Arr::get($this->rawData, 'userPrincipalName'))[0]);
         $this->email = Arr::get($this->rawData, 'mail');
         $this->userPrincipalName = Arr::get($this->rawData, 'userPrincipalName');
         $this->displayName = Arr::get($this->rawData, 'displayName');
