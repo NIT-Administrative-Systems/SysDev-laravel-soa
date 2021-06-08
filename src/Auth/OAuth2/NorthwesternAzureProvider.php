@@ -5,6 +5,7 @@ namespace Northwestern\SysDev\SOA\Auth\OAuth2;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Two\InvalidStateException;
 use SocialiteProviders\Manager\OAuth2\User;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;
 
@@ -52,8 +53,13 @@ class NorthwesternAzureProvider extends AbstractProvider
      */
     public function user()
     {
+        $idTokenJwt = $this->request->input('id_token');
+        if (! $idTokenJwt) {
+            throw new InvalidStateException('id_token value was not found in response');
+        }
+
         // Throws if the token isn't signed properly
-        $idToken = AzureTokenVerifier::parseAndVerify($this->request->input('id_token'));
+        $idToken = AzureTokenVerifier::parseAndVerify($idTokenJwt);
 
         //Temporary fix to enable stateless
         $response = $this->getAccessTokenResponse($this->request->input('code'));
