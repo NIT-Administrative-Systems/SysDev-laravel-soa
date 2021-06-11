@@ -82,7 +82,7 @@ trait WebSSOAuthentication
             throw $e;
         }
 
-        $oauthUser = new ActiveDirectoryUser($userInfo->getRaw());
+        $oauthUser = new ActiveDirectoryUser($userInfo->token, $userInfo->getRaw());
 
         $user = app()->call(
             \Closure::fromCallable('static::findUserByOAuthUser'),
@@ -143,12 +143,22 @@ trait WebSSOAuthentication
      */
     protected function oauthDriver()
     {
-        $driver = Socialite::driver('northwestern-azure');
+        $driver = Socialite::driver('northwestern-azure')->scopes($this->oauthScopes());
 
         if (! config('services.azure.redirect')) {
             $driver = $driver->redirectUrl(route($this->oauth_callback_route_name, [], true));
         }
 
         return $driver;
+    }
+
+    /**
+     * Additional scopes for the user.
+     *
+     * @return array
+     */
+    protected function oauthScopes()
+    {
+        return ['https://graph.microsoft.com/User.Read'];
     }
 }
