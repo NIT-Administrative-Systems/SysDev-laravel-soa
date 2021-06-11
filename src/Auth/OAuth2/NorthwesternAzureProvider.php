@@ -2,6 +2,7 @@
 
 namespace Northwestern\SysDev\SOA\Auth\OAuth2;
 
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
@@ -25,8 +26,10 @@ class NorthwesternAzureProvider extends AbstractProvider
      */
     protected $graphUrl = 'https://graph.microsoft.com/v1.0/me/';
 
-    /** @var string Scopes to request */
+    /** @var string Default scopes to request */
     protected $scopes = ['openid'];
+    protected $scopeSeparator = ' ';
+
 
     /**
      * {@inheritDoc}
@@ -127,12 +130,16 @@ class NorthwesternAzureProvider extends AbstractProvider
      */
     protected function getUserByToken($token)
     {
-        $response = $this->getHttpClient()->get($this->graphUrl, [
-            'headers' => [
-                'Accept'        => 'application/json',
-                'Authorization' => 'Bearer '.$token,
-            ],
-        ]);
+        try {
+            $response = $this->getHttpClient()->get($this->graphUrl, [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer ' . $token,
+                ],
+            ]);
+        } catch (ClientException $e) {
+            throw new MicrosoftGraphError($e);
+        }
 
         return json_decode($response->getBody()->getContents(), true);
     }
