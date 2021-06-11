@@ -39,6 +39,16 @@ class WebSSOController extends Controller
     */
 
     /*
+    protected function oauthScopes()
+    {
+        // You can request consent to additional scopes by adding them to this method.
+        // They can be scopes for other registered apps, or Microsoft's scopes for their various APIs.
+
+        return ['https://graph.microsoft.com/User.Read'];
+    }
+    */
+
+    /*
     protected function authenticated(Request $request, $user)
     {
         // Post-authentication hook. You are not required to implement anything here.
