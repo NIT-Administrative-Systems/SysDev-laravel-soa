@@ -47,7 +47,6 @@ class OAuthAuthenticationTest extends TestCase
         });
 
         $response = $this->get(__METHOD__);
-        dump($response->exception);
         $response->assertRedirect('/logged-in');
         $this->assertAuthenticated();
     }
