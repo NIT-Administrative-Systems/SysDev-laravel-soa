@@ -35,6 +35,7 @@ class OAuthAuthenticationTest extends TestCase
     {
         $this->app['router']->get(__METHOD__, function (Request $request) {
             $oauthUser = $this->createStub(User::class);
+            $oauthUser->token = 'a';
             $oauthUser->method('getRaw')->willReturn([
                 'mailNickname' => 'foo',
             ]);
@@ -46,6 +47,7 @@ class OAuthAuthenticationTest extends TestCase
         });
 
         $response = $this->get(__METHOD__);
+        dump($response->exception);
         $response->assertRedirect('/logged-in');
         $this->assertAuthenticated();
     }

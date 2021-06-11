@@ -32,6 +32,9 @@ class WebSSOController extends Controller
 
         // If you don't implement this method, it'll be bypassed and the netID from the
         // OAuth user is given to ::findUserByNetID.
+
+        // If you plan on doing integrations with Microsoft, you should make your calls with
+        // $oauthUser->token now, or record it somewhere for later API calls.
     }
     */
 

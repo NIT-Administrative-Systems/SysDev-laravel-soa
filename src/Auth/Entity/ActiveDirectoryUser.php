@@ -6,6 +6,9 @@ use Illuminate\Support\Arr;
 
 class ActiveDirectoryUser implements OAuthUser
 {
+    /** @var string JWT for Microsoft APIs */
+    protected $token;
+
     /** @var string */
     protected $netid;
 
@@ -27,8 +30,9 @@ class ActiveDirectoryUser implements OAuthUser
     /** @var array */
     protected $rawData;
 
-    public function __construct(array $rawData)
+    public function __construct(string $token, array $rawData)
     {
+        $this->token = $token;
         $this->rawData = $rawData;
 
         $this->netid = strtolower(explode('@', Arr::get($this->rawData, 'userPrincipalName'))[0]);
@@ -37,6 +41,16 @@ class ActiveDirectoryUser implements OAuthUser
         $this->displayName = Arr::get($this->rawData, 'displayName');
         $this->firstName = Arr::get($this->rawData, 'givenName');
         $this->lastName = Arr::get($this->rawData, 'surname');
+    }
+
+    /**
+     * JWT for accessing Microsoft APIs.
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 
     /**
