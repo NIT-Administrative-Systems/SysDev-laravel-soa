@@ -9,7 +9,7 @@ class ActiveDirectoryUserTest extends TestCase
 {
     public function testEntity()
     {
-        $user = new ActiveDirectoryUser([
+        $user = new ActiveDirectoryUser('abcdefg', [
             'mailNickname' => 'TEST123',
             'mail' => 'foo@bar.net',
             'userPrincipalName' => 'TEST123@foo.bar.net',
@@ -18,6 +18,7 @@ class ActiveDirectoryUserTest extends TestCase
             'surname' => 'Bar',
         ]);
 
+        $this->assertEquals('abcdefg', $user->getToken());
         $this->assertEquals('test123', $user->getNetid());
         $this->assertEquals('foo@bar.net', $user->getEmail());
         $this->assertEquals('TEST123@foo.bar.net', $user->getUserPrincipalName());
