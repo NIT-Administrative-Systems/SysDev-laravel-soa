@@ -53,7 +53,7 @@ trait WebSSOAuthentication
     {
         Auth::logout();
 
-        return Http::post($this->oauthDriver()->getLogoutUrl());
+        return redirect($this->oauthDriver()->getLogoutUrl());
     }
 
     /**
