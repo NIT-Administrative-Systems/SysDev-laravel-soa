@@ -114,6 +114,11 @@ class NorthwesternAzureProvider extends AbstractProvider
         return 'https://login.microsoftonline.com/'.($this->config['tenant'] ?: self::NU_TENANT_ID).'/oauth2/v2.0/token';
     }
 
+    protected function getLogoutUrl()
+    {
+        return 'https://login.microsoftonline.com/'.($this->config['tenant'] ?: self::NU_TENANT_ID).'/oauth2/v2.0/logout%22';
+    }
+
     public function getAccessToken($code)
     {
         $response = $this->getHttpClient()->post($this->getTokenUrl(), [

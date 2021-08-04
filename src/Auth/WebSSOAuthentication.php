@@ -48,6 +48,13 @@ trait WebSSOAuthentication
         return $sso_strategy->logout($this->logout_return_to_route);
     }
 
+    public function oauthLogout()
+    {
+        Auth::logout();
+
+        return $this->oauthDriver()->getLogoutUrl()->redirect();
+    }
+
     /**
      * Azure AD OAuth initiator action
      */
