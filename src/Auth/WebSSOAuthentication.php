@@ -15,7 +15,6 @@ use Northwestern\SysDev\SOA\Auth\Entity\ActiveDirectoryUser;
 use Northwestern\SysDev\SOA\Auth\Entity\OAuthUser;
 use Northwestern\SysDev\SOA\Auth\Strategy\NoSsoSession;
 use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
-use Illuminate\Support\Facades\Http;
 
 trait WebSSOAuthentication
 {
