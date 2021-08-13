@@ -48,9 +48,14 @@ trait WebSSOAuthentication
         return $sso_strategy->logout($this->logout_return_to_route);
     }
 
-    public function oauthLogout()
+    public function oauthLogout($postLogoutRedirectUri = null)
     {
         Auth::logout();
+
+        if ($postLogoutRedirectUri != null) {
+            $url = $this->oauthDriver()->getLogoutUrl() . '?post_logout_redirect_uri=' . urlencode($postLogoutRedirectUri);
+            return redirect($url);
+        }
 
         return redirect($this->oauthDriver()->getLogoutUrl());
     }
