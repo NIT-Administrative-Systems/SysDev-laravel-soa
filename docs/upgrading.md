@@ -1,6 +1,6 @@
 # Upgrading
 
-## From v8.0 to v8.1
+## From v8.2 to v8.3
 Support for logging out via Azure AD SSO was added.
 
 There is a new route, which belongs in the group with the other Azure AD routes:
