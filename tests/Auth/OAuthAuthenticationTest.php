@@ -7,6 +7,7 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Two\User;
 use Northwestern\SysDev\SOA\Auth\Entity\OAuthUser;
@@ -97,6 +98,37 @@ class OAuthAuthenticationTest extends TestCase
 
         $response = $this->get(__METHOD__);
         $this->assertEquals('Unhandled, yay!', $response->exception->getMessage());
+    }
+
+    public function test_logout()
+    {
+        $this->app['router']->post(__METHOD__, function (Request $request) {
+            $driver = $this->createStub(AzureDriver::class);
+            $driver->method('getLogoutUrl')->willReturn('/oauth2/v2.0/logout');
+
+            return $this->mock_controller($driver)->oauthLogout();
+        });
+
+        Auth::shouldReceive('logout')->once();
+        $response = $this->post(__METHOD__);
+        $response->assertRedirect();
+        $this->assertStringContainsString('/oauth2/v2.0/logout', $response->headers->get('Location'));
+    }
+
+    public function test_logout_with_redirect()
+    {
+        $this->app['router']->post(__METHOD__, function (Request $request) {
+            $driver = $this->createStub(AzureDriver::class);
+            $driver->method('getLogoutUrl')->willReturn('/oauth2/v2.0/logout');
+
+            return $this->mock_controller($driver)->oauthLogout('https://google.com?foo=1&bar=2');
+        });
+
+        Auth::shouldReceive('logout')->once();
+        $response = $this->post(__METHOD__);
+        $response->assertRedirect();
+        $this->assertStringContainsString('/oauth2/v2.0/logout', $response->headers->get('Location'));
+        $this->assertStringContainsString('?post_logout_redirect_uri=https%3A%2F%2Fgoogle.com%3Ffoo%3D1%26bar%3D2', $response->headers->get('Location'));
     }
 
     private function mock_controller($driver = null)
