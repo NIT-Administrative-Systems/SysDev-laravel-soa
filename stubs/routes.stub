@@ -6,4 +6,5 @@ Route::group(['prefix' => 'auth/azure-ad'], function () {
     Route::get('redirect', [\App\Controllers\Auth\WebSSOController::class, 'oauthRedirect'])->name('login-oauth-redirect');
     Route::post('callback', [\App\Controllers\Auth\WebSSOController::class, 'oauthCallback'])->name('login-oauth-callback')
         ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+    Route::post('oauth-logout', [\App\Controllers\Auth\WebSSOController::class, 'oauthLogout'])->name('login-oauth-logout');
 });

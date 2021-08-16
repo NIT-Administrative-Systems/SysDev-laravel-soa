@@ -1,5 +1,14 @@
 # Upgrading
 
+## From v8.2 to v8.3
+Support for logging out via Azure AD SSO was added.
+
+There is a new route, which belongs in the group with the other Azure AD routes:
+
+```php
+Route::post('oauth-logout', [\App\Controllers\Auth\WebSSOController::class, 'oauthLogout'])->name('login-oauth-logout');
+```
+
 ## From v7 to v8
 Support for Azure AD SSO was added. This is compatible with the OpenAM/ForgeRock Online Passport SSO, and can be used in tandem.
 
