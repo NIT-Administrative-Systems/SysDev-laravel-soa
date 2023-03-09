@@ -1,5 +1,10 @@
 # Upgrading
 
+## From v8 to v9
+PHP 7.3 support was dropped due to necessary dependencies dropping support.
+
+There are no changes required.
+
 ## From v8.2 to v8.3
 Support for logging out via Azure AD SSO was added.
 
