@@ -86,7 +86,7 @@ class Webhook
     protected function getNoSecurity()
     {
         return [
-            'securityType' => ['NONE'],
+            'securityTypes' => ['NONE'],
             'webhookSecurity' => [['securityType' => 'NONE']],
         ];
     } // end getNoSecurity
