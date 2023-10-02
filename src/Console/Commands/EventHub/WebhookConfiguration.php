@@ -75,11 +75,12 @@ class WebhookConfiguration extends Command
             // But, new ones will require it.
             if (in_array($hook['topicName'], $registered_hooks) === false) {
                 // Not permitted in creates since Jan 2022 (but fine for updates)
+                $topicName = $hook['topicName'];
                 unset($hook['topicName']);
 
                 $hook['active'] = true;
 
-                $this->webhook_api->create($hook['topicName'], $hook);
+                $this->webhook_api->create($topicName, $hook);
             } else {
                 $this->webhook_api->updateConfig($hook['topicName'], $hook);
             }
