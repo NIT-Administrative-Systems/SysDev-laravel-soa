@@ -74,7 +74,11 @@ class WebhookConfiguration extends Command
             // If the hook exists on EventHub already, we don't need to touch the 'active' status.
             // But, new ones will require it.
             if (in_array($hook['topicName'], $registered_hooks) === false) {
+                // Not permitted in creates since Jan 2022 (but fine for updates)
+                unset($hook['topicName']);
+
                 $hook['active'] = true;
+
                 $this->webhook_api->create($hook['topicName'], $hook);
             } else {
                 $this->webhook_api->updateConfig($hook['topicName'], $hook);
