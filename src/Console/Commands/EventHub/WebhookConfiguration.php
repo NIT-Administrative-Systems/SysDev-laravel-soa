@@ -70,23 +70,24 @@ class WebhookConfiguration extends Command
 
     protected function createOrUpdate($hook, $registered_hooks)
     {
+        $topicName = $hook['topicName'];
+
         try {
             // If the hook exists on EventHub already, we don't need to touch the 'active' status.
             // But, new ones will require it.
             if (in_array($hook['topicName'], $registered_hooks) === false) {
                 // Not permitted in creates since Jan 2022 (but fine for updates)
-                $topicName = $hook['topicName'];
                 unset($hook['topicName']);
 
                 $hook['active'] = true;
 
                 $this->webhook_api->create($topicName, $hook);
             } else {
-                $this->webhook_api->updateConfig($hook['topicName'], $hook);
+                $this->webhook_api->updateConfig($topicName, $hook);
             }
         } catch (EventHub\Exception\EventHubError $e) {
             $this->line('');
-            $this->error(vsprintf('Failed to update %s: %s', [$hook['topicName'], $e->getMessage()]));
+            $this->error(vsprintf('Failed to update %s: %s', [$topicName, $e->getMessage()]));
             $this->line('');
         }
     } // end createOrUpdate
