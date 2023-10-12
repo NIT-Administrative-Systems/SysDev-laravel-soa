@@ -65,6 +65,15 @@ To configure Azure AD, add the following to your `config/services.php`:
     'client_id' => env('AZURE_CLIENT_ID'),
     'client_secret' => env('AZURE_CLIENT_SECRET'),
     'redirect' => env('AZURE_REDIRECT_URI') // will be determined at runtime
+    
+    /**
+     * These parameters can be changed for multi-tenant app registrations.
+     * They will default to Northwestern's tenant ID and our domain hint.
+     * 
+     * In most use-cases, these will not be used.
+     */ 
+    // 'tenant' => 'common',
+    // 'domain_hint' => null,
 ],
 ```
 

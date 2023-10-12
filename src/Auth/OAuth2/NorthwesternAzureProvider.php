@@ -15,6 +15,7 @@ class NorthwesternAzureProvider extends AbstractProvider
 {
     public const IDENTIFIER = 'NU_AZURE';
     public const NU_TENANT_ID = 'northwestern.edu';
+    public const NU_DOMAIN_HINT = 'northwestern.edu';
     public const STATE_PART_SEPARATOR = '|';
 
     protected $encodingType = PHP_QUERY_RFC3986;
@@ -185,7 +186,7 @@ class NorthwesternAzureProvider extends AbstractProvider
             'scope'         => $this->formatScopes($this->getScopes(), $this->scopeSeparator),
             'response_type' => 'id_token code',
             'response_mode' => 'form_post',
-            'domain_hint'   => 'northwestern.edu',
+            'domain_hint'   => $this->domainHint(),
         ];
 
         if ($this->usesState()) {
@@ -236,12 +237,24 @@ class NorthwesternAzureProvider extends AbstractProvider
     }
 
     /**
+     * Preserves backwards-compatability now that the domain hint is configurable.
+     */
+    protected function domainHint(): ?string
+    {
+        if ($this->config['tenant'] === null) {
+            return $this->config['domain_hint'] ?: self::NU_DOMAIN_HINT;
+        }
+
+        return $this->config['domain_hint'];
+    }
+
+    /**
      * Add the additional configuration key 'tenant' to enable the branded sign-in experience.
      *
      * @return array
      */
     public static function additionalConfigKeys()
     {
-        return ['tenant'];
+        return ['tenant', 'domain_hint'];
     }
 }
