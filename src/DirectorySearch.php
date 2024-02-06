@@ -56,7 +56,7 @@ class DirectorySearch
      * @param  string  $value  Value to search by.
      * @param  string  $searchBy  See the $lookupMethods property.
      * @param  string  $level  public, basic, or expanded
-     * @return array|false     NetID details. Fields depend on the level.
+     * @return array|false NetID details. Fields depend on the level.
      */
     public function lookup($value, $searchBy, $level): array|false
     {

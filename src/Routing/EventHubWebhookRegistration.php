@@ -40,5 +40,4 @@ class EventHubWebhookRegistration
     {
         return $this->hooks;
     }
-
 }

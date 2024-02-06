@@ -7,9 +7,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Two\InvalidStateException;
+use Laravel\Socialite\Two\User as TwoUser;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;
 use SocialiteProviders\Manager\OAuth2\User;
-use Laravel\Socialite\Two\User as TwoUser;
 
 class NorthwesternAzureProvider extends AbstractProvider
 {
