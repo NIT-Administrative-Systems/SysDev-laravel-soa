@@ -100,6 +100,7 @@ You can run these with `php artisan <command>`.
 | eventhub:webhook:toggle pause   | Pause all webhooks. Optionally, you can pass a list of queue names to pause just those.     |
 | eventhub:webhook:toggle unpause | Unpause all webhooks. Optionally, you can pass a list of queue names to unpause just those. |
 | eventhub:webhook:configure      | Publishes the webhook delivery routes configured in your route files with EventHub          |
+| eventhub:dlq:restore-messages   | Moves messages from the DLQ back to the original queue for re-processing.                   |
 
 ## Test Messages
 In the dev & test environments, you should have permission to write messages to the queues you're subscribed to via `POST /v1/event-hub/queue/your-queue-name`. 
