@@ -8,6 +8,7 @@ use Northwestern\SysDev\SOA\EventHub;
 class TopicOverview extends Command
 {
     protected $signature = 'eventhub:topic:status {duration?}';
+
     protected $description = 'Display statistics & information about any topics available for publishing';
 
     protected $topic_api;
@@ -23,14 +24,15 @@ class TopicOverview extends Command
     {
         $duration = $this->argument('duration');
         if ($duration !== null) {
-            $duration = (int)$duration;
+            $duration = (int) $duration;
         }
 
         $topics = $this->topic_api->listAll($duration);
-        $topic_count = sizeof($topics);
+        $topic_count = count($topics);
 
         if ($topic_count === 0) {
             $this->error('You have no topics available.');
+
             return 1;
         }
 

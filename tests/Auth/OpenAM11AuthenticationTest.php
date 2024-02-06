@@ -12,18 +12,18 @@ use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM11;
 use Northwestern\SysDev\SOA\Auth\WebSSOAuthentication;
 use Northwestern\SysDev\SOA\Exceptions\InsecureSsoError;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
-use Northwestern\SysDev\SOA\WebSSO;
-use Northwestern\SysDev\SOA\Tests\TestCase;
-use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
-use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
+use Northwestern\SysDev\SOA\WebSSO;
+use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 
 class OpenAM11AuthenticationTest extends TestCase
 {
     use TestsOpenAM11;
 
     protected $useSecure;
+
     protected $service = WebSSO::class;
+
     protected $strategy;
 
     public function setUp(): void
@@ -146,7 +146,8 @@ class OpenAM11AuthenticationTest extends TestCase
 
     private function mock_controller()
     {
-        return new class {
+        return new class
+        {
             use WebSSOAuthentication;
 
             protected function redirectPath()
@@ -161,7 +162,8 @@ class OpenAM11AuthenticationTest extends TestCase
                     throw \Exception('Injection failed');
                 }
 
-                $user = new class implements AuthenticatableContract {
+                $user = new class implements AuthenticatableContract
+                {
                     use Authenticatable;
 
                     private $netid;

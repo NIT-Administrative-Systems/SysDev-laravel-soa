@@ -3,32 +3,32 @@
 namespace Northwestern\SysDev\SOA\Providers;
 
 use Illuminate\Routing\Route;
-use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureExtendSocialite;
-use Northwestern\SysDev\SOA\EventHub;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureExtendSocialite;
 use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM11;
 use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
 use Northwestern\SysDev\SOA\Console\Commands;
+use Northwestern\SysDev\SOA\DirectorySearch;
+use Northwestern\SysDev\SOA\EventHub;
 use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
-use Northwestern\SysDev\SOA\DirectorySearch;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 use Northwestern\SysDev\SOA\WebSSOImpl\OpenAM11Api;
-use Illuminate\Support\Facades\Event;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class NuSoaServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/nusoa.php', 'nusoa');
+        $this->mergeConfigFrom(__DIR__.'/../../config/nusoa.php', 'nusoa');
     } // end register
 
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../config/nusoa.php' => config_path('nusoa.php'),
+            __DIR__.'/../../config/nusoa.php' => config_path('nusoa.php'),
         ], 'config');
 
         if ($this->app->runningInConsole()) {
@@ -63,15 +63,15 @@ class NuSoaServiceProvider extends ServiceProvider
             case 'forgerock-direct':
                 $sso = new OpenAM11Api($http, $url, $sso_config);
                 $auth_strategy = new OpenAM11($sso);
-            break;
+                break;
 
             default:
             case 'apigee':
                 $sso = new ApigeeAgentless($http, $url, $sso_config);
                 $auth_strategy = new OpenAM11($sso);
-            break;
+                break;
         }
-        
+
         $this->app->instance(WebSSO::class, $sso);
         $this->app->instance(WebSSOStrategy::class, $auth_strategy);
     }
@@ -106,6 +106,7 @@ class NuSoaServiceProvider extends ServiceProvider
         });
 
         Route::macro('eventHubWebhook', function ($queue, $additional_settings = []) {
+            /** @var Route $this */
             $url = url($this->uri());
 
             $registry = resolve(EventHubWebhookRegistration::class);

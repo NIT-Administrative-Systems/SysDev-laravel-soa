@@ -2,9 +2,9 @@
 
 namespace Northwestern\SysDev\SOA\Tests;
 
-use Orchestra\Testbench\TestCase as BaseTestCase;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class WebhookRouteRegistrationTest extends BaseTestCase
 {
@@ -18,7 +18,7 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $route = app()->router->post('/webhook/foo')->eventHubWebhook('foo.my-queue');
 
         $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
-        $this->assertEquals(1, sizeof($registered_hooks));
+        $this->assertEquals(1, count($registered_hooks));
     } // end test_route_registration
 
     public function test_uses_hmac_when_configured()
@@ -31,8 +31,8 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
         $hook = $registered_hooks[0]->toArray();
 
-        $this->assertEquals(1, sizeof($hook['securityTypes']));
-        $this->assertEquals(1, sizeof($hook['webhookSecurity']));
+        $this->assertEquals(1, count($hook['securityTypes']));
+        $this->assertEquals(1, count($hook['webhookSecurity']));
         $this->assertEquals('HMAC', $hook['securityTypes'][0]);
         $this->assertEquals($secret, $hook['webhookSecurity'][0]['secretKey']);
     } // end test_uses_hmac_when_configured
@@ -47,8 +47,8 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
         $hook = $registered_hooks[0]->toArray();
 
-        $this->assertEquals(1, sizeof($hook['securityTypes']));
-        $this->assertEquals(1, sizeof($hook['webhookSecurity']));
+        $this->assertEquals(1, count($hook['securityTypes']));
+        $this->assertEquals(1, count($hook['webhookSecurity']));
         $this->assertEquals('APIKEY', $hook['securityTypes'][0]);
         $this->assertEquals($secret, $hook['webhookSecurity'][0]['apiKey']);
     } // end test_custom_security_setup
@@ -63,8 +63,8 @@ class WebhookRouteRegistrationTest extends BaseTestCase
         $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
         $hook = $registered_hooks[0]->toArray();
 
-        $this->assertEquals(2, sizeof($hook['securityTypes']));
-        $this->assertEquals(2, sizeof($hook['webhookSecurity']));
+        $this->assertEquals(2, count($hook['securityTypes']));
+        $this->assertEquals(2, count($hook['webhookSecurity']));
     } // end test_multiple_security_modes
 
     public function test_change_content_type()

@@ -4,8 +4,15 @@ namespace Northwestern\SysDev\SOA\Routing;
 
 class EventHubWebhookRegistration
 {
-    protected $hooks = [];
-    protected $use_hmac = false;
+    protected array $hooks = [];
+
+    protected bool $use_hmac = false;
+
+    private ?string $hmac_secret;
+
+    private ?string $hmac_algorithm;
+
+    private ?string $hmac_header_name;
 
     public function __construct()
     {
@@ -14,9 +21,9 @@ class EventHubWebhookRegistration
         $this->hmac_header_name = config('nusoa.eventHub.hmacVerificationHeader');
 
         $this->use_hmac = $this->hmac_secret !== null;
-    } // end __construct
+    }
 
-    public function registerHookToRoute($queue, $url, $additional_settings = [])
+    public function registerHookToRoute($queue, $url, $additional_settings = []): void
     {
         $hook = new Webhook($queue, $url);
 
@@ -27,11 +34,10 @@ class EventHubWebhookRegistration
         $hook->setAdditionalSettings($additional_settings);
 
         $this->hooks[] = $hook;
-    } // end registerHookToRoute
+    }
 
-    public function getHooks()
+    public function getHooks(): array
     {
         return $this->hooks;
-    } // end getHooks
-
-} // end EventHubWebhookRegistration
+    }
+}

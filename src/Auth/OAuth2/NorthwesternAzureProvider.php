@@ -7,15 +7,18 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Two\InvalidStateException;
-use SocialiteProviders\Manager\OAuth2\User;
+use Laravel\Socialite\Two\User as TwoUser;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;
-
+use SocialiteProviders\Manager\OAuth2\User;
 
 class NorthwesternAzureProvider extends AbstractProvider
 {
     public const IDENTIFIER = 'NU_AZURE';
+
     public const NU_TENANT_ID = 'northwestern.edu';
+
     public const NU_DOMAIN_HINT = 'northwestern.edu';
+
     public const STATE_PART_SEPARATOR = '|';
 
     protected $encodingType = PHP_QUERY_RFC3986;
@@ -27,10 +30,10 @@ class NorthwesternAzureProvider extends AbstractProvider
      */
     protected $graphUrl = 'https://graph.microsoft.com/v1.0/me/';
 
-    /** @var string Default scopes to request */
+    /** @var string[] Default scopes to request */
     protected $scopes = ['openid'];
-    protected $scopeSeparator = ' ';
 
+    protected $scopeSeparator = ' ';
 
     /**
      * {@inheritDoc}
@@ -55,7 +58,7 @@ class NorthwesternAzureProvider extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function user()
+    public function user(): TwoUser
     {
         $idTokenJwt = $this->request->input('id_token');
         if (! $idTokenJwt) {
@@ -94,6 +97,11 @@ class NorthwesternAzureProvider extends AbstractProvider
             $user->setAccessTokenResponseBody($response);
         }
 
+        /**
+         * Return type error is because the socialite docblock's return type is wrong.
+         *
+         * @phpstan-ignore-next-line
+         */
         return $user->setToken($token)
             ->setRefreshToken(Arr::get($response, 'refresh_token'))
             ->setExpiresIn(Arr::get($response, 'expires_in'));
@@ -128,7 +136,7 @@ class NorthwesternAzureProvider extends AbstractProvider
 
         $this->credentialsResponseBody = json_decode($response->getBody()->getContents(), true);
 
-        return $this->parseAccessToken($response->getBody());
+        return $this->parseAccessToken($this->credentialsResponseBody);
     }
 
     /**
@@ -140,7 +148,7 @@ class NorthwesternAzureProvider extends AbstractProvider
             $response = $this->getHttpClient()->get($this->graphUrl, [
                 'headers' => [
                     'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $token,
+                    'Authorization' => 'Bearer '.$token,
                 ],
             ]);
         } catch (ClientException $e) {
@@ -181,12 +189,12 @@ class NorthwesternAzureProvider extends AbstractProvider
     protected function getCodeFields($state = null)
     {
         $fields = [
-            'client_id'     => $this->clientId,
-            'redirect_uri'  => $this->redirectUrl,
-            'scope'         => $this->formatScopes($this->getScopes(), $this->scopeSeparator),
+            'client_id' => $this->clientId,
+            'redirect_uri' => $this->redirectUrl,
+            'scope' => $this->formatScopes($this->getScopes(), $this->scopeSeparator),
             'response_type' => 'id_token code',
             'response_mode' => 'form_post',
-            'domain_hint'   => $this->domainHint(),
+            'domain_hint' => $this->domainHint(),
         ];
 
         if ($this->usesState()) {

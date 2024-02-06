@@ -4,9 +4,9 @@ namespace Northwestern\SysDev\SOA\Tests\WebSSO;
 
 use GuzzleHttp\Client;
 use Northwestern\SysDev\SOA\Exceptions\ApigeeAuthenticationError;
-use Northwestern\SysDev\SOA\WebSSO;
-use Northwestern\SysDev\SOA\Tests\TestCase;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
+use Northwestern\SysDev\SOA\Tests\TestCase;
+use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 
 class OpenAM11Test extends TestCase

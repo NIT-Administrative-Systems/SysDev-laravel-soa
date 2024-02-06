@@ -8,9 +8,11 @@ use Northwestern\SysDev\SOA\EventHub;
 class QueueOverview extends Command
 {
     protected $signature = 'eventhub:queue:status {duration?}';
+
     protected $description = 'Display statistics & information about any queues available for reading';
 
     protected $queue_api;
+
     protected $dlq_api;
 
     public function __construct(EventHub\Queue $queue_api, EventHub\DeadLetterQueue $dlq_api)
@@ -25,14 +27,15 @@ class QueueOverview extends Command
     {
         $duration = $this->argument('duration');
         if ($duration !== null) {
-            $duration = (int)$duration;
+            $duration = (int) $duration;
         }
 
         $queues = $this->queue_api->listAll($duration);
-        $queue_count = sizeof($queues);
+        $queue_count = count($queues);
 
         if ($queue_count === 0) {
             $this->error('You have no queues available.');
+
             return 1;
         }
 
@@ -59,11 +62,11 @@ class QueueOverview extends Command
 
             $this->line('');
             $this->comment('Queue Statistics');
-            $this->table($stat_headers, $stats);
+            $this->table($stat_headers->all(), $stats);
             $this->line('');
 
             $this->comment('Dead Letter Queue Statistics');
-            $this->table($stat_headers, $dlq_stats);
+            $this->table($stat_headers->all(), $dlq_stats);
             $this->line('');
         }
 

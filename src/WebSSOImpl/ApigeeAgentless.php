@@ -8,6 +8,7 @@ use Northwestern\SysDev\SOA\Exceptions\ApigeeAuthenticationError;
 class ApigeeAgentless extends OpenAM11Api
 {
     protected $apigee_base_url;
+
     protected $apigee_key;
 
     const APIGEE_KEY_INVALID_RESP_CODE = 401;

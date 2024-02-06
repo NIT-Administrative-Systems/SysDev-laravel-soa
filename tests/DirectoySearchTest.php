@@ -2,7 +2,6 @@
 
 namespace Northwestern\SysDev\SOA\Tests;
 
-use Northwestern\SysDev\SOA\Tests\TestCase;
 use Northwestern\SysDev\SOA\DirectorySearch;
 
 class DirectoySearchTest extends TestCase

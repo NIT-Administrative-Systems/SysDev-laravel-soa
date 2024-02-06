@@ -3,8 +3,8 @@
 namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
-use Northwestern\SysDev\SOA\EventHub;
 use Illuminate\Console\ConfirmableTrait;
+use Northwestern\SysDev\SOA\EventHub;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
 
 class WebhookConfiguration extends Command
@@ -12,9 +12,11 @@ class WebhookConfiguration extends Command
     use ConfirmableTrait;
 
     protected $signature = 'eventhub:webhook:configure {--force}';
+
     protected $description = 'Configure webhook routes in EventHub';
 
     protected $webhook_api;
+
     protected $hook_registry;
 
     public function __construct(EventHub\Webhook $webhook_api, EventHubWebhookRegistration $hook_registry)
@@ -47,7 +49,7 @@ class WebhookConfiguration extends Command
             $this->createOrUpdate($hook, $registered_hooks);
         }
 
-        if (sizeof($existing_hooks_updated) > 0) {
+        if (count($existing_hooks_updated) > 0) {
             $this->line('');
             $this->error('The following webhooks are configured in EventHub but do not have a corresponding entry in the routes file:');
             $this->line('');

@@ -5,6 +5,7 @@ namespace Northwestern\SysDev\SOA\WebSSOImpl;
 class User
 {
     private $netid;
+
     private $mfa_verified;
 
     public function __construct(string $netid, bool $mfa_verified)

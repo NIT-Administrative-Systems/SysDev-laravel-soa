@@ -2,22 +2,24 @@
 
 namespace Northwestern\SysDev\SOA\Auth\OAuth2;
 
+use Firebase\JWT\JWK;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Socialite\Two\InvalidStateException;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
-use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
-use Firebase\JWT\JWK;
-use GuzzleHttp\Client;
 
 class AzureTokenVerifier
 {
     public const KEYS_URL = 'https://login.microsoftonline.com/common/discovery/v2.0/keys';
+
     public const ISSUER = 'https://login.microsoftonline.com/7d76d361-8277-4708-a477-64e8366cd1bc/v2.0'; // UUID is our tenant ID
 
     /**
@@ -26,9 +28,8 @@ class AzureTokenVerifier
      * This method will download Microsoft's signing keys and cache them briefly.
      *
      * @throws InvalidStateException
-     * @return \Lcobucci\JWT\UnencryptedToken
      */
-    public static function parseAndVerify(string $jwt)
+    public static function parseAndVerify(string $jwt): UnencryptedToken
     {
         $jwtContainer = Configuration::forUnsecuredSigner();
         $token = $jwtContainer->parser()->parse($jwt);
@@ -48,6 +49,11 @@ class AzureTokenVerifier
 
             try {
                 $jwtContainer->validator()->assert($token, ...$constraints);
+
+                if (! ($token instanceof UnencryptedToken)) {
+                    $type = get_class($token);
+                    throw new InvalidStateException("Expected an UnencryptedToken, got {$type} instead.");
+                }
 
                 return $token;
             } catch (RequiredConstraintsViolated $e) {

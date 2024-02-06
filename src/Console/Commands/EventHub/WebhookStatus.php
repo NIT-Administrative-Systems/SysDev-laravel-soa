@@ -8,6 +8,7 @@ use Northwestern\SysDev\SOA\EventHub;
 class WebhookStatus extends Command
 {
     protected $signature = 'eventhub:webhook:status';
+
     protected $description = 'Display information about webhook setup for any queues you can read from';
 
     protected $webhook_api;
@@ -22,8 +23,9 @@ class WebhookStatus extends Command
     public function handle()
     {
         $registered_hooks = $this->webhook_api->listAll();
-        if (sizeof($registered_hooks['webhooks']) === 0) {
+        if (count($registered_hooks['webhooks']) === 0) {
             $this->error('You do not have any webhooks registered.');
+
             return 1;
         }
 

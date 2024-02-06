@@ -11,12 +11,13 @@ use GuzzleHttp;
  */
 class DirectorySearch
 {
-    protected $baseUrl;
-    protected $apiKey;
+    protected string $baseUrl;
 
-    protected $lastError;
+    protected string $apiKey;
 
-    protected $lookupMethods = [
+    protected ?string $lastError = null;
+
+    protected array $lookupMethods = [
         'netid' => '/res/netid',
         'emplid' => '/res/emplid',
         'hremplid' => '/res/hremplid',
@@ -26,19 +27,19 @@ class DirectorySearch
         'studentemail' => '/res/studentemail',
     ];
 
-    protected $detailLevel = [
+    protected array $detailLevel = [
         'public' => '/pub/',
         'basic' => '/bas/',
         'expanded' => '/exp/',
     ];
 
-    private $http_client;
+    private GuzzleHttp\Client $http_client;
 
     public function __construct(GuzzleHttp\Client $client)
     {
         $this->http_client = $client;
-        $this->baseUrl = config('nusoa.directorySearch.baseUrl');
-        $this->apiKey = config('nusoa.directorySearch.apiKey');
+        $this->baseUrl = (string) config('nusoa.directorySearch.baseUrl');
+        $this->apiKey = (string) config('nusoa.directorySearch.apiKey');
     } // end __constructg
 
     /**
@@ -51,12 +52,13 @@ class DirectorySearch
 
     /**
      * [lookup description]
-     * @param  string $value    Value to search by.
-     * @param  string $searchBy See the $lookupMethods property.
-     * @param  string $level    public, basic, or expanded
-     * @return []               NetID details. Fields depend on the level.
+     *
+     * @param  string  $value  Value to search by.
+     * @param  string  $searchBy  See the $lookupMethods property.
+     * @param  string  $level  public, basic, or expanded
+     * @return array|false NetID details. Fields depend on the level.
      */
-    public function lookup($value, $searchBy, $level)
+    public function lookup($value, $searchBy, $level): array|false
     {
         if (array_key_exists($searchBy, $this->lookupMethods) == false) {
             throw new \Exception("Invalid searchBy specified: '$searchBy'.");
@@ -78,6 +80,7 @@ class DirectorySearch
         // HTTP 200 can still have an error.
         if (array_key_exists('ErrorMessage', $result) == true) {
             $this->lastError = $result['ErrorMessage'];
+
             return false;
         }
 
@@ -115,29 +118,32 @@ class DirectorySearch
             ]);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             $this->lastError = vsprintf('Verify connectivity to %s from the server: %s', [$this->baseUrl, $e->getMessage()]);
+
             return false;
         }
 
-        // Bad netID, service unavailable
+        /** @phpstan-ignore-next-line Bad netID or service unavailable with older Guzzles */
         if ($request === null) {
             $this->lastError = vsprintf('Request failed. Verify connectivity to %s from the server.', [$this->baseUrl]);
+
             return false;
         }
 
         if ($request->getStatusCode() != 200) {
-            $message = 'HTTP connection succeeded but no body. HTTP code was ' . $request->getStatusCode();
+            $message = 'HTTP connection succeeded but no body. HTTP code was '.$request->getStatusCode();
             if ($request->getBody() != null) {
                 $error = json_decode($request->getBody(), true);
 
                 // handle error based on returned format
-                if (!empty($error['errorMessage'])) {
+                if (! empty($error['errorMessage'])) {
                     $message = $error['errorMessage'];
-                } else if (!empty($error['fault']['faultstring'])) {
+                } elseif (! empty($error['fault']['faultstring'])) {
                     $message = $error['fault']['faultstring'];
                 }
             }
 
             $this->lastError = $message;
+
             return false;
         }
 

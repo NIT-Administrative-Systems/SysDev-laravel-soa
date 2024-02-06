@@ -21,5 +21,4 @@ trait WebSSORoutes
 
     /** @var string Route name for the OAuth logout */
     protected $oauth_logout_route_name = 'login-oauth-logout';
-
 }
