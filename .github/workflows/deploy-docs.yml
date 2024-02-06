@@ -11,18 +11,27 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [21.x]
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8.x.x
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+        cache: pnpm
+
     - name: Install and Build 🔧
       run: |
-        yarn install
-        yarn docs:build
+        pnpm install
+        pnpm docs:build
+
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@4.0.0
       with:

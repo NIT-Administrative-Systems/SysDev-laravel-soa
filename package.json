@@ -1,9 +1,15 @@
 {
+    "engines": {
+        "npm": "please-use-pnpm",
+        "yarn": "please-use-pnpm",
+        "pnpm": ">= 8.0.0",
+        "node": ">= 21.0.0"
+    },
     "scripts": {
         "docs:dev": "vuepress dev docs",
         "docs:build": "vuepress build docs"
     },
     "devDependencies": {
-        "vuepress": "^1.1.0"
+        "vuepress": "^1.9.10"
     }
 }
