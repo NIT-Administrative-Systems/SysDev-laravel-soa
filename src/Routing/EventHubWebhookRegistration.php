@@ -8,17 +8,17 @@ class EventHubWebhookRegistration
 
     protected bool $use_hmac = false;
 
-    private string $hmac_secret;
+    private ?string $hmac_secret;
 
-    private string $hmac_algorithm;
+    private ?string $hmac_algorithm;
 
-    private string $hmac_header_name;
+    private ?string $hmac_header_name;
 
     public function __construct()
     {
-        $this->hmac_secret = (string) config('nusoa.eventHub.hmacVerificationSharedSecret');
-        $this->hmac_algorithm = (string) config('nusoa.eventHub.hmacVerificationAlgorithmForRegistration');
-        $this->hmac_header_name = (string) config('nusoa.eventHub.hmacVerificationHeader');
+        $this->hmac_secret = config('nusoa.eventHub.hmacVerificationSharedSecret');
+        $this->hmac_algorithm = config('nusoa.eventHub.hmacVerificationAlgorithmForRegistration');
+        $this->hmac_header_name = config('nusoa.eventHub.hmacVerificationHeader');
 
         $this->use_hmac = $this->hmac_secret !== null;
     }
