@@ -38,6 +38,7 @@ class NuSoaServiceProvider extends ServiceProvider
                 Commands\EventHub\WebhookStatus::class,
                 Commands\EventHub\WebhookToggle::class,
                 Commands\EventHub\WebhookConfiguration::class,
+                Commands\EventHub\RestoreMessagesFromDLQ::class,
 
                 Commands\MakeWebSSO::class,
                 Commands\ShowOAuthCallbackUrl::class,
