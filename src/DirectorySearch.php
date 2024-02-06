@@ -12,6 +12,7 @@ use GuzzleHttp;
 class DirectorySearch
 {
     protected $baseUrl;
+
     protected $apiKey;
 
     protected $lastError;
@@ -51,9 +52,10 @@ class DirectorySearch
 
     /**
      * [lookup description]
-     * @param  string $value    Value to search by.
-     * @param  string $searchBy See the $lookupMethods property.
-     * @param  string $level    public, basic, or expanded
+     *
+     * @param  string  $value  Value to search by.
+     * @param  string  $searchBy  See the $lookupMethods property.
+     * @param  string  $level  public, basic, or expanded
      * @return []               NetID details. Fields depend on the level.
      */
     public function lookup($value, $searchBy, $level)
@@ -78,6 +80,7 @@ class DirectorySearch
         // HTTP 200 can still have an error.
         if (array_key_exists('ErrorMessage', $result) == true) {
             $this->lastError = $result['ErrorMessage'];
+
             return false;
         }
 
@@ -115,29 +118,32 @@ class DirectorySearch
             ]);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             $this->lastError = vsprintf('Verify connectivity to %s from the server: %s', [$this->baseUrl, $e->getMessage()]);
+
             return false;
         }
 
         // Bad netID, service unavailable
         if ($request === null) {
             $this->lastError = vsprintf('Request failed. Verify connectivity to %s from the server.', [$this->baseUrl]);
+
             return false;
         }
 
         if ($request->getStatusCode() != 200) {
-            $message = 'HTTP connection succeeded but no body. HTTP code was ' . $request->getStatusCode();
+            $message = 'HTTP connection succeeded but no body. HTTP code was '.$request->getStatusCode();
             if ($request->getBody() != null) {
                 $error = json_decode($request->getBody(), true);
 
                 // handle error based on returned format
-                if (!empty($error['errorMessage'])) {
+                if (! empty($error['errorMessage'])) {
                     $message = $error['errorMessage'];
-                } else if (!empty($error['fault']['faultstring'])) {
+                } elseif (! empty($error['fault']['faultstring'])) {
                     $message = $error['fault']['faultstring'];
                 }
             }
 
             $this->lastError = $message;
+
             return false;
         }
 

@@ -96,7 +96,6 @@ class ActiveDirectoryUser implements OAuthUser
     }
 
     /**
-     *
      * @return string
      */
     public function getFirstName()

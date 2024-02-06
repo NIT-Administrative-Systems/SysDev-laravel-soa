@@ -5,6 +5,7 @@ namespace Northwestern\SysDev\SOA\Routing;
 class EventHubWebhookRegistration
 {
     protected $hooks = [];
+
     protected $use_hmac = false;
 
     public function __construct()

@@ -3,12 +3,13 @@
 namespace Northwestern\SysDev\SOA\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Support\Facades\Artisan;
 
 class MakeWebSSO extends GeneratorCommand
 {
     protected $signature = 'make:websso';
+
     protected $description = 'Create a new Northwestern WebSSO controller';
+
     protected $type = 'Controller';
 
     public function handle()
@@ -25,12 +26,12 @@ class MakeWebSSO extends GeneratorCommand
 
     protected function getStub()
     {
-        return __DIR__ . '/../../../stubs/WebSSOController.stub';
+        return __DIR__.'/../../../stubs/WebSSOController.stub';
     }
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Http\Controllers\Auth';
+        return $rootNamespace.'\Http\Controllers\Auth';
     }
 
     protected function ejectRoutes()

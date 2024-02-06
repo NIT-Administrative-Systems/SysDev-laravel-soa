@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Two\User;
 use Northwestern\SysDev\SOA\Auth\Entity\OAuthUser;
+use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureProvider as AzureDriver;
 use Northwestern\SysDev\SOA\Auth\WebSSOAuthentication;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
-use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureProvider as AzureDriver;
 use Orchestra\Testbench\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -57,7 +57,8 @@ class OAuthAuthenticationTest extends TestCase
      */
     public function test_exceptions_restart_flow($exception)
     {
-        $this->app['router']->get('/login-oauth-redirect', function () { })->name('login-oauth-redirect');
+        $this->app['router']->get('/login-oauth-redirect', function () {
+        })->name('login-oauth-redirect');
 
         $this->app['router']->get(__METHOD__, function (Request $request) use ($exception) {
             $driver = $this->createStub(AzureDriver::class);
@@ -82,7 +83,7 @@ class OAuthAuthenticationTest extends TestCase
                     'OAuth2 Authorization code was already redeemed',
                     $this->createStub(RequestInterface::class),
                     $errorResponse
-                )
+                ),
             ],
         ];
     }
@@ -139,12 +140,14 @@ class OAuthAuthenticationTest extends TestCase
             $driver->method('redirect')->willReturn(redirect(self::OAUTH_DUMMY_PROVIDER_URL));
         }
 
-        return new class ($driver) {
+        return new class($driver)
+        {
             use WebSSOAuthentication;
 
             protected $driver;
 
-            public function __construct($driver) {
+            public function __construct($driver)
+            {
                 $this->driver = $driver;
             }
 
@@ -165,7 +168,8 @@ class OAuthAuthenticationTest extends TestCase
                     throw \Exception('Injection failed');
                 }
 
-                $user = new class implements AuthenticatableContract {
+                $user = new class implements AuthenticatableContract
+                {
                     use Authenticatable;
 
                     private $netid;

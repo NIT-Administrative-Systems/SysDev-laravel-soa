@@ -2,15 +2,13 @@
 
 namespace Northwestern\SysDev\SOA\Tests;
 
-use Exception;
-use Illuminate\Encryption\Encrypter;
-use Orchestra\Testbench\TestCase as BaseTestCase;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
-use Northwestern\SysDev\SOA\Http\Middleware\VerifyEventHubHMAC;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class VerifyEventHubHMACTest extends BaseTestCase
 {
     const HMAC_VERIFICATION_MIDDLEWARE = 'eventhub_hmac';
+
     protected $header_name;
 
     protected function getPackageProviders($application)

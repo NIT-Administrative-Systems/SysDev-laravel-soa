@@ -5,10 +5,15 @@ namespace Northwestern\SysDev\SOA\Routing;
 class Webhook
 {
     protected $queue;
+
     protected $delivery_url;
+
     protected $hmac_secret;
+
     protected $hmac_algorithm;
+
     protected $hmac_header_name;
+
     protected $additional_settings = [];
 
     public function __construct(string $queue, string $delivery_url)
@@ -35,7 +40,7 @@ class Webhook
 
         // Default to securityType NONE, unless the user has specified a security type in the custom settings.
         $default_settings = $this->getNoSecurity();
-        if (array_key_exists('securityTypes', $this->additional_settings) && sizeof($this->additional_settings) > 0) {
+        if (array_key_exists('securityTypes', $this->additional_settings) && count($this->additional_settings) > 0) {
             $default_settings = [];
         }
 

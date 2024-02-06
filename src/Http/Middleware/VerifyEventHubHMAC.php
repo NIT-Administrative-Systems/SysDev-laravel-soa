@@ -7,7 +7,9 @@ use Closure;
 class VerifyEventHubHMAC
 {
     protected $shared_secret;
+
     protected $hmac_algorithm;
+
     protected $hmac_header_name;
 
     public function __construct()
@@ -32,7 +34,7 @@ class VerifyEventHubHMAC
         try {
             $calculated_signature = @hash_hmac($this->hmac_algorithm, $request->getContent(), $this->shared_secret, true);
         } catch (\Error $e) {
-            // In PHP 8, this will give us a ValueError instead of returning false. 
+            // In PHP 8, this will give us a ValueError instead of returning false.
             // But this supports PHP 7.4+ and ValueError is new, so the new check is being done in a way that is backwards-compatible.
             $calculated_signature = false;
         }

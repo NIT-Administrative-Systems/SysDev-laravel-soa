@@ -3,17 +3,18 @@
 namespace Northwestern\SysDev\SOA\Tests;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Exception\RequestException;
-use Orchestra\Testbench\TestCase as BaseTestCase;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     protected $service = null;
+
     protected $api;
 
     public function setUp(): void

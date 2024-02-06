@@ -8,10 +8,15 @@ use Northwestern\SysDev\SOA\WebSSO;
 class OpenAM11Api implements WebSSO
 {
     protected $app_url;
+
     protected $http_client;
+
     protected $sso_server;
+
     protected $realm;
+
     protected $tree;
+
     protected $cookie_name;
 
     public function __construct(GuzzleHttp\Client $client, string $app_url, array $config)
@@ -28,7 +33,7 @@ class OpenAM11Api implements WebSSO
     public function getUser(string $token): ?User
     {
         $endpoint_url = $this->getEndpointUrl();
-        
+
         $response = $this->getSessionInfo($endpoint_url, $token);
         if ($response === null) {
             throw new \Exception(vsprintf('Unable to reach webSSO service. Verify connectivity to %s', [$this->getEndpointUrl()]));
@@ -39,6 +44,7 @@ class OpenAM11Api implements WebSSO
         }
 
         $session = json_decode($response->getBody()->getContents(), JSON_OBJECT_AS_ARRAY);
+
         return new User($session['username'], $session['properties']['isDuoAuthenticated']);
     }
 
@@ -54,13 +60,13 @@ class OpenAM11Api implements WebSSO
         return null;
     }
 
-    public function getLoginUrl(string $redirect_path = null): string
+    public function getLoginUrl(?string $redirect_path = null): string
     {
         $redirect_to = $this->prepareRedirect($redirect_path);
 
         return sprintf('%s/nusso/XUI/?realm=%s#login&authIndexType=service&authIndexValue=%s&goto=%s', $this->sso_server, $this->realm, $this->tree, $redirect_to);
     }
-    
+
     public function getLogoutUrl(?string $redirect_path = null): string
     {
         /*
@@ -76,7 +82,7 @@ class OpenAM11Api implements WebSSO
         if ($redirect_path !== null) {
             $redirect_fragment = sprintf('&goto=%s', $this->prepareRedirect($redirect_path));
         }
-        
+
         return sprintf('%s/nusso/XUI/?realm=/%s#logout%s', $this->sso_server, $this->realm, $redirect_fragment);
     }
 
@@ -105,13 +111,13 @@ class OpenAM11Api implements WebSSO
         return sprintf('%s/nusso/json/realms/root/realms/%s/sessions?_action=getSessionInfo', $this->sso_server, $this->realm);
     }
 
-    private function prepareRedirect(string $redirect_path = null): string
+    private function prepareRedirect(?string $redirect_path = null): string
     {
         $redirect_to = $this->app_url;
         if ($redirect_path != null) {
             $redirect_to = vsprintf('%s/%s', [trim($redirect_to, '/'), trim($redirect_path, '/')]);
         }
-        
+
         return urlencode($redirect_to);
     }
 

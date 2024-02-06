@@ -5,9 +5,9 @@ namespace Northwestern\SysDev\SOA\Auth;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
@@ -45,6 +45,7 @@ trait WebSSOAuthentication
     public function logout(WebSSOStrategy $sso_strategy)
     {
         Auth::logout();
+
         return $sso_strategy->logout($this->logout_return_to_route);
     }
 
@@ -53,7 +54,8 @@ trait WebSSOAuthentication
         Auth::logout();
 
         if ($postLogoutRedirectUri != null) {
-            $url = $this->oauthDriver()->getLogoutUrl() . '?post_logout_redirect_uri=' . urlencode($postLogoutRedirectUri);
+            $url = $this->oauthDriver()->getLogoutUrl().'?post_logout_redirect_uri='.urlencode($postLogoutRedirectUri);
+
             return redirect($url);
         }
 
@@ -80,10 +82,10 @@ trait WebSSOAuthentication
             return redirect(route($this->oauth_redirect_route_name));
         } catch (ClientException $e) {
             /**
-            * Handle specific failures that we know can be resolved by re-starting the auth flow.
-            * Anything more general from Guzzle should rethrow and be handled
-            * by the app's exception handler.
-            */
+             * Handle specific failures that we know can be resolved by re-starting the auth flow.
+             * Anything more general from Guzzle should rethrow and be handled
+             * by the app's exception handler.
+             */
             if (
                 $e->getCode() === 400
                 && Str::contains($e->getMessage(), 'OAuth2 Authorization code was already redeemed')

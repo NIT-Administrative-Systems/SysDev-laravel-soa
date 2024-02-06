@@ -2,7 +2,7 @@
 
 namespace Northwestern\SysDev\SOA\Auth\OAuth2;
 
-use \Exception;
+use Exception;
 use GuzzleHttp\Exception\ClientException;
 
 /**
