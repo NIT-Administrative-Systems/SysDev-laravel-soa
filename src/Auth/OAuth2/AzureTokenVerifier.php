@@ -10,6 +10,7 @@ use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
@@ -26,11 +27,9 @@ class AzureTokenVerifier
      *
      * This method will download Microsoft's signing keys and cache them briefly.
      *
-     * @return \Lcobucci\JWT\UnencryptedToken
-     *
      * @throws InvalidStateException
      */
-    public static function parseAndVerify(string $jwt)
+    public static function parseAndVerify(string $jwt): UnencryptedToken
     {
         $jwtContainer = Configuration::forUnsecuredSigner();
         $token = $jwtContainer->parser()->parse($jwt);
@@ -50,6 +49,11 @@ class AzureTokenVerifier
 
             try {
                 $jwtContainer->validator()->assert($token, ...$constraints);
+
+                if (! ($token instanceof UnencryptedToken)) {
+                    $type = get_class($token);
+                    throw new InvalidStateException("Expected an UnencryptedToken, got {$type} instead.");
+                }
 
                 return $token;
             } catch (RequiredConstraintsViolated $e) {

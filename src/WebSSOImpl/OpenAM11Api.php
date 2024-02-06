@@ -43,7 +43,7 @@ class OpenAM11Api implements WebSSO
             return null;
         }
 
-        $session = json_decode($response->getBody()->getContents(), JSON_OBJECT_AS_ARRAY);
+        $session = json_decode($response->getBody()->getContents(), associative: true);
 
         return new User($session['username'], $session['properties']['isDuoAuthenticated']);
     }

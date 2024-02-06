@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Laravel\Socialite\Two\InvalidStateException;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;
 use SocialiteProviders\Manager\OAuth2\User;
+use Laravel\Socialite\Two\User as TwoUser;
 
 class NorthwesternAzureProvider extends AbstractProvider
 {
@@ -29,7 +30,7 @@ class NorthwesternAzureProvider extends AbstractProvider
      */
     protected $graphUrl = 'https://graph.microsoft.com/v1.0/me/';
 
-    /** @var string Default scopes to request */
+    /** @var string[] Default scopes to request */
     protected $scopes = ['openid'];
 
     protected $scopeSeparator = ' ';
@@ -57,7 +58,7 @@ class NorthwesternAzureProvider extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function user()
+    public function user(): TwoUser
     {
         $idTokenJwt = $this->request->input('id_token');
         if (! $idTokenJwt) {
@@ -96,6 +97,11 @@ class NorthwesternAzureProvider extends AbstractProvider
             $user->setAccessTokenResponseBody($response);
         }
 
+        /**
+         * Return type error is because the socialite docblock's return type is wrong.
+         *
+         * @phpstan-ignore-next-line
+         */
         return $user->setToken($token)
             ->setRefreshToken(Arr::get($response, 'refresh_token'))
             ->setExpiresIn(Arr::get($response, 'expires_in'));
@@ -130,7 +136,7 @@ class NorthwesternAzureProvider extends AbstractProvider
 
         $this->credentialsResponseBody = json_decode($response->getBody()->getContents(), true);
 
-        return $this->parseAccessToken($response->getBody());
+        return $this->parseAccessToken($this->credentialsResponseBody);
     }
 
     /**

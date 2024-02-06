@@ -1,0 +1,10 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src
+    level: 5
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false

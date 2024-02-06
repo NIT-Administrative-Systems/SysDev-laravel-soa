@@ -62,11 +62,11 @@ class QueueOverview extends Command
 
             $this->line('');
             $this->comment('Queue Statistics');
-            $this->table($stat_headers, $stats);
+            $this->table($stat_headers->all(), $stats);
             $this->line('');
 
             $this->comment('Dead Letter Queue Statistics');
-            $this->table($stat_headers, $dlq_stats);
+            $this->table($stat_headers->all(), $dlq_stats);
             $this->line('');
         }
 

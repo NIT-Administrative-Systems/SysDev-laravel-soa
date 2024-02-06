@@ -106,6 +106,7 @@ class NuSoaServiceProvider extends ServiceProvider
         });
 
         Route::macro('eventHubWebhook', function ($queue, $additional_settings = []) {
+            /** @var Route $this */
             $url = url($this->uri());
 
             $registry = resolve(EventHubWebhookRegistration::class);
