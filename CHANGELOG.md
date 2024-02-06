@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-
+- The `eventhub:dlq:restore-messages` artisan command has been added. This is a tool to move messages from the DLQ back to the original queue for re-processing.
 
 ### Changed
 - Support for PHP 7.4 and 8.0 has been dropped.

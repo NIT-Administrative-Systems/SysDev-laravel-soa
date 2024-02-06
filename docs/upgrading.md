@@ -1,5 +1,10 @@
 # Upgrading
 
+## From v9 to v10
+PHP 7.4 & 8.0 support has been dropped.
+
+Some types have been updated. The one that you are likely to run into is `DirectorySearch::lookup(...): array|false`. If you had provided a type when extending this class, a return type of `array|bool` will not be compatible.
+
 ## From v8 to v9
 PHP 7.3 support was dropped due to necessary dependencies dropping support.
 
