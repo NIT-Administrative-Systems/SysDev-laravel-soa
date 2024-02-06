@@ -78,3 +78,8 @@ typings/
 /.build
 
 /composer.lock
+
+/docs/.vuepress/dist
+/docs/.vuepress/.cache
+/docs/.vuepress/.temp
+/docs/.build
