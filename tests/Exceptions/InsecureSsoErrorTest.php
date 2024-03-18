@@ -9,7 +9,7 @@ use Orchestra\Testbench\TestCase;
 class InsecureSsoErrorTest extends TestCase
 {
     #[Test]
-    public function throwable()
+    public function throwable(): void
     {
         $this->expectExceptionMessageMatches('/https/');
 

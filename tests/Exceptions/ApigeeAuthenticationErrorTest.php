@@ -9,7 +9,7 @@ use Orchestra\Testbench\TestCase;
 class ApigeeAuthenticationErrorTest extends TestCase
 {
     #[Test]
-    public function throwable()
+    public function throwable(): void
     {
         $this->expectExceptionMessageMatches('/WEBSSO_API_KEY/i');
 

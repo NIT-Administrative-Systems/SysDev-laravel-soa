@@ -26,7 +26,7 @@ class VerifyEventHubHMACTest extends BaseTestCase
         $this->header_name = $app['config']->get('nusoa.eventHub.hmacVerificationHeader');
     } // end getEnvironmentSetUp
 
-    public function test_valid_signature_pass_through()
+    public function test_valid_signature_pass_through(): void
     {
         $success_msg = 'hmac is ok';
         $this->app['router']->post(__METHOD__, ['middleware' => self::HMAC_VERIFICATION_MIDDLEWARE, 'uses' => function () use ($success_msg) {
@@ -38,7 +38,7 @@ class VerifyEventHubHMACTest extends BaseTestCase
         $response->assertSeeText($success_msg);
     } // end test_valid_signature_pass_through
 
-    public function test_invalid_signature_401_unauthorized()
+    public function test_invalid_signature_401_unauthorized(): void
     {
         $this->app['router']->post(__METHOD__, ['middleware' => self::HMAC_VERIFICATION_MIDDLEWARE, 'uses' => function () {
             return 'middleware passed';
@@ -49,7 +49,7 @@ class VerifyEventHubHMACTest extends BaseTestCase
         $response->assertSeeText('HMAC Validation Failure');
     } // end test_invalid_signature_401_unauthorized
 
-    public function test_no_header_401_unauthorized()
+    public function test_no_header_401_unauthorized(): void
     {
         $this->app['router']->post(__METHOD__, ['middleware' => self::HMAC_VERIFICATION_MIDDLEWARE, 'uses' => function () {
             return 'middleware passed';
@@ -60,7 +60,7 @@ class VerifyEventHubHMACTest extends BaseTestCase
         $response->assertSeeText('No HMAC Signature Sent');
     } // end test_no_header_401_unauthorized
 
-    public function test_bad_hmac_algorithm()
+    public function test_bad_hmac_algorithm(): void
     {
         $this->app['config']->set('nusoa.eventHub.hmacVerificationAlgorithmForPHPHashHmac', 'a very invalid algorithm');
 

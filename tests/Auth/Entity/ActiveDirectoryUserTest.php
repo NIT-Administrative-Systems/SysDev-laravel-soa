@@ -7,7 +7,7 @@ use Orchestra\Testbench\TestCase;
 
 class ActiveDirectoryUserTest extends TestCase
 {
-    public function testEntity()
+    public function testEntity(): void
     {
         $user = new ActiveDirectoryUser('abcdefg', [
             'mailNickname' => 'TEST123',

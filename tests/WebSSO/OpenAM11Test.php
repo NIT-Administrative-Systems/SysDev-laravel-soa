@@ -31,7 +31,7 @@ class OpenAM11Test extends TestCase
     }
 
     #[Test]
-    public function valid_session()
+    public function valid_session(): void
     {
         $netid = 'netid123';
         $this->api->setHttpClient($this->mockedResponse(200, $this->ssoResponseJson($netid)));
@@ -41,7 +41,7 @@ class OpenAM11Test extends TestCase
     }
 
     #[Test]
-    public function invalid_session()
+    public function invalid_session(): void
     {
         $this->api->setHttpClient($this->mockedResponse(407, ''));
 
@@ -50,7 +50,7 @@ class OpenAM11Test extends TestCase
     }
 
     #[Test]
-    public function invalid_apigee_key()
+    public function invalid_apigee_key(): void
     {
         $this->expectException(ApigeeAuthenticationError::class);
 
@@ -60,7 +60,7 @@ class OpenAM11Test extends TestCase
     }
 
     #[Test]
-    public function connectivity_error()
+    public function connectivity_error(): void
     {
         $this->api->setHttpClient($this->mockedConnError());
 
@@ -69,7 +69,7 @@ class OpenAM11Test extends TestCase
     }
 
     #[Test]
-    public function login_url()
+    public function login_url(): void
     {
         $this->assertNotEmpty($this->api->getLoginUrl());
         $this->assertNotEmpty($this->api->getLoginUrl('/foobar'));
