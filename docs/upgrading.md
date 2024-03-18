@@ -1,5 +1,23 @@
 # Upgrading
 
+## From v10 to v11
+When upgrading to Laravel 11 from a previous version, if you have applied the Laravel skeleton simplifications, you will need to update the Azure AD callback route when deleting the `\App\Http\Middleware\VerifyCsrfToken`:
+
+```diff
+diff --git a/stubs/routes.stub b/stubs/routes.stub
+index 34d4712..c65c785 100644
+--- a/stubs/routes.stub
++++ b/stubs/routes.stub
+@@ -5,6 +5,6 @@ Route::get('auth/logout', [\App\Controllers\Auth\WebSSOController::class, 'logou
+ Route::group(['prefix' => 'auth/azure-ad'], function () {
+     Route::get('redirect', [\App\Controllers\Auth\WebSSOController::class, 'oauthRedirect'])->name('login-oauth-redirect');
+     Route::post('callback', [\App\Controllers\Auth\WebSSOController::class, 'oauthCallback'])->name('login-oauth-callback')
+-        ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
++        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+     Route::post('oauth-logout', [\App\Controllers\Auth\WebSSOController::class, 'oauthLogout'])->name('login-oauth-logout');
+ });
+```
+
 ## From v9 to v10
 PHP 7.4 & 8.0 support has been dropped.
 
