@@ -22,7 +22,7 @@
         "firebase/php-jwt": "^5.3"
     },
     "require-dev": {
-        "orchestra/testbench": "~8.0",
+        "orchestra/testbench": "~9.0",
         "php-coveralls/php-coveralls": "^2.4",
         "phpunit/phpunit": "^9.0",
         "laravel/pint": "^1.13",

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+## [v11.0.0] - 2024-03-18
+### Changed
+- Support for Laravel 11 has been added
+
+    The route stub has been updated for the new Laravel 11 skeleton. When upgrading, the `withoutMiddleware()` call on the Azure AD callback route must be changed to exclude the `Illuminate\Foundation\Http\Middleware\ValidateCsrfToken` class, since the new Laravel skeleton no longer ships with `App\Http\Middleware\VerifyCsrfToken`.
+
 ## [v10.0.0] - 2024-02-06
 ### Added
 - The `eventhub:dlq:restore-messages` artisan command has been added. This is a tool to move messages from the DLQ back to the original queue for re-processing.
