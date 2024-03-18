@@ -1,14 +1,15 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Tests\Exceptions;
+namespace Northwestern\SysDev\SOA\Tests\Feature\Exceptions;
 
 use Northwestern\SysDev\SOA\Exceptions\ApigeeAuthenticationError;
 use Orchestra\Testbench\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
-class ApigeeAuthenticationErrorTest extends TestCase
+final class ApigeeAuthenticationErrorTest extends TestCase
 {
-    /** @test */
-    public function throwable()
+    #[Test]
+    public function throwable(): void
     {
         $this->expectExceptionMessageMatches('/WEBSSO_API_KEY/i');
 
