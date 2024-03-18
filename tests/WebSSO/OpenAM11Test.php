@@ -2,6 +2,7 @@
 
 namespace Northwestern\SysDev\SOA\Tests\WebSSO;
 
+use PHPUnit\Framework\Attributes\Test;
 use GuzzleHttp\Client;
 use Northwestern\SysDev\SOA\Exceptions\ApigeeAuthenticationError;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
@@ -9,13 +10,13 @@ use Northwestern\SysDev\SOA\Tests\TestCase;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 
-class OpenAM11Test extends TestCase
+final class OpenAM11Test extends TestCase
 {
     use TestsOpenAM11;
 
     protected $service = WebSSO::class;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -29,8 +30,8 @@ class OpenAM11Test extends TestCase
         $app['config']->set('duo.enabled', true);
     }
 
-    /** @test */
-    public function valid_session()
+    #[Test]
+    public function valid_session(): void
     {
         $netid = 'netid123';
         $this->api->setHttpClient($this->mockedResponse(200, $this->ssoResponseJson($netid)));
@@ -39,8 +40,8 @@ class OpenAM11Test extends TestCase
         $this->assertEquals($netid, $user->getNetid());
     }
 
-    /** @test */
-    public function invalid_session()
+    #[Test]
+    public function invalid_session(): void
     {
         $this->api->setHttpClient($this->mockedResponse(407, ''));
 
@@ -48,8 +49,8 @@ class OpenAM11Test extends TestCase
         $this->assertNull($user);
     }
 
-    /** @test */
-    public function invalid_apigee_key()
+    #[Test]
+    public function invalid_apigee_key(): void
     {
         $this->expectException(ApigeeAuthenticationError::class);
 
@@ -58,8 +59,8 @@ class OpenAM11Test extends TestCase
         $this->api->getUser('test-token');
     }
 
-    /** @test */
-    public function connectivity_error()
+    #[Test]
+    public function connectivity_error(): void
     {
         $this->api->setHttpClient($this->mockedConnError());
 
@@ -67,8 +68,8 @@ class OpenAM11Test extends TestCase
         $this->api->getUser('random');
     }
 
-    /** @test */
-    public function login_url()
+    #[Test]
+    public function login_url(): void
     {
         $this->assertNotEmpty($this->api->getLoginUrl());
         $this->assertNotEmpty($this->api->getLoginUrl('/foobar'));

@@ -16,7 +16,7 @@ use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 
-class OpenAM11AuthenticationTest extends TestCase
+final class OpenAM11AuthenticationTest extends TestCase
 {
     use TestsOpenAM11;
 
@@ -26,7 +26,7 @@ class OpenAM11AuthenticationTest extends TestCase
 
     protected $strategy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -48,7 +48,7 @@ class OpenAM11AuthenticationTest extends TestCase
         $app['config']->set('duo.enabled', false);
     } // end getEnvironmentSetUp
 
-    public function test_successful_login_no_mfa()
+    public function test_successful_login_no_mfa(): void
     {
         $this->app['router']->get(__METHOD__, function (Request $request) {
             // Doing withCookie() on the get won't work cuz that only injects into the Request,
@@ -67,7 +67,7 @@ class OpenAM11AuthenticationTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    public function test_redirects_when_no_cookie()
+    public function test_redirects_when_no_cookie(): void
     {
         $this->app['router']->get(__METHOD__, function (Request $request) {
             unset($_COOKIE['nusso']);
@@ -79,7 +79,7 @@ class OpenAM11AuthenticationTest extends TestCase
         $this->assertSsoRedirect($response);
     }
 
-    public function test_redirects_when_cookie_is_invalid()
+    public function test_redirects_when_cookie_is_invalid(): void
     {
         $this->app['router']->get(__METHOD__, function (Request $request) {
             $_COOKIE['nusso'] = 'dummy-token';
@@ -93,7 +93,7 @@ class OpenAM11AuthenticationTest extends TestCase
         $this->assertSsoRedirect($response);
     }
 
-    public function test_exception_when_apigee_key_is_invalid()
+    public function test_exception_when_apigee_key_is_invalid(): void
     {
         $this->app['router']->get(__METHOD__, function (Request $request) {
             $_COOKIE['nusso'] = 'dummy-token';
@@ -106,7 +106,7 @@ class OpenAM11AuthenticationTest extends TestCase
         $this->get(__METHOD__)->assertStatus(500);
     }
 
-    public function test_sends_to_mfa()
+    public function test_sends_to_mfa(): void
     {
         $this->app['config']->set('nusoa.sso.authTree', 'ldap-and-duo');
         $this->app['config']->set('duo.enabled', true);
@@ -127,7 +127,7 @@ class OpenAM11AuthenticationTest extends TestCase
         $this->assertGreaterThan(-1, strpos($response->getTargetUrl(), 'authIndexValue=ldap-and-duo'), $error);
     }
 
-    public function tests_exception_when_insecure_connection_used()
+    public function tests_exception_when_insecure_connection_used(): void
     {
         // Disable the "force HTTPS" thing in ::prepareUrlForRequest
         $this->useSecure = false;
