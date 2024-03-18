@@ -8,10 +8,12 @@
         "northwestern university",
         "laravel"
     ],
-    "authors": [{
-        "name": "Nicholas Evans",
-        "email": "nick.evans@northwestern.edu"
-    }],
+    "authors": [
+        {
+            "name": "Nicholas Evans",
+            "email": "nick.evans@northwestern.edu"
+        }
+    ],
     "require": {
         "php": ">=8.2",
         "guzzlehttp/guzzle": "^7.0|^6.0",
@@ -24,7 +26,7 @@
     "require-dev": {
         "orchestra/testbench": "~9.0",
         "php-coveralls/php-coveralls": "^2.4",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^10.0",
         "laravel/pint": "^1.13",
         "larastan/larastan": "^2.0"
     },
