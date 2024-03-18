@@ -26,7 +26,7 @@ class OpenAM11AuthenticationTest extends TestCase
 
     protected $strategy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -17,7 +17,7 @@ abstract class TestCase extends BaseTestCase
 
     protected $api;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->api = @$this->app->make($this->service);
