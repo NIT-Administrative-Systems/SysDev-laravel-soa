@@ -70,7 +70,7 @@ class OAuthAuthenticationTest extends TestCase
         $response->assertRedirect('/login-oauth-redirect');
     }
 
-    public function restartableExceptionProvider()
+    public static function restartableExceptionProvider()
     {
         $errorResponse = $this->createStub(ResponseInterface::class);
         $errorResponse->method('getStatusCode')->willReturn(400);
