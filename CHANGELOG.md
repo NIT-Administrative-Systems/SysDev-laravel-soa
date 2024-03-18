@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ## [v11.0.0] - 2024-03-18
 ### Changed
+- Dropped support for PHP 8.1.
 - Support for Laravel 11 has been added
 
     The route stub has been updated for the new Laravel 11 skeleton. When upgrading, the `withoutMiddleware()` call on the Azure AD callback route must be changed to exclude the `Illuminate\Foundation\Http\Middleware\ValidateCsrfToken` class, since the new Laravel skeleton no longer ships with `App\Http\Middleware\VerifyCsrfToken`.
