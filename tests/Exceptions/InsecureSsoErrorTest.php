@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Northwestern\SysDev\SOA\Exceptions\InsecureSsoError;
 use Orchestra\Testbench\TestCase;
 
-class InsecureSsoErrorTest extends TestCase
+final class InsecureSsoErrorTest extends TestCase
 {
     #[Test]
     public function throwable(): void

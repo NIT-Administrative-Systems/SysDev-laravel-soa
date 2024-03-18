@@ -6,7 +6,7 @@ use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
-class WebhookRouteRegistrationTest extends BaseTestCase
+final class WebhookRouteRegistrationTest extends BaseTestCase
 {
     protected function getPackageProviders($application)
     {

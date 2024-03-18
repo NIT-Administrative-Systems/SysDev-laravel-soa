@@ -16,7 +16,7 @@ use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 
-class OpenAM11AuthenticationTest extends TestCase
+final class OpenAM11AuthenticationTest extends TestCase
 {
     use TestsOpenAM11;
 

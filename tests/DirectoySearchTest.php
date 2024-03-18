@@ -4,7 +4,7 @@ namespace Northwestern\SysDev\SOA\Tests;
 
 use Northwestern\SysDev\SOA\DirectorySearch;
 
-class DirectoySearchTest extends TestCase
+final class DirectoySearchTest extends TestCase
 {
     protected $service = DirectorySearch::class;
 

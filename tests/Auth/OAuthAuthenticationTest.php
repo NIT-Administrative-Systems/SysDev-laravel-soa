@@ -19,7 +19,7 @@ use Orchestra\Testbench\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class OAuthAuthenticationTest extends TestCase
+final class OAuthAuthenticationTest extends TestCase
 {
     const OAUTH_DUMMY_PROVIDER_URL = 'https://oauth.example.org';
 

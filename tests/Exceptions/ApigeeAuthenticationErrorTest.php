@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Northwestern\SysDev\SOA\Exceptions\ApigeeAuthenticationError;
 use Orchestra\Testbench\TestCase;
 
-class ApigeeAuthenticationErrorTest extends TestCase
+final class ApigeeAuthenticationErrorTest extends TestCase
 {
     #[Test]
     public function throwable(): void

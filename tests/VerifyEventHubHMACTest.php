@@ -5,7 +5,7 @@ namespace Northwestern\SysDev\SOA\Tests;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
-class VerifyEventHubHMACTest extends BaseTestCase
+final class VerifyEventHubHMACTest extends BaseTestCase
 {
     const HMAC_VERIFICATION_MIDDLEWARE = 'eventhub_hmac';
 
