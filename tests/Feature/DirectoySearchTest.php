@@ -1,8 +1,9 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Tests;
+namespace Northwestern\SysDev\SOA\Tests\Feature;
 
 use Northwestern\SysDev\SOA\DirectorySearch;
+use Northwestern\SysDev\SOA\Tests\TestCase;
 
 final class DirectoySearchTest extends TestCase
 {

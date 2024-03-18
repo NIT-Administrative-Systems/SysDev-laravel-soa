@@ -1,14 +1,14 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Tests\WebSSO;
+namespace Northwestern\SysDev\SOA\Tests\Feature\WebSSO;
 
-use PHPUnit\Framework\Attributes\Test;
 use GuzzleHttp\Client;
 use Northwestern\SysDev\SOA\Exceptions\ApigeeAuthenticationError;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
 use Northwestern\SysDev\SOA\Tests\TestCase;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
+use PHPUnit\Framework\Attributes\Test;
 
 final class OpenAM11Test extends TestCase
 {

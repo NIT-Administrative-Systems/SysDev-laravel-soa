@@ -1,8 +1,7 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Tests\Auth;
+namespace Northwestern\SysDev\SOA\Tests\Feature\Auth;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -53,10 +52,11 @@ final class OAuthAuthenticationTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    #[DataProvider('restartableExceptionProvider')]
-    public function test_exceptions_restart_flow($exception): void
+    public function test_exceptions_restart_flow_for_invalid_state(): void
     {
+        $exception = new InvalidStateException;
         $this->app['router']->get('/login-oauth-redirect', function () {
+            //
         })->name('login-oauth-redirect');
 
         $this->app['router']->get(__METHOD__, function (Request $request) use ($exception) {
@@ -70,21 +70,30 @@ final class OAuthAuthenticationTest extends TestCase
         $response->assertRedirect('/login-oauth-redirect');
     }
 
-    public static function restartableExceptionProvider(): array
+    public function test_exceptions_restart_flow_for_guzzle_400_code(): void
     {
         $errorResponse = $this->createStub(ResponseInterface::class);
         $errorResponse->method('getStatusCode')->willReturn(400);
 
-        return [
-            'invalid state' => [new InvalidStateException],
-            'guzzle 400 w/ message' => [
-                new ClientException(
-                    'OAuth2 Authorization code was already redeemed',
-                    $this->createStub(RequestInterface::class),
-                    $errorResponse
-                ),
-            ],
-        ];
+        $exception = new ClientException(
+            'OAuth2 Authorization code was already redeemed',
+            $this->createStub(RequestInterface::class),
+            $errorResponse
+        );
+
+        $this->app['router']->get('/login-oauth-redirect', function () {
+            //
+        })->name('login-oauth-redirect');
+
+        $this->app['router']->get(__METHOD__, function (Request $request) use ($exception) {
+            $driver = $this->createStub(AzureDriver::class);
+            $driver->method('user')->willThrowException($exception);
+
+            return $this->mock_controller($driver)->oauthCallback($request);
+        });
+
+        $response = $this->get(__METHOD__);
+        $response->assertRedirect('/login-oauth-redirect');
     }
 
     public function test_unhandled_exceptions_are_rethrown(): void

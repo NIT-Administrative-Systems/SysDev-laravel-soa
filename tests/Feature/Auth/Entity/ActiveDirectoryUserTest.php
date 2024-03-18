@@ -1,6 +1,6 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Tests\Auth\Entity;
+namespace Northwestern\SysDev\SOA\Tests\Feature\Auth\Entity;
 
 use Northwestern\SysDev\SOA\Auth\Entity\ActiveDirectoryUser;
 use Orchestra\Testbench\TestCase;

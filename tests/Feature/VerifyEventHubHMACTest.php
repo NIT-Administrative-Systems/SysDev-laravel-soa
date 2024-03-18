@@ -1,6 +1,6 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Tests;
+namespace Northwestern\SysDev\SOA\Tests\Feature;
 
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;

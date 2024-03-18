@@ -1,10 +1,10 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Tests\Exceptions;
+namespace Northwestern\SysDev\SOA\Tests\Feature\Exceptions;
 
-use PHPUnit\Framework\Attributes\Test;
 use Northwestern\SysDev\SOA\Exceptions\InsecureSsoError;
 use Orchestra\Testbench\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 final class InsecureSsoErrorTest extends TestCase
 {

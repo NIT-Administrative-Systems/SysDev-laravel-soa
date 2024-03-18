@@ -1,6 +1,6 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Tests;
+namespace Northwestern\SysDev\SOA\Tests\Feature\Auth;
 
 use GuzzleHttp\Client;
 use Illuminate\Auth\Authenticatable;
@@ -13,6 +13,7 @@ use Northwestern\SysDev\SOA\Auth\WebSSOAuthentication;
 use Northwestern\SysDev\SOA\Exceptions\InsecureSsoError;
 use Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
+use Northwestern\SysDev\SOA\Tests\TestCase;
 use Northwestern\SysDev\SOA\WebSSO;
 use Northwestern\SysDev\SOA\WebSSOImpl\ApigeeAgentless;
 
