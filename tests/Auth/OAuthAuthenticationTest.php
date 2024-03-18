@@ -2,6 +2,7 @@
 
 namespace Northwestern\SysDev\SOA\Tests\Auth;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -52,9 +53,7 @@ class OAuthAuthenticationTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    /**
-     * @dataProvider restartableExceptionProvider
-     */
+    #[DataProvider('restartableExceptionProvider')]
     public function test_exceptions_restart_flow($exception)
     {
         $this->app['router']->get('/login-oauth-redirect', function () {

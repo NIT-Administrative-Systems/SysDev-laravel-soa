@@ -2,6 +2,7 @@
 
 namespace Northwestern\SysDev\SOA\Tests\WebSSO;
 
+use PHPUnit\Framework\Attributes\Test;
 use GuzzleHttp\Client;
 use Northwestern\SysDev\SOA\Exceptions\ApigeeAuthenticationError;
 use Northwestern\SysDev\SOA\Tests\Concerns\TestsOpenAM11;
@@ -29,7 +30,7 @@ class OpenAM11Test extends TestCase
         $app['config']->set('duo.enabled', true);
     }
 
-    /** @test */
+    #[Test]
     public function valid_session()
     {
         $netid = 'netid123';
@@ -39,7 +40,7 @@ class OpenAM11Test extends TestCase
         $this->assertEquals($netid, $user->getNetid());
     }
 
-    /** @test */
+    #[Test]
     public function invalid_session()
     {
         $this->api->setHttpClient($this->mockedResponse(407, ''));
@@ -48,7 +49,7 @@ class OpenAM11Test extends TestCase
         $this->assertNull($user);
     }
 
-    /** @test */
+    #[Test]
     public function invalid_apigee_key()
     {
         $this->expectException(ApigeeAuthenticationError::class);
@@ -58,7 +59,7 @@ class OpenAM11Test extends TestCase
         $this->api->getUser('test-token');
     }
 
-    /** @test */
+    #[Test]
     public function connectivity_error()
     {
         $this->api->setHttpClient($this->mockedConnError());
@@ -67,7 +68,7 @@ class OpenAM11Test extends TestCase
         $this->api->getUser('random');
     }
 
-    /** @test */
+    #[Test]
     public function login_url()
     {
         $this->assertNotEmpty($this->api->getLoginUrl());
