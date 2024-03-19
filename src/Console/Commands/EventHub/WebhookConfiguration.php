@@ -72,13 +72,13 @@ class WebhookConfiguration extends Command
     {
         $topicName = $hook['topicName'];
 
+        // Not allowed in the POST/PUT body
+        unset($hook['topicName']);
+
         try {
             // If the hook exists on EventHub already, we don't need to touch the 'active' status.
             // But, new ones will require it.
             if (in_array($hook['topicName'], $registered_hooks) === false) {
-                // Not permitted in creates since Jan 2022 (but fine for updates)
-                unset($hook['topicName']);
-
                 $hook['active'] = true;
 
                 $this->webhook_api->create($topicName, $hook);
