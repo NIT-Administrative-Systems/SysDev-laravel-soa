@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+## [v11.0.1] - 2024-03-19
+### Fixes
+- Fixed a bug when configuring EventHub webhooks using `php artisan eventhub:webhook:configure`.
+
 ## [v11.0.0] - 2024-03-18
 ### Changed
 - Dropped support for PHP 8.1.
@@ -24,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `NorthwesternAzureProvider::getAccessToken()` was not working. This has been corrected.
 - A number of issues with incorrect types have been corrected.
 - The `eventhub:queue:status` artisan command was broken on current versions of Laravel. This has been corrected. 
+
+## [v9.1.1] - 2024-02-19
+This is a backport release to support apps still using PHP 8.1.
+
+### Fixes
+- Fixed a bug when configuring EventHub webhooks using `php artisan eventhub:webhook:configure`.
 
 ## [v9.1.0] - 2023-10-12
 
