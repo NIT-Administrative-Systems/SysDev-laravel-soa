@@ -19,7 +19,7 @@
         "guzzlehttp/guzzle": "^7.0|^6.0",
         "northwestern-sysdev/event-hub-php-sdk": "^3.0",
         "laravel/ui": "^3.0|^2.0|^4.0",
-        "lcobucci/jwt": "^4.0",
+        "lcobucci/jwt": "^4.0 || ^5.0",
         "socialiteproviders/manager": "~4.0",
         "firebase/php-jwt": "^5.3"
     },
