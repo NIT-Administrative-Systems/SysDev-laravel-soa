@@ -75,8 +75,15 @@ class WebhookConfiguration extends Command
             // But, new ones will require it.
             if (in_array($hook['topicName'], $registered_hooks) === false) {
                 $hook['active'] = true;
+
+                // Not allowed in the POST/PUT body
+                unset($hook['topicName']);
+
                 $this->webhook_api->create($hook['topicName'], $hook);
             } else {
+                // Not allowed in the POST/PUT body
+                unset($hook['topicName']);
+
                 $this->webhook_api->updateConfig($hook['topicName'], $hook);
             }
         } catch (EventHub\Exception\EventHubError $e) {
