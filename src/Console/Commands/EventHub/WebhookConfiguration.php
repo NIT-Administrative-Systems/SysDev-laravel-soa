@@ -70,6 +70,8 @@ class WebhookConfiguration extends Command
 
     protected function createOrUpdate($hook, $registered_hooks)
     {
+        $topicName = $hook['topicName'];
+
         try {
             // If the hook exists on EventHub already, we don't need to touch the 'active' status.
             // But, new ones will require it.
@@ -79,16 +81,16 @@ class WebhookConfiguration extends Command
                 // Not allowed in the POST/PUT body
                 unset($hook['topicName']);
 
-                $this->webhook_api->create($hook['topicName'], $hook);
+                $this->webhook_api->create($topicName, $hook);
             } else {
                 // Not allowed in the POST/PUT body
                 unset($hook['topicName']);
 
-                $this->webhook_api->updateConfig($hook['topicName'], $hook);
+                $this->webhook_api->updateConfig($topicName, $hook);
             }
         } catch (EventHub\Exception\EventHubError $e) {
             $this->line('');
-            $this->error(vsprintf('Failed to update %s: %s', [$hook['topicName'], $e->getMessage()]));
+            $this->error(vsprintf('Failed to update %s: %s', [$topicName, $e->getMessage()]));
             $this->line('');
         }
     } // end createOrUpdate
