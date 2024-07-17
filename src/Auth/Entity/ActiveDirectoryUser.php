@@ -120,6 +120,11 @@ class ActiveDirectoryUser implements OAuthUser
         return $this->lastName;
     }
 
+    public function getTokenIssuedBy()
+    {
+        return $this->tokenIssuedBy;
+    }
+
     /**
      * The full OAuth2 response, with all fields & tokens.
      *

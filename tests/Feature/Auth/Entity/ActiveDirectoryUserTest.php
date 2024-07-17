@@ -9,14 +9,18 @@ final class ActiveDirectoryUserTest extends TestCase
 {
     public function testEntity(): void
     {
-        $user = new ActiveDirectoryUser('abcdefg', [
-            'mailNickname' => 'TEST123',
-            'mail' => 'foo@bar.net',
-            'userPrincipalName' => 'TEST123@foo.bar.net',
-            'displayName' => 'Foo Bar',
-            'givenName' => 'Foo',
-            'surname' => 'Bar',
-        ]);
+        $user = new ActiveDirectoryUser(
+            'abcdefg',
+            [
+                'mailNickname' => 'TEST123',
+                'mail' => 'foo@bar.net',
+                'userPrincipalName' => 'TEST123@foo.bar.net',
+                'displayName' => 'Foo Bar',
+                'givenName' => 'Foo',
+                'surname' => 'Bar',
+            ],
+            'Jerry in HR'
+        );
 
         $this->assertEquals('abcdefg', $user->getToken());
         $this->assertEquals('test123', $user->getNetid());
@@ -25,6 +29,6 @@ final class ActiveDirectoryUserTest extends TestCase
         $this->assertEquals('Foo Bar', $user->getDisplayName());
         $this->assertEquals('Foo', $user->getFirstName());
         $this->assertEquals('Bar', $user->getLastName());
-
+        $this->assertEquals('Jerry in HR', $user->getTokenIssuedBy());
     }
 }
