@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Two\User as TwoUser;
+use Lcobucci\JWT\UnencryptedToken;
+use Northwestern\SysDev\SOA\Auth\OAuth2\TokenVerifier\Contract\TokenVerifierInterface;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;
 use SocialiteProviders\Manager\OAuth2\User;
 
@@ -20,6 +22,8 @@ class NorthwesternAzureProvider extends AbstractProvider
     public const NU_DOMAIN_HINT = 'northwestern.edu';
 
     public const STATE_PART_SEPARATOR = '|';
+
+    public const ISSUER_ATTRIBUTE = 'idIssuer';
 
     protected $encodingType = PHP_QUERY_RFC3986;
 
@@ -66,9 +70,9 @@ class NorthwesternAzureProvider extends AbstractProvider
         }
 
         // Throws if the token isn't signed properly
-        $idToken = AzureTokenVerifier::parseAndVerify($idTokenJwt);
+        $idToken = $this->verifierService()->parseAndVerify($idTokenJwt);
 
-        //Temporary fix to enable stateless
+        // Fix to enable stateless
         $response = $this->getAccessTokenResponse($this->request->input('code'));
 
         $userToken = $this->getUserByToken(
@@ -92,6 +96,7 @@ class NorthwesternAzureProvider extends AbstractProvider
         }
 
         $user = $this->mapUserToObject($userToken);
+        $user->attributes[self::ISSUER_ATTRIBUTE] = $idToken->claims()->get('iss');
 
         if ($user instanceof User) {
             $user->setAccessTokenResponseBody($response);
@@ -105,6 +110,11 @@ class NorthwesternAzureProvider extends AbstractProvider
         return $user->setToken($token)
             ->setRefreshToken(Arr::get($response, 'refresh_token'))
             ->setExpiresIn(Arr::get($response, 'expires_in'));
+    }
+
+    protected function verifierService(): TokenVerifierInterface
+    {
+        return resolve(TokenVerifierInterface::class);
     }
 
     /**

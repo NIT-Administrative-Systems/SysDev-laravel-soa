@@ -1,6 +1,6 @@
 <?php
 
-namespace Northwestern\SysDev\SOA\Auth\OAuth2;
+namespace Northwestern\SysDev\SOA\Auth\OAuth2\TokenVerifier\Contract;
 
 use Firebase\JWT\JWK;
 use GuzzleHttp\Client;
@@ -11,16 +11,23 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\UnencryptedToken;
-use Lcobucci\JWT\Validation\Constraint\IssuedBy;
+use Lcobucci\JWT\Validation\Constraint;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
 
-class AzureTokenVerifier
+abstract class AbstractAzureTokenVerifier
 {
     public const KEYS_URL = 'https://login.microsoftonline.com/common/discovery/v2.0/keys';
 
-    public const ISSUER = 'https://login.microsoftonline.com/7d76d361-8277-4708-a477-64e8366cd1bc/v2.0'; // UUID is our tenant ID
+    /**
+     * The list of additional constraints to validate the token.
+     *
+     * {@see SignedWith} (for valid Microsoft keys) and {@see LooseValidAt} will always be applied.
+     *
+     * @return Constraint[]
+     */
+    abstract protected function additionalTokenConstraints(): array;
 
     /**
      * Parses the ID token, validates it with Microsoft's signing keys, and returns it.
@@ -29,12 +36,12 @@ class AzureTokenVerifier
      *
      * @throws InvalidStateException
      */
-    public static function parseAndVerify(string $jwt): UnencryptedToken
+    public function parseAndVerify(string $jwt): UnencryptedToken
     {
         $jwtContainer = Configuration::forUnsecuredSigner();
         $token = $jwtContainer->parser()->parse($jwt);
 
-        $data = self::loadKeys();
+        $data = $this->loadKeys();
 
         $publicKeys = JWK::parseKeySet($data);
         $kid = $token->headers()->get('kid');
@@ -43,8 +50,8 @@ class AzureTokenVerifier
             $publicKey = openssl_pkey_get_details($publicKeys[$kid]);
             $constraints = [
                 new SignedWith(new Sha256(), InMemory::plainText($publicKey['key'])),
-                new IssuedBy(self::ISSUER),
                 new LooseValidAt(SystemClock::fromSystemTimezone()),
+                ...$this->additionalTokenConstraints(),
             ];
 
             try {
@@ -64,7 +71,7 @@ class AzureTokenVerifier
         throw new InvalidStateException('Invalid JWT Signature');
     }
 
-    protected static function loadKeys()
+    private function loadKeys()
     {
         return Cache::remember('socialite:Azure-JWKSet', 5 * 60, function () {
             $response = (new Client())->get(self::KEYS_URL);
