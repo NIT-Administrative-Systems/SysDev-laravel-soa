@@ -9,6 +9,14 @@ class ActiveDirectoryUser implements OAuthUser
     /** @var string JWT for Microsoft APIs */
     protected $token;
 
+    /**
+     * Issuer for the ID Token, which you may wish to check for multi-tenant app registrations to restrict it to an
+     * allowlist.
+     *
+     * @var string|null
+     */
+    protected $tokenIssuedBy;
+
     /** @var string */
     protected $netid;
 
@@ -30,9 +38,10 @@ class ActiveDirectoryUser implements OAuthUser
     /** @var array */
     protected $rawData;
 
-    public function __construct(string $token, array $rawData)
+    public function __construct(string $token, array $rawData, ?string $tokenIssuedBy)
     {
         $this->token = $token;
+        $this->tokenIssuedBy = $tokenIssuedBy;
         $this->rawData = $rawData;
 
         $this->netid = strtolower(explode('@', Arr::get($this->rawData, 'userPrincipalName'))[0]);
@@ -109,6 +118,11 @@ class ActiveDirectoryUser implements OAuthUser
     public function getLastName()
     {
         return $this->lastName;
+    }
+
+    public function getTokenIssuedBy()
+    {
+        return $this->tokenIssuedBy;
     }
 
     /**

@@ -5,7 +5,11 @@ namespace Northwestern\SysDev\SOA\Providers;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureExtendSocialite;
+use Northwestern\SysDev\SOA\Auth\OAuth2\TokenVerifier\Contract\TokenVerifierInterface;
+use Northwestern\SysDev\SOA\Auth\OAuth2\TokenVerifier\MultiTenantAzureTokenVerifier;
+use Northwestern\SysDev\SOA\Auth\OAuth2\TokenVerifier\NorthwesternAzureTokenVerifier;
 use Northwestern\SysDev\SOA\Auth\Strategy\OpenAM11;
 use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
 use Northwestern\SysDev\SOA\Console\Commands;
@@ -75,6 +79,22 @@ class NuSoaServiceProvider extends ServiceProvider
 
         $this->app->instance(WebSSO::class, $sso);
         $this->app->instance(WebSSOStrategy::class, $auth_strategy);
+
+        $this->bootAzureSSO();
+    }
+
+    private function bootAzureSSO(): void
+    {
+        $verifier = config('services.northwestern-azure.token_verifier', 'northwestern');
+        $verifierClass = match ($verifier) {
+            'common' => MultiTenantAzureTokenVerifier::class,
+            'northwestern' => NorthwesternAzureTokenVerifier::class,
+            default => Str::start($verifier, '\\'),
+        };
+
+        throw_unless(class_exists($verifierClass), new \InvalidArgumentException('Verifier for services.northwestern-azure.token-verifier not found'));
+
+        $this->app->bind(TokenVerifierInterface::class, $verifierClass);
     }
 
     private function bootEventHub()

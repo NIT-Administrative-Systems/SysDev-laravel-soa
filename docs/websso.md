@@ -68,12 +68,17 @@ To configure Azure AD, add the following to your `config/services.php`:
     
     /**
      * These parameters can be changed for multi-tenant app registrations.
-     * They will default to Northwestern's tenant ID and our domain hint.
+     * They will default to Northwestern's tenant ID and our domain hint,
+     * and ID tokens must be verified by Northwestern's tenant ID.
+     *
+     * The token-verifier options are 'northwestern', 'common', or a class
+     * implementing TokenVerifierInterface. 
      * 
      * In most use-cases, these will not be used.
      */ 
+    // 'token_verifier' => 'common',
     // 'tenant' => 'common',
-    // 'domain_hint' => null,
+    // 'domain_hint' => null,    
 ],
 ```
 

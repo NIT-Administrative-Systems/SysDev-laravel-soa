@@ -7,12 +7,14 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Northwestern\SysDev\SOA\Auth\Entity\ActiveDirectoryUser;
 use Northwestern\SysDev\SOA\Auth\Entity\OAuthUser;
+use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureProvider;
 use Northwestern\SysDev\SOA\Auth\Strategy\NoSsoSession;
 use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
 
@@ -96,7 +98,11 @@ trait WebSSOAuthentication
             throw $e;
         }
 
-        $oauthUser = new ActiveDirectoryUser($userInfo->token, $userInfo->getRaw());
+        $oauthUser = new ActiveDirectoryUser(
+            $userInfo->token,
+            $userInfo->getRaw(),
+            Arr::get($userInfo->attributes, NorthwesternAzureProvider::ISSUER_ATTRIBUTE)
+        );
 
         $user = app()->call(
             \Closure::fromCallable('static::findUserByOAuthUser'),
