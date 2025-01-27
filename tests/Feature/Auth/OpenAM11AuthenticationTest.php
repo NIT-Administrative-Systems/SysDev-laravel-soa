@@ -51,7 +51,7 @@ final class OpenAM11AuthenticationTest extends TestCase
 
     public function test_successful_login_no_mfa(): void
     {
-        $this->app['router']->get(__METHOD__, function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) {
             // Doing withCookie() on the get won't work cuz that only injects into the Request,
             // but the controller must access this via the $_COOKIE array to avoid Laravel "decrypting"
             // the value and exploding.
@@ -63,26 +63,26 @@ final class OpenAM11AuthenticationTest extends TestCase
             return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
-        $response = $this->get(__METHOD__);
+        $response = $this->get(__FUNCTION__);
         $response->assertRedirect('/logged-in');
         $this->assertAuthenticated();
     }
 
     public function test_redirects_when_no_cookie(): void
     {
-        $this->app['router']->get(__METHOD__, function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) {
             unset($_COOKIE['nusso']);
 
             return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
-        $response = $this->get(__METHOD__)->assertRedirect();
+        $response = $this->get(__FUNCTION__)->assertRedirect();
         $this->assertSsoRedirect($response);
     }
 
     public function test_redirects_when_cookie_is_invalid(): void
     {
-        $this->app['router']->get(__METHOD__, function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) {
             $_COOKIE['nusso'] = 'dummy-token';
 
             $this->api->setHttpClient($this->mockedResponse(407, ''));
@@ -90,13 +90,13 @@ final class OpenAM11AuthenticationTest extends TestCase
             return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
-        $response = $this->get(__METHOD__)->assertRedirect();
+        $response = $this->get(__FUNCTION__)->assertRedirect();
         $this->assertSsoRedirect($response);
     }
 
     public function test_exception_when_apigee_key_is_invalid(): void
     {
-        $this->app['router']->get(__METHOD__, function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) {
             $_COOKIE['nusso'] = 'dummy-token';
 
             $this->api->setHttpClient($this->mockedResponse(401, ''));
@@ -104,7 +104,7 @@ final class OpenAM11AuthenticationTest extends TestCase
             return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
-        $this->get(__METHOD__)->assertStatus(500);
+        $this->get(__FUNCTION__)->assertStatus(500);
     }
 
     public function test_sends_to_mfa(): void
@@ -115,14 +115,14 @@ final class OpenAM11AuthenticationTest extends TestCase
         $this->api = new ApigeeAgentless(resolve(Client::class), config('app.url'), config('nusoa.sso'));
         $this->strategy = new OpenAM11($this->api);
 
-        $this->app['router']->get(__METHOD__, ['middleware' => 'web', 'uses' => function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, ['middleware' => 'web', 'uses' => function (Request $request) {
             $_COOKIE['openAMssoToken'] = 'dummy-token';
             $this->api->setHttpClient($this->mockedResponse(200, $this->ssoResponseJson('test-id', false)));
 
             return $this->mock_controller()->login($request, $this->strategy);
         }])->name('login');
 
-        $response = $this->withSession([])->get(__METHOD__)->assertRedirect();
+        $response = $this->withSession([])->get(__FUNCTION__)->assertRedirect();
 
         $error = sprintf('SSO redirect URL %s should contain ldap-and-duo', $response->getTargetUrl());
         $this->assertGreaterThan(-1, strpos($response->getTargetUrl(), 'authIndexValue=ldap-and-duo'), $error);
@@ -133,7 +133,7 @@ final class OpenAM11AuthenticationTest extends TestCase
         // Disable the "force HTTPS" thing in ::prepareUrlForRequest
         $this->useSecure = false;
 
-        $this->app['router']->get(__METHOD__, function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) {
             $_COOKIE['nusso'] = 'dummy-token';
 
             $this->api->setHttpClient($this->mockedResponse(407, ''));
@@ -141,7 +141,7 @@ final class OpenAM11AuthenticationTest extends TestCase
             return $this->mock_controller()->login($request, $this->strategy);
         })->name('login');
 
-        $response = $this->get(__METHOD__)->assertStatus(500);
+        $response = $this->get(__FUNCTION__)->assertStatus(500);
         $this->assertInstanceOf(InsecureSsoError::class, $response->exception);
     }
 

@@ -24,17 +24,17 @@ final class OAuthAuthenticationTest extends TestCase
 
     public function test_redirects_to_oauth_provider(): void
     {
-        $this->app['router']->get(__METHOD__, function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) {
             return $this->mock_controller()->oauthRedirect($request);
         });
 
-        $response = $this->get(__METHOD__);
+        $response = $this->get(__FUNCTION__);
         $response->assertRedirect(self::OAUTH_DUMMY_PROVIDER_URL);
     }
 
     public function test_callback_success(): void
     {
-        $this->app['router']->get(__METHOD__, function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) {
             $oauthUser = $this->createStub(User::class);
             $oauthUser->token = 'a';
             $oauthUser->method('getRaw')->willReturn([
@@ -47,7 +47,7 @@ final class OAuthAuthenticationTest extends TestCase
             return $this->mock_controller($driver)->oauthCallback($request);
         });
 
-        $response = $this->get(__METHOD__);
+        $response = $this->get(__FUNCTION__);
         $response->assertRedirect('/logged-in');
         $this->assertAuthenticated();
     }
@@ -59,14 +59,14 @@ final class OAuthAuthenticationTest extends TestCase
             //
         })->name('login-oauth-redirect');
 
-        $this->app['router']->get(__METHOD__, function (Request $request) use ($exception) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) use ($exception) {
             $driver = $this->createStub(AzureDriver::class);
             $driver->method('user')->willThrowException($exception);
 
             return $this->mock_controller($driver)->oauthCallback($request);
         });
 
-        $response = $this->get(__METHOD__);
+        $response = $this->get(__FUNCTION__);
         $response->assertRedirect('/login-oauth-redirect');
     }
 
@@ -85,33 +85,33 @@ final class OAuthAuthenticationTest extends TestCase
             //
         })->name('login-oauth-redirect');
 
-        $this->app['router']->get(__METHOD__, function (Request $request) use ($exception) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) use ($exception) {
             $driver = $this->createStub(AzureDriver::class);
             $driver->method('user')->willThrowException($exception);
 
             return $this->mock_controller($driver)->oauthCallback($request);
         });
 
-        $response = $this->get(__METHOD__);
+        $response = $this->get(__FUNCTION__);
         $response->assertRedirect('/login-oauth-redirect');
     }
 
     public function test_unhandled_exceptions_are_rethrown(): void
     {
-        $this->app['router']->get(__METHOD__, function (Request $request) {
+        $this->app['router']->get(__FUNCTION__, function (Request $request) {
             $driver = $this->createStub(AzureDriver::class);
             $driver->method('user')->willThrowException(new \Exception('Unhandled, yay!'));
 
             return $this->mock_controller($driver)->oauthCallback($request);
         });
 
-        $response = $this->get(__METHOD__);
+        $response = $this->get(__FUNCTION__);
         $this->assertEquals('Unhandled, yay!', $response->exception->getMessage());
     }
 
     public function test_logout(): void
     {
-        $this->app['router']->post(__METHOD__, function (Request $request) {
+        $this->app['router']->post(__FUNCTION__, function (Request $request) {
             $driver = $this->createStub(AzureDriver::class);
             $driver->method('getLogoutUrl')->willReturn('/oauth2/v2.0/logout');
 
@@ -119,14 +119,14 @@ final class OAuthAuthenticationTest extends TestCase
         });
 
         Auth::shouldReceive('logout')->once();
-        $response = $this->post(__METHOD__);
+        $response = $this->post(__FUNCTION__);
         $response->assertRedirect();
         $this->assertStringContainsString('/oauth2/v2.0/logout', $response->headers->get('Location'));
     }
 
     public function test_logout_with_redirect(): void
     {
-        $this->app['router']->post(__METHOD__, function (Request $request) {
+        $this->app['router']->post(__FUNCTION__, function (Request $request) {
             $driver = $this->createStub(AzureDriver::class);
             $driver->method('getLogoutUrl')->willReturn('/oauth2/v2.0/logout');
 
@@ -134,7 +134,7 @@ final class OAuthAuthenticationTest extends TestCase
         });
 
         Auth::shouldReceive('logout')->once();
-        $response = $this->post(__METHOD__);
+        $response = $this->post(__FUNCTION__);
         $response->assertRedirect();
         $this->assertStringContainsString('/oauth2/v2.0/logout', $response->headers->get('Location'));
         $this->assertStringContainsString('?post_logout_redirect_uri=https%3A%2F%2Fgoogle.com%3Ffoo%3D1%26bar%3D2', $response->headers->get('Location'));
