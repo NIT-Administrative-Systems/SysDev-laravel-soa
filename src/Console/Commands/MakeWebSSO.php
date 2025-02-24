@@ -12,11 +12,13 @@ class MakeWebSSO extends GeneratorCommand
 
     protected $type = 'Controller';
 
-    public function handle()
+    public function handle(): ?bool
     {
         parent::handle();
 
         $this->ejectRoutes();
+
+        return true;
     }
 
     protected function getNameInput()
