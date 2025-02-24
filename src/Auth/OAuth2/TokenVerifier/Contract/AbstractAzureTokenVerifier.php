@@ -43,11 +43,29 @@ abstract class AbstractAzureTokenVerifier
 
         $data = $this->loadKeys();
 
-        $publicKeys = JWK::parseKeySet($data);
+        /**
+         * This is kind of jank, but the `alg` claim in the JWK is not required by the spec, so Microsoft has opted
+         * not to include it.
+         *
+         * As of v6, the JWT library requires either the alg to be provided -or- a default given, to mitigate
+         * CVE-2021-46743, a key type confusion attack. The CVE is probably broadly applicable to any implementation
+         * dealing with these keys missing their `alg` claims.
+         *
+         * If Microsoft updates in the future, they will hopefully start providing the `alg` claim on the new keys in
+         * the keyring. In that case, this will continue to work just fine, since the `alg` claim has priority over
+         * this default.
+         *
+         * @see https://github.com/firebase/php-jwt/issues/498
+         * @see https://github.com/advisories/GHSA-8xf4-w7qw-pjjw
+         * @see https://github.com/firebase/php-jwt/issues/351
+         */
+        $defaultAlgorithm = 'RS256';
+
+        $publicKeys = JWK::parseKeySet($data, $defaultAlgorithm);
         $kid = $token->headers()->get('kid');
 
         if (isset($publicKeys[$kid])) {
-            $publicKey = openssl_pkey_get_details($publicKeys[$kid]);
+            $publicKey = openssl_pkey_get_details($publicKeys[$kid]->getKeyMaterial());
             $constraints = [
                 new SignedWith(new Sha256(), InMemory::plainText($publicKey['key'])),
                 new LooseValidAt(SystemClock::fromSystemTimezone()),
