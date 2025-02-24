@@ -20,15 +20,15 @@
         "northwestern-sysdev/event-hub-php-sdk": "^3.0",
         "laravel/ui": "^3.0|^2.0|^4.0",
         "lcobucci/jwt": "^4.0",
-        "socialiteproviders/manager": "~4.0",
-        "firebase/php-jwt": "^5.3"
+        "socialiteproviders/manager": "~4.8.1",
+        "firebase/php-jwt": "^6"
     },
     "require-dev": {
-        "orchestra/testbench": "~9.0",
+        "orchestra/testbench": "^10.0",
         "php-coveralls/php-coveralls": "^2.4",
-        "phpunit/phpunit": "^10.0",
+        "phpunit/phpunit": "^11.0",
         "laravel/pint": "^1.13",
-        "larastan/larastan": "^2.0"
+        "larastan/larastan": "^3.0"
     },
     "autoload": {
         "psr-4": {

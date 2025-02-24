@@ -18,6 +18,9 @@ use Northwestern\SysDev\SOA\Auth\OAuth2\NorthwesternAzureProvider;
 use Northwestern\SysDev\SOA\Auth\Strategy\NoSsoSession;
 use Northwestern\SysDev\SOA\Auth\Strategy\WebSSOStrategy;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait WebSSOAuthentication
 {
     use RedirectsUsers, WebSSORoutes;

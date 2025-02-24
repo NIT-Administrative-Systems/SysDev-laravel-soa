@@ -2,6 +2,9 @@
 
 namespace Northwestern\SysDev\SOA\Auth;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait WebSSORoutes
 {
     /** Route name for your login page */
