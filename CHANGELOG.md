@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+## [v11.2.0] - 2025-02-24
+### Added
+- Support for Laravel 12 has been added.
+
 ## [v11.1.0] - 2024-07-17
 ### Changed
 - For Azure Entra ID SSO, a new `token_verifier` option has been added to facilitate multi-tenant configurations.
