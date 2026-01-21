@@ -4,59 +4,78 @@ namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
+use Northwestern\SysDev\SOA\Console\Commands\Concerns\ConfirmsEventHubChanges;
 use Northwestern\SysDev\SOA\EventHub;
+
+use function Laravel\Prompts\multiselect;
+use function Laravel\Prompts\spin;
 
 class WebhookToggle extends Command
 {
-    use ConfirmableTrait;
+    use ConfirmableTrait, ConfirmsEventHubChanges;
 
     protected $signature = 'eventhub:webhook:toggle {status : pause or unpause} {queues?* : one or more queues to toggle. if unspecified, all queues will be updated.}';
 
     protected $description = 'Pause or unpause webhook deliveries.';
 
-    protected $webhook_api;
-
-    public function __construct(EventHub\Webhook $webhook_api)
-    {
+    public function __construct(
+        protected EventHub\Webhook $webhook_api
+    ) {
         parent::__construct();
+    }
 
-        $this->webhook_api = $webhook_api;
-    } // end __construct
-
-    public function handle()
+    public function handle(): int
     {
+        if (! $this->confirmWebhookToggle()) {
+            $this->components->error('Command aborted.');
+
+            return self::FAILURE;
+        }
+
         $queues = [];
 
         $status = strtolower($this->argument('status'));
         if (in_array($status, ['pause', 'unpause']) === false) {
-            $this->error('Invalid status. Please specify pause or unpause.');
+            $this->components->error('Invalid status. Please specify pause or unpause.');
 
-            return 1;
+            return self::FAILURE;
         }
 
         $specific_queues = $this->argument('queues');
         if (count($specific_queues) > 0) {
             $queues = $specific_queues;
         } else {
-            $hooks = $this->webhook_api->listAll();
-            $queues = collect($hooks['webhooks'])->map(function ($hook) {
-                return $hook['topicName'];
-            })->all();
+            $hooks = spin(
+                fn () => $this->webhook_api->listAll(),
+                'Fetching webhooks...'
+            );
+
+            $queues = collect($hooks['webhooks'])->pluck('topicName')->all();
+
+            if (empty($queues)) {
+                $this->components->warn('No webhooks found.');
+
+                return self::SUCCESS;
+            }
         }
 
         foreach ($queues as $queue) {
             try {
-                $this->webhook_api->$status($queue);
-            } catch (EventHub\Exception\EventHubError $e) {
-                $this->error(vsprintf('Unable to change status of "%s".', [$queue]));
-                $this->line('');
+                spin(
+                    fn () => $this->webhook_api->$status($queue),
+                    ucfirst($status)."ing {$queue}..."
+                );
 
-                continue;
+                $this->components->info(ucfirst($status)."d <bg=magenta;fg=white;options=bold> {$queue} </>");
+            } catch (EventHub\Exception\EventHubError $e) {
+                $this->components->error("Unable to change status of <bg=magenta;fg=white;options=bold> {$queue} </>: {$e->getMessage()}");
+                $this->newLine();
             }
         }
 
         // Display status after the changes are made.
         $this->call('eventhub:webhook:status');
-    } // end handle
 
-} // end WebhookToggle
+        return self::SUCCESS;
+    }
+}

@@ -3,60 +3,66 @@
 namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
+use Northwestern\SysDev\SOA\Console\Commands\Concerns\FormatsCommandOutput;
 use Northwestern\SysDev\SOA\EventHub;
+
+use function Laravel\Prompts\note;
+use function Laravel\Prompts\spin;
+use function Laravel\Prompts\table;
 
 class TopicOverview extends Command
 {
+    use FormatsCommandOutput;
+
     protected $signature = 'eventhub:topic:status {duration?}';
 
     protected $description = 'Display statistics & information about any topics available for publishing';
 
-    protected $topic_api;
-
-    public function __construct(EventHub\Topic $topic_api)
+    public function __construct(protected EventHub\Topic $topic_api)
     {
         parent::__construct();
+    }
 
-        $this->topic_api = $topic_api;
-    } // end __construct
-
-    public function handle()
+    public function handle(): int
     {
         $duration = $this->argument('duration');
-        if ($duration !== null) {
-            $duration = (int) $duration;
-        }
+        $duration = $duration !== null ? (int) $duration : null;
 
-        $topics = $this->topic_api->listAll($duration);
-        $topic_count = count($topics);
+        $topics = spin(
+            fn () => $this->topic_api->listAll($duration),
+            'Fetching topic information...'
+        );
 
-        if ($topic_count === 0) {
-            $this->error('You have no topics available.');
+        if (count($topics) === 0) {
+            $this->components->error('You have no topics available.');
 
-            return 1;
+            return self::FAILURE;
         }
 
         foreach ($topics as $topic_detail) {
-            $this->info(vsprintf('<fg=yellow;options=bold,underscore>Topic %s</>', [$topic_detail['topicName']]));
-            $this->line('');
+            $this->divider();
+            $this->newLine();
+            $this->line(vsprintf(' <fg=white>Topic:</> <bg=magenta;fg=white;options=bold> %s </>', [$topic_detail['topicName']]));
+            $this->newLine();
 
             $fields = collect($topic_detail)->only(['timeToLive', 'enqueueCount']);
             foreach ($fields as $key => $value) {
-                $this->line("<fg=yellow>$key</>: $value");
+                $this->styledDetail($key, $value);
             }
 
-            $this->line('');
-            $this->comment('Subscribers');
+            $this->newLine();
+            note('Subscribers');
 
-            $subscriber_data = collect($topic_detail['subscribers'])->map(function ($sub) {
-                return collect($sub)->only(['eventHubAccount', 'name', 'alertAddress']);
-            });
-            $this->table(['Subscriber', 'Contact', 'Queue Name'], $subscriber_data);
+            $subscriber_data = collect($topic_detail['subscribers'])->map(
+                fn ($sub) => array_values(collect($sub)->only(['eventHubAccount', 'name', 'alertAddress'])->all())
+            );
 
-            $this->line('');
+            table(
+                headers: ['Subscriber', 'Contact', 'Queue Name'],
+                rows: $subscriber_data->values()->all()
+            );
         }
 
-        return 0;
-    } // end handle
-
-} // end TopicOverview
+        return self::SUCCESS;
+    }
+}

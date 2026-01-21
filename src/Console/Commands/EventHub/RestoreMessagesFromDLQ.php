@@ -5,6 +5,8 @@ namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 use Illuminate\Console\Command;
 use Northwestern\SysDev\SOA\EventHub\DeadLetterQueue;
 
+use function Laravel\Prompts\progress;
+
 class RestoreMessagesFromDLQ extends Command
 {
     protected $signature = 'eventhub:dlq:restore-messages {dlqName} {maxNumber}';
@@ -13,8 +15,7 @@ class RestoreMessagesFromDLQ extends Command
 
     public function __construct(
         protected DeadLetterQueue $dlqApi,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -23,15 +24,23 @@ class RestoreMessagesFromDLQ extends Command
         $dlqName = $this->argument('dlqName');
         $max = (int) $this->argument('maxNumber');
 
-        for ($i = 0; $i<$max; $i++) {
-            $this->info("Processing message #{$i}...\n");
+        $processedIds = [];
 
-            $id = $this->returnOldestMessage($dlqName);
-            $this->info("\tProcessed Message ID '{$id}'\n");
-            $this->newLine();
-        }
+        progress(
+            label: 'Restoring messages from DLQ',
+            steps: range(1, $max),
+            callback: function () use ($dlqName, &$processedIds) {
+                $id = $this->returnOldestMessage($dlqName);
+                $processedIds[] = $id;
+            }
+        );
 
-        $this->info("Completed processing!\n");
+        $this->newLine();
+        $this->components->info("Completed processing {$max} messages!");
+        $this->newLine();
+
+        $this->components->bulletList($processedIds);
+
         return self::SUCCESS;
     }
 
