@@ -21,7 +21,8 @@
         "laravel/ui": "^3.0|^2.0|^4.0",
         "lcobucci/jwt": "^4.0",
         "socialiteproviders/manager": "~4.8.1",
-        "firebase/php-jwt": "^6"
+        "firebase/php-jwt": "^6",
+        "laravel/prompts": "^0.3.10"
     },
     "require-dev": {
         "orchestra/testbench": "^10.0",

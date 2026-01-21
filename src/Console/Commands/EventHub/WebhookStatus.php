@@ -5,45 +5,56 @@ namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 use Illuminate\Console\Command;
 use Northwestern\SysDev\SOA\EventHub;
 
+use function Laravel\Prompts\spin;
+use function Laravel\Prompts\table;
+
 class WebhookStatus extends Command
 {
     protected $signature = 'eventhub:webhook:status';
 
     protected $description = 'Display information about webhook setup for any queues you can read from';
 
-    protected $webhook_api;
-
-    public function __construct(EventHub\Webhook $webhook_api)
-    {
+    public function __construct(
+        protected EventHub\Webhook $webhook_api
+    ) {
         parent::__construct();
+    }
 
-        $this->webhook_api = $webhook_api;
-    } // end __construct
-
-    public function handle()
+    public function handle(): int
     {
-        $registered_hooks = $this->webhook_api->listAll();
-        if (count($registered_hooks['webhooks']) === 0) {
-            $this->error('You do not have any webhooks registered.');
+        $registered_hooks = spin(
+            fn () => $this->webhook_api->listAll(),
+            'Fetching webhooks...'
+        );
 
-            return 1;
+        if (count($registered_hooks['webhooks']) === 0) {
+            $this->components->error('You do not have any webhooks registered.');
+
+            return self::FAILURE;
         }
 
         $hooks = [];
         foreach ($registered_hooks['webhooks'] as $possible_hook) {
             $queue_name = $possible_hook['topicName'];
 
-            $details = $this->webhook_api->getInfo($queue_name);
+            $details = spin(
+                fn () => $this->webhook_api->getInfo($queue_name),
+                "Fetching details for {$queue_name}..."
+            );
+
             $hooks[$queue_name] = [
                 'queue' => $queue_name,
                 'endpoint' => $details['endpoint'],
-                'active' => $details['active'] === false ? 'Paused' : 'Active',
+                'active' => $details['active'] === false ? '<fg=red>Paused</>' : '<fg=green>Active</>',
             ];
         }
 
-        $this->table(['Queue', 'Endpoint', 'Active'], $hooks);
+        $this->newLine();
+        table(
+            headers: ['Queue', 'Endpoint', 'Status'],
+            rows: array_values(array_map(fn ($h) => array_values($h), $hooks))
+        );
 
-        return 0;
-    } // end handle
-
-} // end WebhookStatus
+        return self::SUCCESS;
+    }
+}

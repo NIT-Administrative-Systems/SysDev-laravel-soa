@@ -4,37 +4,44 @@ namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
+use Northwestern\SysDev\SOA\Console\Commands\Concerns\ConfirmsEventHubChanges;
 use Northwestern\SysDev\SOA\EventHub;
 use Northwestern\SysDev\SOA\Routing\EventHubWebhookRegistration;
 
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\spin;
+
 class WebhookConfiguration extends Command
 {
-    use ConfirmableTrait;
+    use ConfirmableTrait, ConfirmsEventHubChanges;
 
     protected $signature = 'eventhub:webhook:configure {--force}';
 
     protected $description = 'Configure webhook routes in EventHub';
 
-    protected $webhook_api;
-
-    protected $hook_registry;
-
-    public function __construct(EventHub\Webhook $webhook_api, EventHubWebhookRegistration $hook_registry)
-    {
+    public function __construct(
+        protected EventHub\Webhook $webhook_api,
+        protected EventHubWebhookRegistration $hook_registry
+    ) {
         parent::__construct();
+    }
 
-        $this->webhook_api = $webhook_api;
-        $this->hook_registry = $hook_registry;
-    } // end __construct
-
-    public function handle()
+    public function handle(): int
     {
+        if (! $this->confirmWebhookConfiguration()) {
+            $this->components->error('Command aborted.');
+
+            return self::FAILURE;
+        }
+
         $force_delete = $this->option('force');
 
-        $registered_hooks = collect($this->webhook_api->listAll()['webhooks']);
-        $registered_hooks = $registered_hooks->map(function ($hook) {
-            return $hook['topicName'];
-        })->all();
+        $registered_hooks = spin(
+            fn () => collect($this->webhook_api->listAll()['webhooks']),
+            'Fetching existing webhooks...'
+        );
+
+        $registered_hooks = $registered_hooks->map(fn ($hook) => $hook['topicName'])->all();
 
         // We can remove stuff from this one as we touch them -- that we we know which still exist.
         $existing_hooks_updated = $registered_hooks;
@@ -50,13 +57,18 @@ class WebhookConfiguration extends Command
         }
 
         if (count($existing_hooks_updated) > 0) {
-            $this->line('');
-            $this->error('The following webhooks are configured in EventHub but do not have a corresponding entry in the routes file:');
-            $this->line('');
-            $this->error(implode(', ', $existing_hooks_updated));
-            $this->line('');
+            $this->newLine();
+            $this->components->error('The following webhooks are configured in EventHub but do not have a corresponding entry in the routes file:');
+            $this->newLine();
+            $this->components->bulletList($existing_hooks_updated);
+            $this->newLine();
 
-            $delete_unmanaged = $force_delete ?: $this->confirm('Would you like to delete these unmanaged webhooks?');
+            $delete_unmanaged = $force_delete ?: confirm(
+                label: 'Would you like to delete these unmanaged webhooks?',
+                default: false,
+                hint: 'This will remove webhooks not defined in your routes file.'
+            );
+
             if ($delete_unmanaged === true) {
                 foreach ($existing_hooks_updated as $hook_to_delete) {
                     $this->delete($hook_to_delete);
@@ -67,8 +79,8 @@ class WebhookConfiguration extends Command
         // Display status after the changes are made.
         $this->call('eventhub:webhook:status');
 
-        return 0;
-    } // end handle
+        return self::SUCCESS;
+    }
 
     protected function createOrUpdate($hook, $registered_hooks)
     {
@@ -83,28 +95,43 @@ class WebhookConfiguration extends Command
                 // Not allowed in the POST/PUT body
                 unset($hook['topicName']);
 
-                $this->webhook_api->create($topicName, $hook);
+                spin(
+                    fn () => $this->webhook_api->create($topicName, $hook),
+                    "Creating webhook for {$topicName}..."
+                );
+
+                $this->components->info("Created webhook for <bg=magenta;fg=white;options=bold> {$topicName} </>");
             } else {
                 // Not allowed in the POST/PUT body
                 unset($hook['topicName']);
 
-                $this->webhook_api->updateConfig($topicName, $hook);
+                spin(
+                    fn () => $this->webhook_api->updateConfig($topicName, $hook),
+                    "Updating webhook for {$topicName}..."
+                );
+
+                $this->components->info("Updated webhook for <bg=magenta;fg=white;options=bold> {$topicName} </>");
             }
         } catch (EventHub\Exception\EventHubError $e) {
-            $this->line('');
-            $this->error(vsprintf('Failed to update %s: %s', [$topicName, $e->getMessage()]));
-            $this->line('');
+            $this->newLine();
+            $this->components->error("Failed to update {$topicName}: {$e->getMessage()}");
+            $this->newLine();
         }
-    } // end createOrUpdate
+    }
 
     protected function delete($queue_name)
     {
         try {
-            $this->webhook_api->delete($queue_name);
+            spin(
+                fn () => $this->webhook_api->delete($queue_name),
+                "Deleting webhook for {$queue_name}..."
+            );
+
+            $this->components->info("Deleted webhook for <bg=magenta;fg=white;options=bold> {$queue_name} </>");
         } catch (EventHub\Exception\EventHubError $e) {
-            $this->line('');
-            $this->error(vsprintf('Failed to delete %s: %s', [$queue_name, $e->getMessage()]));
-            $this->line('');
+            $this->newLine();
+            $this->components->error("Failed to delete {$queue_name}: {$e->getMessage()}");
+            $this->newLine();
         }
-    } // end delete
-} // end WebhookConfiguration
+    }
+}

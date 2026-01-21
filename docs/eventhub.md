@@ -49,6 +49,9 @@ This package makes receiving webhooks easy: register a queue name to a route, ap
 Route::post('events/netid-update', 'NetIdUpdateController')->eventHubWebhook('my-team.ldap.netid.term');
 Route::post('events/employee-update', 'EmployeeUpdateController')->eventHubWebhook('my-team.employee.updates', ['contentType' => 'application/xml']); // for XML messages
 
+// Conditionally register a webhook (e.g., only in production)
+Route::post('events/prod-only', 'ProdOnlyController')->eventHubWebhookWhen(App::isProduction(), 'my-team.prod.events');
+
 // App\Http\Controllers\NetIdUpdateController
 use Illuminate\Http\Request;
 

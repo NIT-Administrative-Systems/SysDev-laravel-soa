@@ -3,74 +3,75 @@
 namespace Northwestern\SysDev\SOA\Console\Commands\EventHub;
 
 use Illuminate\Console\Command;
+use Northwestern\SysDev\SOA\Console\Commands\Concerns\FormatsCommandOutput;
 use Northwestern\SysDev\SOA\EventHub;
+
+use function Laravel\Prompts\note;
+use function Laravel\Prompts\spin;
+use function Laravel\Prompts\table;
 
 class QueueOverview extends Command
 {
+    use FormatsCommandOutput;
+
     protected $signature = 'eventhub:queue:status {duration?}';
 
     protected $description = 'Display statistics & information about any queues available for reading';
 
-    protected $queue_api;
-
-    protected $dlq_api;
-
-    public function __construct(EventHub\Queue $queue_api, EventHub\DeadLetterQueue $dlq_api)
-    {
+    public function __construct(
+        protected EventHub\Queue $queue_api,
+        protected EventHub\DeadLetterQueue $dlq_api
+    ) {
         parent::__construct();
+    }
 
-        $this->queue_api = $queue_api;
-        $this->dlq_api = $dlq_api;
-    } // end __construct
-
-    public function handle()
+    public function handle(): int
     {
         $duration = $this->argument('duration');
-        if ($duration !== null) {
-            $duration = (int) $duration;
-        }
+        $duration = $duration !== null ? (int) $duration : null;
 
-        $queues = $this->queue_api->listAll($duration);
-        $queue_count = count($queues);
+        $queues = spin(
+            fn () => $this->queue_api->listAll($duration),
+            'Fetching queue information...'
+        );
 
-        if ($queue_count === 0) {
-            $this->error('You have no queues available.');
+        if (count($queues) === 0) {
+            $this->components->error('You have no queues available.');
 
-            return 1;
+            return self::FAILURE;
         }
 
         foreach ($queues as $queue_detail) {
             $stats = collect($queue_detail['queueStatistics']);
             $stat_headers = collect($stats->first())->keys();
 
-            $dlq_info = $this->dlq_api->getInfo($queue_detail['topicName'], $duration);
+            $dlq_info = spin(
+                fn () => $this->dlq_api->getInfo($queue_detail['topicName'], $duration),
+                "Fetching DLQ info for {$queue_detail['topicName']}..."
+            );
             $dlq_stats = collect($dlq_info['queueStatistics']);
 
             // Remove some of the less exciting information to cut down on visual clutter
             $info_to_display = collect($queue_detail)->except(['queueStatistics', 'topicName', 'name', 'eventHubAccount']);
 
-            $this->info(vsprintf('<fg=yellow;options=bold,underscore>Queue %s</>', [$queue_detail['topicName']]));
-            $this->line('');
+            $this->divider();
+            $this->newLine();
+            $this->line(vsprintf(' <fg=white>Queue:</> <bg=magenta;fg=white;options=bold> %s </>', [$queue_detail['topicName']]));
+            $this->newLine();
 
             foreach ($info_to_display as $key => $value) {
-                if (is_bool($value) === true) {
-                    $value = ($value === true ? 'true' : 'false');
-                }
-
-                $this->line("<fg=yellow>$key</>: $value");
+                $this->styledDetail($key, $value);
             }
 
-            $this->line('');
-            $this->comment('Queue Statistics');
-            $this->table($stat_headers->all(), $stats);
-            $this->line('');
+            $this->newLine();
+            note('Queue Statistics');
+            table(headers: $stat_headers->all(), rows: $stats->all());
+            $this->newLine();
 
-            $this->comment('Dead Letter Queue Statistics');
-            $this->table($stat_headers->all(), $dlq_stats);
-            $this->line('');
+            note('Dead Letter Queue Statistics');
+            table(headers: $stat_headers->all(), rows: $dlq_stats->all());
         }
 
-        return 0;
-    } // end handle
-
-} // end QueueOverview
+        return self::SUCCESS;
+    }
+}
