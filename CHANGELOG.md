@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Added `laravel/prompts` as a dependency for improved CLI interactions.
+- Added `eventHubWebhookWhen()` route macro for conditionally registering EventHub webhooks.
+- EventHub webhook commands now prompt for confirmation when run in local environments.
+
+### Changed
+- All EventHub Artisan commands have been modernized with improved output formatting using Laravel Prompts.
+
 ## [v11.2.0] - 2025-02-24
 ### Added
 - Support for Laravel 12 has been added.
