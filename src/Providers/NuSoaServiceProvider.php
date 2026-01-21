@@ -126,12 +126,43 @@ class NuSoaServiceProvider extends ServiceProvider
             return new EventHubWebhookRegistration;
         });
 
+        /**
+         * Register an EventHub webhook for this route.
+         *
+         * @param string $queue The EventHub queue name
+         * @param array $additional_settings Optional webhook configuration overrides
+         */
         Route::macro('eventHubWebhook', function ($queue, $additional_settings = []) {
             /** @var Route $this */
             $url = url($this->uri());
 
             $registry = resolve(EventHubWebhookRegistration::class);
             $registry->registerHookToRoute($queue, $url, $additional_settings);
+
+            return $this;
+        });
+
+        /**
+         * Register an EventHub webhook with conditional activation.
+         *
+         * The webhook is always registered, but the condition determines its active state.
+         * When false, the webhook starts paused, which is useful for production-only
+         * webhooks or safe testing scenarios.
+         *
+         * Running `eventhub:webhook:configure` enforces this state on execution by
+         * automatically pausing webhooks that may have been manually unpaused for
+         * testing purposes.
+         *
+         * @param bool $condition When true, webhook is active; when false, webhook is paused
+         * @param string $queue The EventHub queue name
+         * @param array $additional_settings Optional webhook configuration overrides
+         */
+        Route::macro('eventHubWebhookActiveWhen', function (bool $condition, string $queue, array $additional_settings = []) {
+            /** @var Route $this */
+            $url = url($this->uri());
+
+            $registry = resolve(EventHubWebhookRegistration::class);
+            $registry->registerHookToRoute($queue, $url, $additional_settings, active: $condition);
 
             return $this;
         });

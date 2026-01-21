@@ -23,7 +23,7 @@ class EventHubWebhookRegistration
         $this->use_hmac = $this->hmac_secret !== null;
     }
 
-    public function registerHookToRoute($queue, $url, $additional_settings = []): void
+    public function registerHookToRoute($queue, $url, $additional_settings = [], ?bool $active = null): void
     {
         $hook = new Webhook($queue, $url);
 
@@ -32,6 +32,10 @@ class EventHubWebhookRegistration
         }
 
         $hook->setAdditionalSettings($additional_settings);
+
+        if ($active !== null) {
+            $hook->setActive($active);
+        }
 
         $this->hooks[] = $hook;
     }

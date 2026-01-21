@@ -49,6 +49,9 @@ This package makes receiving webhooks easy: register a queue name to a route, ap
 Route::post('events/netid-update', 'NetIdUpdateController')->eventHubWebhook('my-team.ldap.netid.term');
 Route::post('events/employee-update', 'EmployeeUpdateController')->eventHubWebhook('my-team.employee.updates', ['contentType' => 'application/xml']); // for XML messages
 
+// Register a webhook that starts paused (e.g., only active in production)
+Route::post('events/prod-only', 'ProdOnlyController')->eventHubWebhookActiveWhen(App::isProduction(), 'my-team.prod.events');
+
 // App\Http\Controllers\NetIdUpdateController
 use Illuminate\Http\Request;
 
@@ -86,6 +89,22 @@ php artisan eventhub:webhook:toggle unpause
 
 EventHub will retry failed message deliveries for time time if you have forgotten to pause. See the EventHub documentation for more information on delivery re-tries.
 :::
+
+### Conditional Webhook Registration
+
+Use `eventHubWebhookActiveWhen()` to register webhooks that should only be active by default under a certain condition:
+
+```php
+Route::post('events/prod-only', 'ProdOnlyController')
+    ->eventHubWebhookActiveWhen(App::isProduction(), 'my-team.prod.events');
+```
+
+When the condition is `false`, the webhook is still registered in EventHub but starts in a **paused** state. This is useful when:
+
+- You want to test webhook delivery on-demand by temporarily unpausing, then re-pausing after
+- You have environment-specific webhooks that lower environments simply don't need active
+
+On each deployment, running `eventhub:webhook:configure` will enforce the active state based on your route configuration so that webhooks return to their intended state.
 
 ## EventHub Artisan Commands
 The following artisan commands will be available when you install this package.

@@ -16,6 +16,8 @@ class Webhook
 
     protected $additional_settings = [];
 
+    protected ?bool $active = null;
+
     public function __construct(string $queue, string $delivery_url)
     {
         $this->queue = $queue;
@@ -33,6 +35,11 @@ class Webhook
     {
         $this->additional_settings = array_merge_recursive($this->additional_settings, $settings);
     } // end setAdditionalSettings
+
+    public function setActive(bool $active)
+    {
+        $this->active = $active;
+    }
 
     public function toArray()
     {
@@ -54,8 +61,11 @@ class Webhook
             'contentType' => 'application/json',
             'securityTypes' => [],
             'webhookSecurity' => [],
-            // 'active' => true,
         ], $default_settings);
+
+        if ($this->active !== null) {
+            $final_settings['active'] = $this->active;
+        }
 
         // Additive instead of replacing
         if (array_key_exists('securityTypes', $additional_settings) === true) {
