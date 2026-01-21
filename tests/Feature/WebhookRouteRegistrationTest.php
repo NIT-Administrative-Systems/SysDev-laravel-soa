@@ -79,22 +79,6 @@ final class WebhookRouteRegistrationTest extends BaseTestCase
         $this->assertEquals($content_type, $hook['contentType']);
     } // end test_change_content_type
 
-    public function test_conditional_registration_with_true(): void
-    {
-        app()->router->post('/webhook/conditional')->eventHubWebhookWhen(true, 'conditional.queue');
-
-        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
-        $this->assertEquals(1, count($registered_hooks));
-    }
-
-    public function test_conditional_registration_with_false(): void
-    {
-        app()->router->post('/webhook/conditional')->eventHubWebhookWhen(false, 'conditional.queue');
-
-        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
-        $this->assertEquals(0, count($registered_hooks));
-    }
-
     protected function makeApiSecurityBlock($secret)
     {
         return [

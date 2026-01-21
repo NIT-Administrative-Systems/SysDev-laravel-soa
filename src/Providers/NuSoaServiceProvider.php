@@ -135,17 +135,5 @@ class NuSoaServiceProvider extends ServiceProvider
 
             return $this;
         });
-
-        Route::macro('eventHubWebhookWhen', function (bool $condition, string $queue, array $additional_settings = []) {
-            /** @var Route $this */
-            if ($condition) {
-                $url = url($this->uri());
-
-                $registry = resolve(EventHubWebhookRegistration::class);
-                $registry->registerHookToRoute($queue, $url, $additional_settings);
-            }
-
-            return $this;
-        });
     } // end bootEventHub
 } // end NuSoaServiceProvider

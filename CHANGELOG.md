@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Added `laravel/prompts` as a dependency for improved CLI interactions.
-- Added `eventHubWebhookWhen()` route macro for conditionally registering EventHub webhooks.
 - EventHub webhook commands now prompt for confirmation when run in local environments.
 
 ### Changed
