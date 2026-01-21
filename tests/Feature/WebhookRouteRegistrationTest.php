@@ -79,6 +79,50 @@ final class WebhookRouteRegistrationTest extends BaseTestCase
         $this->assertEquals($content_type, $hook['contentType']);
     } // end test_change_content_type
 
+    public function test_conditional_registration_with_true_sets_active(): void
+    {
+        app()->router->post('/webhook/conditional')->eventHubWebhookActiveWhen(true, 'conditional.queue');
+
+        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
+        $this->assertCount(1, $registered_hooks);
+
+        $hook = $registered_hooks[0]->toArray();
+        $this->assertTrue($hook['active']);
+    }
+
+    public function test_conditional_registration_with_false_sets_inactive(): void
+    {
+        app()->router->post('/webhook/conditional')->eventHubWebhookActiveWhen(false, 'conditional.queue');
+
+        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
+        $this->assertCount(1, $registered_hooks);
+
+        $hook = $registered_hooks[0]->toArray();
+        $this->assertFalse($hook['active']);
+    }
+
+    public function test_conditional_registration_preserves_additional_settings(): void
+    {
+        $content_type = 'application/xml';
+        app()->router->post('/webhook/conditional')->eventHubWebhookActiveWhen(false, 'conditional.queue', ['contentType' => $content_type]);
+
+        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
+        $hook = $registered_hooks[0]->toArray();
+
+        $this->assertFalse($hook['active']);
+        $this->assertEquals($content_type, $hook['contentType']);
+    }
+
+    public function test_regular_webhook_does_not_set_active_state(): void
+    {
+        app()->router->post('/webhook/foo')->eventHubWebhook('foo.my-queue');
+
+        $registered_hooks = resolve(EventHubWebhookRegistration::class)->getHooks();
+        $hook = $registered_hooks[0]->toArray();
+
+        $this->assertArrayNotHasKey('active', $hook);
+    }
+
     protected function makeApiSecurityBlock($secret)
     {
         return [

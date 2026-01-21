@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added `laravel/prompts` as a dependency for improved CLI interactions.
 - EventHub webhook commands now prompt for confirmation when run in local environments.
+- Added `eventHubWebhookActiveWhen()` route macro for conditional webhook activation. These webhooks are still registered, but start paused when the condition is `false`.
 
 ### Changed
 - All EventHub Artisan commands have been modernized with improved output formatting using Laravel Prompts.

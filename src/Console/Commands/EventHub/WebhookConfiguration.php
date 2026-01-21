@@ -87,10 +87,12 @@ class WebhookConfiguration extends Command
         $topicName = $hook['topicName'];
 
         try {
-            // If the hook exists on EventHub already, we don't need to touch the 'active' status.
-            // But, new ones will require it.
             if (in_array($hook['topicName'], $registered_hooks) === false) {
-                $hook['active'] = true;
+                // For new webhooks, use the active state from the
+                // DTO if set, otherwise default to true.
+                if (! array_key_exists('active', $hook)) {
+                    $hook['active'] = true;
+                }
 
                 // Not allowed in the POST/PUT body
                 unset($hook['topicName']);
@@ -102,6 +104,9 @@ class WebhookConfiguration extends Command
 
                 $this->components->info("Created webhook for <bg=magenta;fg=white;options=bold> {$topicName} </>");
             } else {
+                // For existing webhooks, enforce the active state if specified.
+                // This allows `eventHubWebhookActiveWhen()` to control state.
+
                 // Not allowed in the POST/PUT body
                 unset($hook['topicName']);
 
