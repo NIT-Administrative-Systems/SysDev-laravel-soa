@@ -113,9 +113,6 @@ class KeyToConstraintAdapter
     private function jwksAlgorithmToSignerImplementationFactory(Key $key): Signer
     {
         return match ($key->getAlgorithm()) {
-            'HS256' => new Signer\Hmac\Sha256(),
-            'HS384' => new Signer\Hmac\Sha384(),
-            'HS512' => new Signer\Hmac\Sha512(),
             'RS256' => new Signer\Rsa\Sha256(),
             'RS384' => new Signer\Rsa\Sha384(),
             'RS512' => new Signer\Rsa\Sha512(),
