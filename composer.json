@@ -16,12 +16,14 @@
     ],
     "require": {
         "php": ">=8.2",
+        "ext-openssl": "*",
         "guzzlehttp/guzzle": "^7.0|^6.0",
         "northwestern-sysdev/event-hub-php-sdk": "^3.0",
         "laravel/ui": "^3.0|^2.0|^4.0",
-        "lcobucci/jwt": "^4.0",
+        "lcobucci/jwt": "^5.0",
+        "lcobucci/clock": "^2|^3",
         "socialiteproviders/manager": "~4.8.1",
-        "firebase/php-jwt": "^6",
+        "firebase/php-jwt": "^7",
         "laravel/prompts": "^0.3.10"
     },
     "require-dev": {
@@ -29,7 +31,8 @@
         "php-coveralls/php-coveralls": "^2.4",
         "phpunit/phpunit": "^11.0",
         "laravel/pint": "^1.13",
-        "larastan/larastan": "^3.0"
+        "larastan/larastan": "^3.0",
+        "spatie/invade": "^2.1"
     },
     "autoload": {
         "psr-4": {

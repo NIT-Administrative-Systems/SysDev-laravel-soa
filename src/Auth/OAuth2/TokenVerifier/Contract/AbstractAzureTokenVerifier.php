@@ -2,19 +2,17 @@
 
 namespace Northwestern\SysDev\SOA\Auth\OAuth2\TokenVerifier\Contract;
 
-use Firebase\JWT\JWK;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Cache;
 use Laravel\Socialite\Two\InvalidStateException;
 use Lcobucci\Clock\SystemClock;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Key\InMemory;
-use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
+use Lcobucci\JWT\Validation\Validator;
+use Northwestern\SysDev\SOA\Auth\OAuth2\Key\KeyToConstraintAdapter;
 
 abstract class AbstractAzureTokenVerifier
 {
@@ -38,63 +36,49 @@ abstract class AbstractAzureTokenVerifier
      */
     public function parseAndVerify(string $jwt): UnencryptedToken
     {
-        $jwtContainer = Configuration::forUnsecuredSigner();
-        $token = $jwtContainer->parser()->parse($jwt);
+        $parser = new Parser(new JoseEncoder());
+        $validator = new Validator();
 
-        $data = $this->loadKeys();
-
-        /**
-         * This is kind of jank, but the `alg` claim in the JWK is not required by the spec, so Microsoft has opted
-         * not to include it.
-         *
-         * As of v6, the JWT library requires either the alg to be provided -or- a default given, to mitigate
-         * CVE-2021-46743, a key type confusion attack. The CVE is probably broadly applicable to any implementation
-         * dealing with these keys missing their `alg` claims.
-         *
-         * If Microsoft updates in the future, they will hopefully start providing the `alg` claim on the new keys in
-         * the keyring. In that case, this will continue to work just fine, since the `alg` claim has priority over
-         * this default.
-         *
-         * @see https://github.com/firebase/php-jwt/issues/498
-         * @see https://github.com/advisories/GHSA-8xf4-w7qw-pjjw
-         * @see https://github.com/firebase/php-jwt/issues/351
-         */
-        $defaultAlgorithm = 'RS256';
-
-        $publicKeys = JWK::parseKeySet($data, $defaultAlgorithm);
-        $kid = $token->headers()->get('kid');
-
-        if (isset($publicKeys[$kid])) {
-            $publicKey = openssl_pkey_get_details($publicKeys[$kid]->getKeyMaterial());
-            $constraints = [
-                new SignedWith(new Sha256(), InMemory::plainText($publicKey['key'])),
-                new LooseValidAt(SystemClock::fromSystemTimezone()),
-                ...$this->additionalTokenConstraints(),
-            ];
-
-            try {
-                $jwtContainer->validator()->assert($token, ...$constraints);
-
-                if (! ($token instanceof UnencryptedToken)) {
-                    $type = get_class($token);
-                    throw new InvalidStateException("Expected an UnencryptedToken, got {$type} instead.");
-                }
-
-                return $token;
-            } catch (RequiredConstraintsViolated $e) {
-                throw new InvalidStateException($e->getMessage());
-            }
+        $token = $parser->parse($jwt);
+        if (! ($token instanceof UnencryptedToken)) {
+            $type = get_class($token);
+            throw new InvalidStateException("Expected an UnencryptedToken, got {$type} instead.");
         }
 
-        throw new InvalidStateException('Invalid JWT Signature');
+        $constraints = [
+            $this->getKeySignerConstraint(),
+            new LooseValidAt(SystemClock::fromSystemTimezone()),
+            ...$this->additionalTokenConstraints(),
+        ];
+
+        try {
+            $validator->assert($token, ...$constraints);
+
+            return $token;
+        } catch (RequiredConstraintsViolated $e) {
+            throw new InvalidStateException($e->getMessage());
+        }
     }
 
-    private function loadKeys()
+    private function getKeySignerConstraint(): Constraint\SignedWithOneInSet
     {
-        return Cache::remember('socialite:Azure-JWKSet', 5 * 60, function () {
-            $response = (new Client())->get(self::KEYS_URL);
+        /** @var KeyToConstraintAdapter $keyAdapter */
+        $keyAdapter = resolve(KeyToConstraintAdapter::class);
+        $constraintContainer = $keyAdapter->configToConstraints(self::KEYS_URL);
 
-            return json_decode($response->getBody()->getContents(), true);
-        });
+        // If we can find ANY valid keys, the check can proceed. The way SignedWithOneInSet is implemented SHOULD
+        // protect against 0 keys passing validation, but I want to do an explicit check to proof against changes
+        // to the upstream implementation in the future.
+        if ($constraintContainer->constraints === null) {
+            throw new InvalidStateException('Could not load any keys for signature validation');
+        }
+
+        // If some keys could not be converted (likely due to a missing Signer implementation for a new algorithm),
+        // report that in a way we can log/detect so somebody can look at it *before* it becomes a crisis.
+        foreach ($constraintContainer->failedKeys as $failedKey) {
+            report("Non-fatal SSO problem: {$failedKey->summary} ({$failedKey->e})");
+        }
+
+        return $constraintContainer->constraints;
     }
 }

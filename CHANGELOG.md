@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v11.4.0] - 2026-03-11
+### Changed
+- Bumped minimum `firebase/jwt` and `lcobucci/jwt` versions used by the Entra ID SSO code. 
+- Internal implementation details for the Entra ID token signature validations have been changed. This should not impact library users. 
+
 ## [v11.3.0] - 2026-01-21
 ### Added
 - Added `laravel/prompts` as a dependency for improved CLI interactions.
