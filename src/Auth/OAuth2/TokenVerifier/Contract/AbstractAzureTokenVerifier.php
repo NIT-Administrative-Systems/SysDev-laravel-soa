@@ -59,6 +59,11 @@ abstract class AbstractAzureTokenVerifier
             throw new InvalidStateException($e->getMessage());
         }
 
+        /**
+         * This is NOT unreachable -- if the assert code throws an unexpected exception, we'd get here.
+         *
+         * @phpstan-ignore deadCode.unreachable
+         */
         throw new InvalidStateException('Invalid JWT Signature');
     }
 
