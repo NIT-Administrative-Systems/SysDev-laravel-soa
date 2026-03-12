@@ -121,12 +121,19 @@ class KeyToConstraintAdapter
 
     private function loadKeys(string $keysUrl): array
     {
-        $cacheKeyHash = hash('sha256', $keysUrl);
+        $cacheKeyHash = $this->keysetCacheKey($keysUrl);
 
-        return Cache::remember("socialite:Azure-JWKSet:{$cacheKeyHash}", 5 * 60, function () use ($keysUrl) {
+        return Cache::remember($cacheKeyHash, 5 * 60, function () use ($keysUrl) {
             $response = (new Client())->get($keysUrl);
 
             return json_decode($response->getBody()->getContents(), true);
         });
+    }
+
+    private function keysetCacheKey(string $keysUrl): string
+    {
+        $hash = hash('sha256', $keysUrl);
+
+        return "socialite:Azure-JWKSet:{$hash}";
     }
 }

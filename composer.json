@@ -30,7 +30,8 @@
         "php-coveralls/php-coveralls": "^2.4",
         "phpunit/phpunit": "^11.0",
         "laravel/pint": "^1.13",
-        "larastan/larastan": "^3.0"
+        "larastan/larastan": "^3.0",
+        "spatie/invade": "^2.1"
     },
     "autoload": {
         "psr-4": {
