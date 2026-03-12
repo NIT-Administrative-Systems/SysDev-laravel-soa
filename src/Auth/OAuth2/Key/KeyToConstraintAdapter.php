@@ -75,13 +75,6 @@ class KeyToConstraintAdapter
                 continue;
             }
 
-            // The key can return a string or one of these two OpenSSL objects.
-            $keyString = $key->getKeyMaterial();
-            if ($keyString instanceof \OpenSSLAsymmetricKey || $keyString instanceof \OpenSSLCertificate) {
-                $unpackedKey = openssl_pkey_get_details($key->getKeyMaterial());
-                $keyString = $unpackedKey['key'];
-            }
-
             // The valid-until was meant to be a key rotation mechanism, allowing overlap with a built-in drop-dead date.
             // We're loading the keys from JWKS instead of supplying them in a config file for the app, so this isn't
             // applicable. The constraint should be used IMMEDIATELY, so it will be valid for the next minute only.
@@ -89,7 +82,7 @@ class KeyToConstraintAdapter
 
             $constraints[] = new Constraint\SignedWithUntilDate(
                 signer: $signer,
-                key: InMemory::plainText($keyString),
+                key: $this->unpackKeyMaterial($key),
                 validUntil: $validUntil->toDateTimeImmutable(),
             );
         }
@@ -100,6 +93,21 @@ class KeyToConstraintAdapter
         }
 
         return new KeyConstraintContainer($constraint, $failedKeys);
+    }
+
+    public function unpackKeyMaterial(Key $key): InMemory
+    {
+        if (is_string($key->getKeyMaterial())) {
+            return InMemory::plainText($key->getKeyMaterial());
+        }
+
+        $keyMaterial = $key->getKeyMaterial();
+        if ($keyMaterial instanceof \OpenSSLCertificate) {
+            $keyMaterial = openssl_pkey_get_public($keyMaterial);
+        }
+
+        $details = openssl_pkey_get_details($keyMaterial);
+        return InMemory::plainText($details['key']);
     }
 
     private function jwksAlgorithmToSignerImplementationFactory(Key $key): Signer
