@@ -811,14 +811,14 @@ packages:
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
     dev: true
 
-  /@vitejs/plugin-vue@5.0.3(vite@5.0.12)(vue@3.4.21):
+  /@vitejs/plugin-vue@5.0.3(vite@5.0.13)(vue@3.4.21):
     resolution: {integrity: sha512-b8S5dVS40rgHdDrw+DQi/xOM9ed+kSRZzfm1T74bMmBDCd8XO87NKlFYInzCtwvtWwXZvo1QxE2OSspTATWrbA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.12
+      vite: 5.0.13
       vue: 3.4.21
     dev: true
 
@@ -906,7 +906,7 @@ packages:
   /@vuepress/bundler-vite@2.0.0-rc.7:
     resolution: {integrity: sha512-2jNnU3sgHJuUCPfE0DvGRsAxo/A/Locguvnv4Q6QwJYdB1fuAqE6x5p8RDzq8Lv/GsyeexDWiV/PFER5EtVP3w==}
     dependencies:
-      '@vitejs/plugin-vue': 5.0.3(vite@5.0.12)(vue@3.4.21)
+      '@vitejs/plugin-vue': 5.0.3(vite@5.0.13)(vue@3.4.21)
       '@vuepress/client': 2.0.0-rc.7
       '@vuepress/core': 2.0.0-rc.7
       '@vuepress/shared': 2.0.0-rc.7
@@ -916,7 +916,7 @@ packages:
       postcss: 8.4.34
       postcss-load-config: 5.0.2(postcss@8.4.34)
       rollup: 4.9.6
-      vite: 5.0.12
+      vite: 5.0.13
       vue: 3.4.21
       vue-router: 4.2.5(vue@3.4.21)
     transitivePeerDependencies:
@@ -2219,8 +2219,8 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /vite@5.0.12:
-    resolution: {integrity: sha512-4hsnEkG3q0N4Tzf1+t6NdN9dg/L3BM+q8SWgbSPnJvrgH2kgdyzfVJwbR1ic69/4uMJJ/3dqDZZE5/WwqW8U1w==}
+  /vite@5.0.13:
+    resolution: {integrity: sha512-/9ovhv2M2dGTuA+dY93B9trfyWMDRQw2jdVBhHNP6wr0oF34wG2i/N55801iZIpgUpnHDm4F/FabGQLyc+eOgg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -2248,7 +2248,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.19.12
-      postcss: 8.4.34
+      postcss: 8.4.35
       rollup: 4.9.6
     optionalDependencies:
       fsevents: 2.3.3
