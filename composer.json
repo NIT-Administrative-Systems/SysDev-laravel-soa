@@ -22,7 +22,7 @@
         "laravel/ui": "^3.0|^2.0|^4.0",
         "lcobucci/jwt": "^5.0",
         "lcobucci/clock": "^2|^3",
-        "socialiteproviders/manager": "~4.8.1",
+        "socialiteproviders/manager": "~4.8.1 || ~4.9.0",
         "firebase/php-jwt": "^7",
         "laravel/prompts": "^0.3.10"
     },
