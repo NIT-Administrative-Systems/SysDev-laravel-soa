@@ -1,4 +1,10 @@
-# Directory Search
+---
+title: Directory Search
+description: Directory Search API bindings
+sidebar:
+    order: 1
+---
+
 The Directory Search API requires an Apigee API key and approval from relevant data stewards. For more information requesting access, check out the documents on the [API Service Registry](https://apiserviceregistry.northwestern.edu).
 
 Once you get your key, add it to the `.env` file as the `DIRECTORY_SEARCH_API_KEY` property. By default, the production service will be used, but you can define `DIRECTORY_SEARCH_URL` if you want to use dev or QA.

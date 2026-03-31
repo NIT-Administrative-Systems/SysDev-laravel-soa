@@ -79,7 +79,6 @@ typings/
 
 /composer.lock
 
-/docs/.vuepress/dist
-/docs/.vuepress/.cache
-/docs/.vuepress/.temp
-/docs/.build
+/docs/.astro
+/docs/dist
+/docs/node_modules

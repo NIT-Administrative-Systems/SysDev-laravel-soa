@@ -1,4 +1,10 @@
-# Upgrading
+---
+title: Upgrading
+description: Guides to upgrade between versions.
+sidebar:
+    order: 2
+---
+
 
 ## From v10 to v11
 When upgrading to Laravel 11 from a previous version, if you have applied the Laravel skeleton simplifications, you will need to update the Azure AD callback route when deleting the `\App\Http\Middleware\VerifyCsrfToken`:
@@ -40,7 +46,7 @@ Route::post('oauth-logout', [\App\Controllers\Auth\WebSSOController::class, 'oau
 ## From v7 to v8
 Support for Azure AD SSO was added. This is compatible with the OpenAM/ForgeRock Online Passport SSO, and can be used in tandem.
 
-For information on setting up an Azure AD integration, review the updated [webSSO page](./websso.md).
+For information on setting up an Azure AD integration, review the updated [webSSO page](services/websso.md).
 
 ### Breaking Changes
 - The `WebSSOController::findUserByNetID()` method will now always receive the `$netid` parameter in lower case. Previously, it was whatever case the API returned.
@@ -53,7 +59,7 @@ The `WEBSSO_STRATEGY=classic` option has been removed entirely.
 The dependency on Duo's PHP SDK, along with supporting code for doing Duo authentication in your own app, has been removed. The newer webSSO login flow includes the Duo prompt; your application no longer has to present the widget.
 
 - If you have ejected the `config/duo.php` file, you can remove the file. 
-- If you have the `mfa_route_name` route overwritten per [the webSSO Changing Routes guide](websso.md#changing-routes), you can remove the line of code. 
+- If you have the `mfa_route_name` route overwritten per [the webSSO Changing Routes guide](services/websso.md#changing-routes), you can remove the line of code. 
 - If you have `Route::resource('auth/mfa', 'Auth\DuoController')->only(['index', 'store']);` in your `routes/web.php` file, you can remove the line of code.
 - If you have an `Http\Controllers\Auth\DuoController` controller, you can remove the file.
 
@@ -106,7 +112,7 @@ WEBSSO_API_KEY=your-apikey-here
 
 This is the recommended upgrade path; it allows you to deploy support in advance and easily migrate back and forth as needed.
 
-:::danger HTTPS Required
+:::danger[HTTPS Required]
 The new webSSO sets the `secure` flag on its cookie. Your development site **must** be served over HTTPS in order to work.
 
 If you hit a redirect loop when logging in to your app after switching, verify that your site is being served via HTTPS.
@@ -122,7 +128,7 @@ Changes have been made to the underlying `WebSSO` class. You only need to worry 
 - The `getNetID()` method has been marked as deprecated. A new `getUser()` method replaces this, which returns an object that contains the netID & more information.
 
 ## From v2 to v3
-v3 adds the SSO & Duo drop-in auth controllers. You are not required to use this feature, and any webSSO implementations that depend on v2 of package should continue to work. If you want to take advantage of the new webSSO drop-in auth controllers, instructions are available [on the webSSO page](./websso).
+v3 adds the SSO & Duo drop-in auth controllers. You are not required to use this feature, and any webSSO implementations that depend on v2 of package should continue to work. If you want to take advantage of the new webSSO drop-in auth controllers, instructions are available [on the webSSO page](services/websso.md).
 
 The `eventhub:webhook:configure` command now has a `--force` flag that will skip the delete confirmation for extra webhooks.
 
@@ -136,4 +142,4 @@ The `eventhub:webhook:configure` command now has a `--force` flag that will skip
 ## From v1 to v2
 The MQ Consumer & Publishers have been replaced by EventHub. This is a radical change, as the underlying messaging service we use has changed. 
 
-Please see the [EventHub](./eventhub) article for usage instructions.
+Please see the [EventHub](services/eventhub.md) article for usage instructions.
