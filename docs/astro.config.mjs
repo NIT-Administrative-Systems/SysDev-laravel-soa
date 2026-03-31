@@ -4,13 +4,14 @@ import northwesternTheme from "@nu-appdev/northwestern-starlight-theme";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://nit-administrative-systems.github.io/SysDev-laravel-soa//",
+  site: "https://nit-administrative-systems.github.io/SysDev-laravel-soa/",
+  base: "/SysDev-laravel-soa/",
   integrations: [
     starlight({
       plugins: [northwesternTheme()],
       title: "Northwestern Tools for Laravel",
       editLink: {
-        baseUrl: "https://github.com/NIT-Administrative-Systems/SysDev-laravel-soa//edit/develop/docs/",
+        baseUrl: "https://github.com/NIT-Administrative-Systems/SysDev-laravel-soa/edit/develop/docs/",
       },
       sidebar: [
         {
