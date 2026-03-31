@@ -32,7 +32,7 @@ jobs:
       run: |
         cd docs
         pnpm install
-        pnpm docs:build
+        pnpm build
 
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@v4.5.0
