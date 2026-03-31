@@ -1,4 +1,10 @@
-# EventHub
+---
+title: EventHub
+description: EventHub API bindings
+sidebar:
+    order: 2
+---
+
 This sets up the [EventHub SDK for PHP](https://github.com/NIT-Administrative-Systems/SysDev-EventHub-PHP-SDK) for use with Larave, adds commands to manage topics, queues, and webhooks from the console, and the `eventhub_hmac` middleware for authenticating webhook-delivered events.
 
 There are three key `.env` settings:
@@ -73,7 +79,7 @@ class NetIdUpdateController extends Controller
 
 Finally, run `php artisan eventhub:webhook:configure`. It will read through your routes and make the API calls to EventHub that (re)configure all of your webhooks. If you delete a registration, the `eventhub:webhook:configure` command will ask you if you'd like to delete the webhook config.
 
-:::tip App Deployments
+:::tip[App Deployments]
 It is recommended that you pause webhook deliveries when you deploy updates to your application. 
 
 ```sh

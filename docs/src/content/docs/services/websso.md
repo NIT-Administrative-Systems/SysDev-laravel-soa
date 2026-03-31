@@ -1,4 +1,10 @@
-# WebSSO
+---
+title: WebSSO
+description: Integrate WebSSO into Laravel authentication via PingAM or Entra ID
+sidebar:
+    order: 3
+---
+
 The package provides a command that will set up WebSSO, and optionally Duo multi-factor authentication (MFA). 
 
 You can use either the traditional Online Passport (handled via agentless SSO with OpenAM/ForgeRock), Azure AD SSO, or both at once. 
@@ -12,7 +18,7 @@ The approach taken is flexible. It is suited for both applications that only use
 
 All of the above will still rely on the built-in Laravel `auth` middleware.
 
-:::warning Notes for Advanced Users
+:::caution[Notes for Advanced Users]
 Authentication is achieved by logging users into Laravel; once the webSSO session is validated, your user's login session for your application is detached from the webSSO session.
 
 The package does not implement a custom [auth provider](https://laravel.com/docs/5.8/authentication#adding-custom-user-providers) and relies on the default database provider for the `App\Models\User` model.
@@ -131,7 +137,7 @@ protected function findUserByNetID(DirectorySearch $directory_api, string $netid
 
 You may optionally implement the `authenticated` method. If you return a `redirect()`, it will be followed. Otherwise, the default Laravel behaviour will be used.
 
-:::tip Azure AD Profile
+:::tip[Azure AD Profile]
 If you are using Azure AD and want to utilize the profile information like email address & phone number, you can instead implement the `findUserByOAuthUser` method. 
 
 Similar to `findUserByNetID`, you can request dependencies from the service container.
@@ -176,7 +182,7 @@ If you are only using WebSSO to authenticate in your app, this should not be nec
 ## API
 The webSSO class will resolve the value of an `nusso` cookie into a NetID using the agentless SSO APIs.
 
-:::tip Unusual Use-cases Only
+:::tip[Unusual Use-cases Only]
 If you have set up the authentication controllers as detailed in [the previous section](#authentication-flow), you should not need to use the `WebSSO` class yourself.
 :::
 

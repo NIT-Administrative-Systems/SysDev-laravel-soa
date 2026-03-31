@@ -1,4 +1,10 @@
-# Northwestern Tools for Laravel
+---
+title: Introduction
+description: Enhance Laravel with easy access to popular Northwestern APIs & webSSO/Duo multi-factor authentication.
+sidebar:
+    order: 1
+---
+
 This package enhanced Laravel with easy access to popular Northwestern APIs & webSSO/Duo multi-factor authentication.
 
 | Service          | Prerequisites                         |
@@ -16,7 +22,7 @@ composer require northwestern-sysdev/laravel-soa
 php artisan vendor:publish --provider="Northwestern\SysDev\SOA\Providers\NuSoaServiceProvider"
 ```
 
-:::warning Laravel 6 & 5.x
+:::caution[Laravel 6 & 5.x]
 If you are on an older version of Laravel, the latest version of the package may not install. You can explicitly install v4, which is compatible:
 
 ```bash
