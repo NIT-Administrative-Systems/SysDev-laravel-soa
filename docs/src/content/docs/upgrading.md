@@ -10,7 +10,7 @@ sidebar:
 v12 adds support for Laravel 13 and drops support for PHP 8.2. The minimum PHP version is now 8.3.
 
 ### Dependency Changes
-- Guzzle 6 is no longer supported. If your application still depends on Guzzle 6, you must upgrade to Guzzle 7.8.2+.
+- Guzzle 6 is no longer supported. If your application still depends on Guzzle 6, you must upgrade to Guzzle 7+.
 - `laravel/ui` v2 and v3 are no longer supported. Upgrade to v4.6.3+.
 
 ## From v10 to v11

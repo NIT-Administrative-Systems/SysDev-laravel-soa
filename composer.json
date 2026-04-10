@@ -17,7 +17,7 @@
     "require": {
         "php": ">=8.3",
         "ext-openssl": "*",
-        "guzzlehttp/guzzle": "^7.8.2",
+        "guzzlehttp/guzzle": "^7.0",
         "northwestern-sysdev/event-hub-php-sdk": "^3.0",
         "laravel/ui": "^4.6.3",
         "lcobucci/jwt": "^5.0",
