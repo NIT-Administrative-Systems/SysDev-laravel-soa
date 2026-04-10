@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dropped support for PHP 8.2. The minimum required version is now PHP 8.3.
 - Support for Laravel 13 has been added.
 - Dropped support for Guzzle 6. The minimum required version is now Guzzle 7.
-- Dropped support for `laravel/ui` v2 and v3. The minimum required version is now v4.6.3.
+- Dropped support for `laravel/ui` v2 and v3. The minimum required version is now v4.
 - Widened `socialiteproviders/manager` constraint from `~4.8.1` to `^4.8.1`.
 - Replaced deprecated `Closure::fromCallable('static::...')` callables with first-class callable syntax for PHP 8.5 compatibility.
 
