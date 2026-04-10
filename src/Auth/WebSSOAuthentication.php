@@ -74,7 +74,7 @@ trait WebSSOAuthentication
     }
 
     /**
-     * Azure AD OAuth initiator action
+     * Entra ID OAuth initiator action.
      */
     public function oauthRedirect()
     {
@@ -82,7 +82,7 @@ trait WebSSOAuthentication
     }
 
     /**
-     * OAuth callback URL, where users are sent after authenticating with Azure.
+     * OAuth callback URL, where users are sent after authenticating with Entra ID.
      */
     public function oauthCallback(Request $request)
     {
@@ -132,7 +132,7 @@ trait WebSSOAuthentication
      * of doing anything on its own. This is for backwards-compatibility -- if you've used
      * OpenAM SSO in the past (or plan to in the future), the two methods can be used interchangably.
      *
-     * In cases where you wish to utilize data from the Azure AD profile (like email, name, phone, etc),
+     * In cases where you wish to utilize data from the Entra ID profile (like email, name, phone, etc),
      * you can implement this method and return a Laravel user directly, without invoking the
      * ::findUserByNetID method.
      */
