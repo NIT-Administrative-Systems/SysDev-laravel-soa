@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v12.0.0] - 2026-04-10
+### Changed
+- Dropped support for PHP 8.2. The minimum required version is now PHP 8.3.
+- Support for Laravel 13 has been added.
+- Dropped support for Guzzle 6. The minimum required version is now Guzzle 7.8.2.
+- Dropped support for `laravel/ui` v2 and v3. The minimum required version is now v4.6.3.
+- Widened `socialiteproviders/manager` constraint from `~4.8.1` to `^4.8.1`.
+
 ## [v11.4.0] - 2026-03-11
 ### Changed
 - Bumped minimum `firebase/jwt` and `lcobucci/jwt` versions used by the Entra ID SSO code. 
