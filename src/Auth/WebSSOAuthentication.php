@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
@@ -36,10 +37,11 @@ trait WebSSOAuthentication
             return redirect($e->getRedirectUrl());
         }
 
-        $user = app()->call(\Closure::fromCallable('static::findUserByNetId'), ['netid' => $netid]);
+        $user = app()->call(static::findUserByNetID(...), ['netid' => $netid]);
         throw_if($user === null, new AuthenticationException());
 
         Auth::login($user);
+        Session::regenerate();
 
         return $this->authenticated($request, $user) ?: redirect()->intended($this->redirectPath());
     }
@@ -50,6 +52,8 @@ trait WebSSOAuthentication
     public function logout(WebSSOStrategy $sso_strategy)
     {
         Auth::logout();
+        Session::invalidate();
+        Session::regenerateToken();
 
         return $sso_strategy->logout($this->logout_return_to_route);
     }
@@ -57,6 +61,8 @@ trait WebSSOAuthentication
     public function oauthLogout($postLogoutRedirectUri = null)
     {
         Auth::logout();
+        Session::invalidate();
+        Session::regenerateToken();
 
         if ($postLogoutRedirectUri != null) {
             $url = $this->oauthDriver()->getLogoutUrl().'?post_logout_redirect_uri='.urlencode($postLogoutRedirectUri);
@@ -76,7 +82,7 @@ trait WebSSOAuthentication
     }
 
     /**
-     * OAuth callback URL, where users are sent when they're
+     * OAuth callback URL, where users are sent after authenticating with Azure.
      */
     public function oauthCallback(Request $request)
     {
@@ -108,12 +114,13 @@ trait WebSSOAuthentication
         );
 
         $user = app()->call(
-            \Closure::fromCallable('static::findUserByOAuthUser'),
+            static::findUserByOAuthUser(...),
             ['oauthUser' => $oauthUser]
         );
         throw_if($user === null, new AuthenticationException());
 
         Auth::login($user);
+        Session::regenerate();
 
         return $this->authenticated($request, $user) ?: redirect()->intended($this->redirectPath());
     }
@@ -132,7 +139,7 @@ trait WebSSOAuthentication
     protected function findUserByOAuthUser(OAuthUser $oauthUser): ?Authenticatable
     {
         return app()->call(
-            \Closure::fromCallable('static::findUserByNetID'),
+            static::findUserByNetID(...),
             ['netid' => $oauthUser->getNetid()]
         );
     }
