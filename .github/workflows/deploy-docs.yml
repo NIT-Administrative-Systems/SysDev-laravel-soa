@@ -14,10 +14,10 @@ jobs:
         node-version: [24.x]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Install pnpm
-      uses: pnpm/action-setup@v3
+      uses: pnpm/action-setup@v5
       with:
         version: 10.x.x
 
@@ -35,7 +35,7 @@ jobs:
         pnpm build
 
     - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@v4.5.0
+      uses: JamesIves/github-pages-deploy-action@v4.8.0
       with:
         branch: gh-pages
         folder: docs/dist

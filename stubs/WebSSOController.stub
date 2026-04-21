@@ -25,8 +25,8 @@ class WebSSOController extends Controller
     /*
     protected function findUserByOAuthUser(OAuthUser $oauthUser): ?Authenticatable
     {
-        // Called when using Azure AD OAuth login.
-        // This method has access to the whole user returned by Azure AD.
+        // Called when using Entra ID OAuth login.
+        // This method has access to the whole user returned by Entra ID.
 
         // You can use this instead of ::findUserByNetID, which only has access to a netID.
 
