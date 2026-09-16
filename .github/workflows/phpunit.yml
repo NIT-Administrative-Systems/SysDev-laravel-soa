@@ -46,7 +46,6 @@ jobs:
         php-versions: ['8.3', '8.4', '8.5', '8.6']
         laravel: ['12.*', '13.*']
         stability: ['prefer-stable']
-        experimental: [false]
         include:
           - php-versions: '8.6'
             experimental: true
