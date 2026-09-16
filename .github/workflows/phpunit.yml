@@ -39,14 +39,19 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
         php-versions: ['8.3', '8.4', '8.5', '8.6']
         laravel: ['12.*', '13.*']
         stability: ['prefer-stable']
+        experimental: [false]
+        include:
+          - php-versions: '8.6'
+            experimental: true
 
-    name: PHP ${{ matrix.php-version }} - Laravel ${{ matrix.laravel }} (${{ matrix.stability }})
+    name: PHP ${{ matrix.php-versions }} - Laravel ${{ matrix.laravel }} (${{ matrix.stability }})
 
     steps:
     - uses: actions/checkout@v6
