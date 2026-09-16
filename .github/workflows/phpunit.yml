@@ -20,6 +20,17 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
@@ -49,6 +60,17 @@ jobs:
     - name: Install Laravel Framework Version
       run: |
         composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+
+    - name: Get composer cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-php${{ matrix.php-versions }}-laravel${{ matrix.laravel }}-${{ matrix.stability }}-${{ hashFiles('**/composer.json') }}
+        restore-keys: ${{ runner.os }}-composer-php${{ matrix.php-versions }}-laravel${{ matrix.laravel }}-${{ matrix.stability }}-
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
