@@ -7,13 +7,34 @@ on:
     branches: [ develop ]
 
 jobs:
-  build:
-
+  phpstan:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run PHPStan
+        run: php vendor/bin/phpstan analyze
+
+  build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['8.3', '8.4', '8.5']
+        php-versions: ['8.3', '8.4', '8.5', '8.6']
+        laravel: ['12.*', '13.*']
+        stability: ['prefer-stable']
+
+    name: PHP ${{ matrix.php-version }} - LAravel ${{ matrix.laravel }} (${{ matrix.stability }})
 
     steps:
     - uses: actions/checkout@v6
@@ -24,15 +45,12 @@ jobs:
         php-version: ${{ matrix.php-versions }}
         coverage: xdebug
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate
+    - name: Install Laravel Framework Version
+      run: |
+        composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
 
     - name: Install dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
-
-    - name: Run PHPStan
-      run: php vendor/bin/phpstan analyze
 
     - name: Run Tests
       run: php vendor/bin/phpunit --coverage-clover .build/clover.xml
