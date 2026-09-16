@@ -24,7 +24,7 @@ export default defineConfig({
         },
         {
           label: "Services",
-          autogenerate: { directory: "services" },
+          items: [{ autogenerate: { directory: "services" } }],
         },
       ],
       social: [
