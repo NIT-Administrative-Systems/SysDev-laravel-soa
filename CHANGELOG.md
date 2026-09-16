@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v12.0.1] - 2026-09-16
+### Changed
+- The `docs/` folder is no longer included in published Packagist artifacts.
+
 ## [v12.0.0] - 2026-04-10
 ### Fixed
 - `WebSSOAuthentication` trait now regenerates the session after login and invalidates it on logout to prevent session fixation attacks.
