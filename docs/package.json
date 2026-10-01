@@ -6,9 +6,9 @@
         "node": ">= 24.0.0"
     },
     "dependencies": {
-        "@astrojs/starlight": "^0.42.1",
+        "@astrojs/starlight": "^0.42.4",
         "@nu-appdev/northwestern-starlight-theme": "^1.6.3",
-        "astro": "^7.3.2"
+        "astro": "^7.3.5"
     },
     "scripts": {
         "astro": "astro",
